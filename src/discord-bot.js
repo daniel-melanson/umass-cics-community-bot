@@ -1,21 +1,23 @@
 /**
  * @author Daniel Melanson
  * @date 4/4/2020
- * @desc Extension of discord bot class
- * @type {module:"discord.js-commando"}
+ * @desc Source file for the singleton DiscordBot class
  */
 
+// Modules
 const Commando = require('discord.js-commando');
 const path = require('path');
 
+/**
+ * Singleton class that manages command registry + execution, message filtering, and memes.
+ */
 class DiscordBot extends Commando.Client {
     /**
-     * Creates a new DiscordBot
+     * Creates a new DiscordBot.
      * @param config An object with fields:
      *  config.owner The user ID of the bot's owner.
      *  config.commandPrefix The prefix to all commands, optional.
      *  config.token The bot token used to communicate with the discord api
-     *  config.server-name The name of the server that the bot is serving
      */
     constructor(config) {
         super({
@@ -43,11 +45,21 @@ class DiscordBot extends Commando.Client {
     }
 
     /**
-     * Called when the bot first establishes a connection with the discord api and is ready to work
+     * Called when the bot first establishes a connection with the discord api and is ready to work.
      * @returns {Promise<void>}
      */
     async ready() {
         console.log(`Logged in as ${this.user.tag}`);
+
+        let guild = this.guilds.first();
+        let members = await guild.members.fetch();
+
+        members.forEach(member => {
+            let role = member.roles.find(r => r.name === "Class of 2023");
+            if (member.roles.size === 2 && role)  {
+                member.roles.remove(role);
+            }
+        });
     }
 
     /**
