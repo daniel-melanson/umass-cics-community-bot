@@ -1,10 +1,8 @@
-const Discord = require("discord.js");
-
-const EMBED_CONSTANTS = {
-    NAME: 'University of Massachusetts Amherst College of Information and Computer Science',
-    IMAGE: '/assets/image.png',
-    COLOR:  [131, 35, 38]
-};
+/**
+ * @author Daniel Melanson
+ * @date 4/4/2020
+ * @desc Helper methods used by multiple commands, that define behaviour surrounding classes and roles.
+ */
 
 /**
  * If @param str is a string that represents a CICS related class.
@@ -63,30 +61,12 @@ module.exports = {
         return new RegExp(/(buisness|biology|economics|engineering|linguistics|phychology|informatics)/i).test(str.trim());
     },
 
-    isMisc(str) {
-        return new RegExp(/(Snooper|Daily Coding Problems)/i).test(str);
-    },
-
     /**
-     * Returns a embed formatted for guild use.
-     * @param options
-     * @returns {object}
+     * If the str is a string that represents a miscellaneous role.
+     * @param str
+     * @returns {boolean}
      */
-    getEmbed(options) {
-        let embed = new Discord.MessageEmbed({
-            author: options.author || {
-
-            },
-            createdAt: options.createdAt,
-            description: options.description,
-            fields: options.fields,
-            image: options.image || EMBED_CONSTANTS.IMAGE,
-            title: options.title,
-            timestamp: new Date()
-        });
-
-        embed.setColor(options.hexColor || EMBED_CONSTANTS.COLOR);
-
-        return {embed: embed};
+    isMisc(str) {
+        return new RegExp(/(snooper|daily coding problems)/i).test(str);
     }
 };
