@@ -54,10 +54,10 @@ class RolesCommand extends Command {
         let misc = fetchRoles(util.isMisc);
 
         // Display the roles in a visually pleasing way
-        return msg.reply(util.getEmbed({
+        return msg.reply(this.client.generateEmbed({
             title: "List of Assignable Roles",
             description: oneLine(`The following categories list out the available roles that users can assign themselves using the \`!role [role name]\` command. 
-                These roles grant users permission related channel. If you would like access to all related channels, you may assign yourself the \`Snooper\` role.`),
+                These roles grant users permission to related channels. If you would like access to all related channels, you may assign yourself the \`Snooper\` role.`),
             fields: [
                 {
                     name: "Graduating Class or Graduation Status",

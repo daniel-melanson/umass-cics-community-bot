@@ -5,8 +5,15 @@
  */
 
 // Modules
+const Discord = require('discord.js');
 const Commando = require('discord.js-commando');
 const path = require('path');
+
+// Constants for embed generation
+const EMBED_CONSTANTS = {
+    NAME: 'University of Massachusetts Amherst College of Information and Computer Science',
+    COLOR:  [131, 35, 38]
+};
 
 /**
  * Singleton class that manages command registry + execution, message filtering, and memes.
@@ -45,21 +52,36 @@ class DiscordBot extends Commando.Client {
     }
 
     /**
+     * Generates a new embed object
+     * @param options
+     * @returns {object}
+     */
+    generateEmbed(options) {
+        let embed = new Discord.MessageEmbed({
+            createdAt: options.createdAt,
+            description: options.description,
+            fields: options.fields,
+            image: options.image,
+            title: options.title,
+            timestamp: new Date()
+        });
+
+        if (options.author)
+            embed.setAuthor(options.author.name, options.author.iconURL, options.author.url);
+        else
+            embed.setAuthor(this.user.username, this.user.avatarURL());
+
+        embed.setColor(options.hexColor || EMBED_CONSTANTS.COLOR);
+
+        return {embed: embed};
+    }
+
+    /**
      * Called when the bot first establishes a connection with the discord api and is ready to work.
      * @returns {Promise<void>}
      */
     async ready() {
         console.log(`Logged in as ${this.user.tag}`);
-
-        let guild = this.guilds.first();
-        let members = await guild.members.fetch();
-
-        members.forEach(member => {
-            let role = member.roles.find(r => r.name === "Class of 2023");
-            if (member.roles.size === 2 && role)  {
-                member.roles.remove(role);
-            }
-        });
     }
 
     /**
