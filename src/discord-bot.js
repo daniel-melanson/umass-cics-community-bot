@@ -8,6 +8,7 @@
 const Discord = require('discord.js');
 const Commando = require('discord.js-commando');
 const path = require('path');
+const util = require('./util.js');
 
 // Constants for embed generation
 const EMBED_CONSTANTS = {
@@ -30,9 +31,7 @@ class DiscordBot extends Commando.Client {
         super({
             owner: config.owner,
             commandPrefix: config.commandPrefix || '!',
-            nonCommandEditable: false,
-
-            disabledEvents: ['TYPING_START', 'VOICE_STATE_UPDATE', 'PRESENCE_UPDATE', 'MESSAGE_DELETE', 'MESSAGE_UPDATE'] // Disable unused events to reduce network traffic
+            nonCommandEditable: false
         });
 
         // Register new groups to categorize the commands with
@@ -47,6 +46,7 @@ class DiscordBot extends Commando.Client {
 
         // Set up binds to emitted events from super class
         this.on('ready', this.ready.bind(this));
+        this.on('roleUpdate', this.roleUpdate.bind(this));
 
         this.login(config.token);
     }
@@ -74,6 +74,21 @@ class DiscordBot extends Commando.Client {
         embed.setColor(options.hexColor || EMBED_CONSTANTS.COLOR);
 
         return {embed: embed};
+    }
+
+    /**
+     * Called when a role in the discord server is updated
+     * @param {Role} oldRole
+     * @param {Role} newRole
+     */
+    async roleUpdate(oldRole, newRole) {
+        if (util.hasExploitable(newRole.permissions) && util.isAssignable(newRole.name)) {
+            let success = await util.resetPermissions(newRole);
+
+            let channel = newRole.guild.channels.find(c => c.name === "admin" && c.type === "text");
+            if (channel)
+                await channel.send(`@everyone The ${newRole.name} has been updated and it ${success ? 'had' : 'has'} an exploitable feature.`);
+        }
     }
 
     /**

@@ -7,7 +7,7 @@
 // Modules
 const { oneLine } = require('common-tags');
 const Command = require('../command');
-const util = require('../../command-util');
+const util = require('../../util.js');
 
 /**
  * @desc RolesCommand singleton that defines behavior for the `!roles` command.
@@ -46,7 +46,7 @@ class RolesCommand extends Command {
         };
 
         // Define arrays for each category
-        let gradClassOrStatus = fetchRoles(util.isGraduatingStatus);
+        let gradClassOrStatus = fetchRoles(util.isGraduationStatus);
         let resAreas = fetchRoles(util.isResidential);
         let csCourses = fetchRoles(util.isCSClass);
         let mathCourses = fetchRoles(util.isMathClass);
