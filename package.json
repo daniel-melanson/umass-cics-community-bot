@@ -18,6 +18,7 @@
   "homepage": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot#readme",
   "dependencies": {
     "bufferutil": "^4.0.1",
+    "common-tags": "^1.8.0",
     "discord.js": "github:discordjs/discord.js#ea8b4e73559d118a826ac3b242c1a3626b4f6d29",
     "discord.js-commando": "github:discordjs/commando#4beeec829ed25fc2c6ec0896edf7e0ac4d8bfcf0",
     "erlpack": "github:discordapp/erlpack",
