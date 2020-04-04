@@ -1,0 +1,26 @@
+{
+  "name": "umass-cics-discord-bot",
+  "version": "1.0.0",
+  "description": "Simple discord bot for an unofficial UMass CICS discord server.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniel-melanson/UMass-CICS-Discord-Bot.git"
+  },
+  "author": "Daniel Melanson",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot/issues"
+  },
+  "homepage": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot#readme",
+  "dependencies": {
+    "bufferutil": "^4.0.1",
+    "discord.js": "github:discordjs/discord.js#ea8b4e73559d118a826ac3b242c1a3626b4f6d29",
+    "discord.js-commando": "github:discordjs/commando#4beeec829ed25fc2c6ec0896edf7e0ac4d8bfcf0",
+    "erlpack": "github:discordapp/erlpack",
+    "utf-8-validate": "^5.0.2"
+  }
+}

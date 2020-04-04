@@ -1,2 +1,2 @@
-# UMass-CICS-Class-of-2023
-Simple discord bot for an unofficial UMass CICS Class of 2023 discord server.
+# UMass CICS Community Discord Bot
+Simple discord bot for an unofficial UMass CICS discord server.
