@@ -28,7 +28,7 @@ function isResidential(str) {
  * @returns {boolean}
  */
 function isGraduationStatus(str) {
-    return new RegExp(/(alumni|class of \d{4})/i).test(str.trim()); // This code does not support graduation dates past 9999 🤔
+    return new RegExp(/(alumni|graduate student|class of \d{4})/i).test(str.trim()); // This code does not support graduation dates past 9999 🤔
 }
 
 /**
