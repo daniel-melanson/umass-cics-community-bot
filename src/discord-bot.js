@@ -13,7 +13,7 @@ const { oneLine } = require("common-tags");
 
 // Constants for embed generation
 const EMBED_CONSTANTS = {
-    NAME: 'University of Massachusetts Amherst College of Information and Computer Science',
+    NAME: 'University of Massachusetts Amherst College of Information and Computer Sciences',
     COLOR:  [131, 35, 38]
 };
 
@@ -139,7 +139,7 @@ class DiscordBot extends Commando.Client {
         await channel.bulkDelete(await this.welcome.messages.fetch());
 
         let verifyMessage = await channel.send(this.generateEmbed({
-            title: "Welcome to the University of Massachusetts College of Information and Computer Science Community Discord Server!",
+            title: "Welcome to the University of Massachusetts College of Information and Computer Sciences Community Discord Server!",
             description: oneLine(`This server is a gathering of UMass CICS prospects, students, and alumni. 
                 Members can discuss the material of a current class, show off their extracurricular projects, or talk about issues facing the computer science community. 
                 To help foster this community, **we ask all of our members to associate themselves with a real-life name.** 
