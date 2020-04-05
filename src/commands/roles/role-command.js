@@ -46,7 +46,7 @@ class RoleCommand extends Command {
         let role = args.role;
 
         if (!role)
-            return msg.reply("I can not seem to find that role. User the `!roles` command to see a list of assignable roles.");
+            return msg.reply("I can not seem to find that role. Use the `!roles` command to see a list of assignable roles.");
 
         if (!util.isAssignable(role.name))
             return msg.reply("That is not an assignable role. Use the `!roles` command to find some.");
