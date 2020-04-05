@@ -29,13 +29,7 @@ class RoleCommand extends Command {
                     key: 'role',
                     label: 'role',
                     prompt: 'Which class/residence role?',
-                    type: 'role',
-                    validate: async (val) => {
-                        if (util.isAssignable(val))
-                            return true;
-                        else
-                            return 'That is not an assignable role. Use the `!roles` command to find some.'
-                    },
+                    type: 'role'
                 }
             ]
         });
@@ -49,6 +43,12 @@ class RoleCommand extends Command {
      */
     async fn(msg, args) {
         let role = args.role;
+
+        if (!role)
+            return msg.reply("I can not seem to find that role. User the `!roles` command to see a list of assignable roles.");
+
+        if (!util.isAssignable(role.name))
+            return msg.reply("That is not an assignable role. Use the `!roles` command to find some.");
 
         // IDE does inspection and it is wrong
         // noinspection JSCheckFunctionSignatures
