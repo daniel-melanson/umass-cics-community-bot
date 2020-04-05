@@ -181,6 +181,8 @@ class DiscordBot extends Commando.Client {
             if (guildMember) {
                 await guildMember.roles.add(verifiedRole);
 
+                this.logMessage('MSG', `Just verified the user ${user.tag}. Their identifier is ${guildMember.nickname ? guildMember.nickname : user.username}.`);
+
                 await this.registry.resolveCommand('roles').fn({
                     author: user,
                     guild: this.guild,
