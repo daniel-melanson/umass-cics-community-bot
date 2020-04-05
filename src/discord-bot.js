@@ -49,6 +49,7 @@ class DiscordBot extends Commando.Client {
         // Set up binds to emitted events from super class
         this.on('ready', this.ready.bind(this));
         this.on('roleUpdate', this.roleUpdate.bind(this));
+        this.on('guildMemberRemove', this.guildMemberRemove.bind(this));
 
         this.login(config.token);
     }
@@ -107,6 +108,18 @@ class DiscordBot extends Commando.Client {
     }
 
     /**
+     * Called when a guild member is removed from the server
+     * @param guildMember
+     */
+    guildMemberRemove(guildMember) {
+        let verifiedRole = this.guild.roles.find(r => r.name === "Verified");
+
+        if (guildMember.roles && guildMember.roles.has(verifiedRole.id)) {
+            return this.logMessage('MSG', `The verified user ${guildMember.user.tag} has left the server.`);
+        }
+    }
+
+    /**
      * Called when the bot first establishes a connection with the discord api and is ready to work.
      * @returns {Promise<void>}
      */
@@ -126,7 +139,6 @@ class DiscordBot extends Commando.Client {
 
         this.setupVerification();
     }
-
 
     /**
      * Sets up user verification
