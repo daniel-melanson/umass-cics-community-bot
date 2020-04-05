@@ -138,6 +138,21 @@ class DiscordBot extends Commando.Client {
 
         await channel.bulkDelete(await this.welcome.messages.fetch());
 
+        await channel.send(this.generateEmbed({
+            title: "A Quote from Marc Liberatore",
+            description: oneLine(`*Hello and welcome!
+                Welcome to our time of learning together.
+                Welcome to the many first years in this classroom, who are attending their first day of college classes today. Welcome to returning students.
+                Welcome to people of all ages, all colors, all cultures, abilities, sexual orientations and gender identities.
+                Welcome to those who identify as biracial, multi-racial, or multi-ethnic.
+                Welcome to people from Massachusetts, from other states, and from countries all around the world.
+                Welcome to people of all political persuasions – or who abstain from politics. Welcome to people of all religions and of no religion.
+                Welcome to military veterans.
+                Welcome to people who live with mental illness.
+                Welcome to those of you who are financially broke, or those broken in spirit.
+                It is my firm belief that you all belong here, and I want you to feel welcome. Whoever you, wherever you are on your journey in computer science, you are welcome here.*`)
+        }));
+
         let verifyMessage = await channel.send(this.generateEmbed({
             title: "Welcome to the University of Massachusetts College of Information and Computer Sciences Community Discord Server!",
             description: oneLine(`This server is a gathering of UMass CICS prospects, students, and alumni. 
