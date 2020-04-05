@@ -56,9 +56,7 @@ class RoleCommand extends Command {
             let success = await util.resetPermissions(role);
 
             // Alert the admins
-            let channel = msg.guild.channels.find(c => c.name === "admin" && c.type === 'text');
-            if (channel)
-                await channel.send(`@everyone Caught the ${role.name} role being assigned to ${msg.author.tag}. ${role.name} ${success ? 'previously had' : 'has'} an exploitable feature.`);
+            this.client.logMessage('WARN', `@everyone Caught the ${role.name} role being assigned to ${msg.author.tag}. ${role.name} ${success ? 'previously had' : 'has'} an exploitable feature.`);
 
             // Tell the user why they did not get the role
             return msg.reply(`unable to provide role. You should not see this error. If you do, contact an admin ASAP.`);

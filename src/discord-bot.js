@@ -52,6 +52,17 @@ class DiscordBot extends Commando.Client {
     }
 
     /**
+     * Attempts to log a message if there is a log channel
+     * @param {'ERROR'|'WARN'|'MSG'} type The type of message to log
+     * @param {string} message The message to log
+     * @returns {Promise<*>}
+     */
+    async logMessage(type, message) {
+        if (this.log)
+            return await this.log.send(`${type}: ${message}`);
+    }
+
+    /**
      * Generates a new embed object
      * @param options
      * @returns {object}
@@ -85,9 +96,8 @@ class DiscordBot extends Commando.Client {
         if (util.hasExploitable(newRole.permissions) && util.isAssignable(newRole.name)) {
             let success = await util.resetPermissions(newRole);
 
-            let channel = newRole.guild.channels.find(c => c.name === "admin" && c.type === "text");
-            if (channel)
-                await channel.send(`@everyone The ${newRole.name} has been updated and it ${success ? 'had' : 'has'} an exploitable feature.`);
+            if (this.log)
+                await this.logMessage('WARN', `The ${newRole.name} has been updated and it ${success ? 'had' : 'has'} an exploitable feature.`);
         }
     }
 
@@ -97,6 +107,10 @@ class DiscordBot extends Commando.Client {
      */
     async ready() {
         console.log(`Logged in as ${this.user.tag}`);
+
+        let channels = this.guilds.find(g => g.name === "UMass CICS Community").channels;
+
+        this.log = channels.find(c => c.name === "bot-log");
     }
 
     /**

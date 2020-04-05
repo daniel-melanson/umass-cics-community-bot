@@ -30,10 +30,6 @@ class Command extends Commando.Command {
         super(client, info);
     }
 
-    hasPermission(message, ownerOverride) {
-        return this.client.isOwner(message.author);
-    }
-
     /**
      * Wrapper of the super.run() method
      * @param msg
