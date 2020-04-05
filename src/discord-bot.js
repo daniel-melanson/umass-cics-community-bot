@@ -32,7 +32,8 @@ class DiscordBot extends Commando.Client {
         super({
             owner: config.owner,
             commandPrefix: config.commandPrefix || '!',
-            nonCommandEditable: false
+            nonCommandEditable: false,
+            commandEditableDuration: 0
         });
 
         // Register new groups to categorize the commands with
