@@ -29,7 +29,8 @@ class RoleCommand extends Command {
                     key: 'role',
                     label: 'role',
                     prompt: 'Which class/residence role?',
-                    type: 'role'
+                    type: 'role',
+                    validate: () => true
                 }
             ]
         });
