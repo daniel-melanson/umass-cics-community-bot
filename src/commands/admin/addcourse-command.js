@@ -103,11 +103,12 @@ class AddCourseCommand extends Command {
         }
 
         let channels = guild.channels;
-        
+
         // Find the category to place the new channel under
-        let category = channels.find(c => !!c.name.match(new RegExp(`${topic} classes$`, 'i')));
+        let category = channels.find(c => c.type === 'category' && !!c.name.match(new RegExp(`\\W+${topic} classes`, 'i')));
         if (!category)
             return msg.reply("unable to find category. Role created without channel.");
+
 
         // Update the overwrites on the category so non-course channels in that category can been seen with the new role
         await category.updateOverwrite(role, {
