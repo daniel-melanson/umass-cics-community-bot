@@ -37,17 +37,17 @@ class RulesCommand extends Command {
         return await msg.channel.send(this.client.generateEmbed({
             description: oneLine(`By joining this discord server, you are bounded to the following rules. 
             **Failure to follow these rules will result in punishment.** 
-            This discord server is not associated with the College of Information and Computer Science or the University of Massachusetts at Amherst.`),
+            This discord server is not associated with the College of Information and Computer Sciences or the University of Massachusetts at Amherst.`),
             thumbnail: {
                 iron_url: this.client.user.avatarURL
             },
             fields: [
                 {
-                    name: "Rule 1: Observe the \"Golden Rule\"",
+                    name: `Rule 1: Observe the \"Golden Rule\"`,
                     value: "Do unto others as you would have them do unto you."
                 },
                 {
-                    name: "Rule 2: Absolutely zero Not Safe For Work content",
+                    name: "Rule 2: Absolutely **zero** Not Safe For Work content (NSFW)",
                     value: "There is no reason to have it in this discord. Take it to DMs. This includes intense conversations about religion or politics."
                 },
                 {
