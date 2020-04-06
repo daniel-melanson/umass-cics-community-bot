@@ -1,15 +1,15 @@
 /**
  * @author Daniel Melanson
  * @date 4/4/2020
- * @desc Source file for `!roles` command class
+ * @desc Source file for `!rules` command class
  */
 
 // Modules
-const { oneLine } = require('common-tags');
-const Command = require('../command');
+const { oneLine } = require("common-tags");
+const Command = require("../command");
 
 /**
- * @desc RulesCommand singleton that defines behavior for the `!roles` command.
+ * @desc RulesCommand singleton that defines behavior for the `!rules` command.
  */
 class RulesCommand extends Command {
     /**
@@ -18,13 +18,14 @@ class RulesCommand extends Command {
      */
     constructor(client) {
         super(client, {
-            name: 'rules',
-            group: 'roles',
-            properName: 'rules',
-            description: 'Prints an embedded message with the server rules.',
+            name: "rules",
+            group: "admin",
+            properName: "rules",
+            description: "Prints an embedded message with the server rules.",
             guildOnly: true,
-            userPermissions: ['ADMINISTRATOR'],
-            examples: ['!rules'],
+            userPermissions: ["ADMINISTRATOR"],
+            clientPermissions: ["SEND_MESSAGES"],
+            examples: ["!rules"],
         });
     }
 
@@ -34,7 +35,7 @@ class RulesCommand extends Command {
      * @returns {Promise<Message|Message[]|*>}
      */
     async fn(msg) {
-        return await msg.channel.send(this.client.generateEmbed({
+        return msg.channel.send(this.client.generateEmbed({
             description: oneLine(`By joining this discord server, you are bounded to the following rules. 
             **Failure to follow these rules will result in punishment.** 
             This discord server is not associated with the College of Information and Computer Sciences or the University of Massachusetts at Amherst.`),
