@@ -102,8 +102,7 @@ class DiscordBot extends Commando.Client {
         if (util.hasExploitable(newRole.permissions) && util.isAssignable(newRole.name)) {
             let success = await util.resetPermissions(newRole);
 
-            if (this.log)
-                await this.logMessage('WARN', `The ${newRole.name} has been updated and it ${success ? 'had' : 'has'} an exploitable feature.`);
+            await this.logMessage('WARN', `The ${newRole.name} has been updated and it ${success ? 'had' : 'has'} an exploitable feature.`);
         }
     }
 
@@ -126,11 +125,11 @@ class DiscordBot extends Commando.Client {
     async ready() {
         console.log(`Logged in as ${this.user.tag}`);
 
-        this.guild = this.guilds.get("574287921717182505");
+        this.guild = this.guilds.first();
 
         if (!this.guild) {
             console.log("Unable to find main guild");
-            this.destroy();
+            return this.destroy();
         }
 
         let channels = this.guild.channels;
