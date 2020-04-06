@@ -52,9 +52,8 @@ class RoleCommand extends Command {
         if (!util.isAssignable(role.name))
             return msg.reply("That is not an assignable role. Use the `!roles` command to find some.");
 
-        // IDE does inspection and it is wrong
-        // noinspection JSCheckFunctionSignatures
-        if (util.hasExploitable(role.permissions)) { // Check to see if the assignable role has an exploitable feature
+        // Check to see if the assignable role has an exploitable feature
+        if (util.hasExploitable(role.permissions)) {
             let success = await util.resetPermissions(role);
 
             // Alert the admins
