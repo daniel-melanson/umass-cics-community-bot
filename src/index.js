@@ -6,13 +6,13 @@
 
 // Modules
 
-const DiscordBot = require('./discord-bot.js');
-const config = require('./config');
+const DiscordBot = require("./discord-bot.js");
+const config = require("./config");
 
 // Entry
 let bot = new DiscordBot(config); // Set up new bot
 
 // Terminate gracefully when we request to kill the bot
-process.on('SIGTERM', async () => {
+process.on("SIGINT", async () => {
    await bot.destroy();
 });
