@@ -5,8 +5,8 @@
  */
 
 // Modules
-const Command = require('../command');
-const util = require('../../util.js');
+const Command = require("../command");
+const util = require("../../util.js");
 
 /**
  * @desc RoleCommand singleton that defines behavior for the `!role [role name]` command.
@@ -18,18 +18,19 @@ class RoleCommand extends Command {
      */
     constructor(client) {
         super(client, {
-            name: 'role',
-            group: 'roles',
-            properName: 'Role',
-            description: 'Allows the user to assign themselves one of the assignable roles.',
+            name: "role",
+            group: "roles",
+            properName: "Role",
+            description: "Allows the user to assign themselves one of the assignable roles.",
+            clientPermissions: ['MANAGE_ROLES'],
             guildOnly: true,
-            examples: ['!role CS 121'],
+            examples: ["!role CS 121"],
             args: [
                 {
-                    key: 'role',
-                    label: 'role',
-                    prompt: 'Which class/residence role?',
-                    type: 'role',
+                    key: "role",
+                    label: "role",
+                    prompt: "Which class/residence role?",
+                    type: "role",
                     validate: () => true
                 }
             ]
@@ -57,7 +58,7 @@ class RoleCommand extends Command {
             let success = await util.resetPermissions(role);
 
             // Alert the admins
-            this.client.logMessage('WARN', `@everyone Caught the ${role.name} role being assigned to ${msg.author.tag}. ${role.name} ${success ? 'previously had' : 'has'} an exploitable feature.`);
+            this.client.logMessage("WARN", `@everyone Caught the ${role.name} role being assigned to ${msg.author.tag}. ${role.name} ${success ? "previously had" : "has"} an exploitable feature.`);
 
             // Tell the user why they did not get the role
             return msg.reply(`unable to provide role. You should not see this error. If you do, contact an admin ASAP.`);
