@@ -10,7 +10,7 @@
  * @returns {boolean}
  */
 function isClass(str) {
-    return new RegExp(/(cs|math|stat|cics)\s*\d{3}\w*/i).test(str.trim());
+    return new RegExp(/^(cs|math|stat|cics|info)\s*\d{3}[a-z]*$/i).test(str.trim());
 }
 
 /**
@@ -19,7 +19,7 @@ function isClass(str) {
  * @returns {boolean}
  */
 function isResidential(str) {
-    return new RegExp(/(central|ohill|northeast|southwest|honors|sylvan|off-campus)/i).test(str.trim());
+    return new RegExp(/^(central|ohill|northeast|southwest|honors|sylvan|off-campus)$/i).test(str.trim());
 }
 
 /**
@@ -28,7 +28,7 @@ function isResidential(str) {
  * @returns {boolean}
  */
 function isGraduationStatus(str) {
-    return new RegExp(/(alumni|graduate student|class of \d{4})/i).test(str.trim()); // This code does not support graduation dates past 9999 🤔
+    return new RegExp(/^(alumni|graduate student|class of \d{4})$/i).test(str.trim()); // This code does not support graduation dates past 9999 🤔
 }
 
 /**
@@ -37,7 +37,7 @@ function isGraduationStatus(str) {
  * @returns {boolean}
  */
 function isCSClass(str) {
-    return isClass(str) && !!str.trim().match(/^(cs|cicis|info)/mi)
+    return isClass(str) && !!str.trim().match(/^(cs|cicis|info)/i)
 }
 
 /**
@@ -46,7 +46,7 @@ function isCSClass(str) {
  * @returns {boolean}
  */
 function isMathClass(str) {
-    return isClass(str) && !!str.trim().match(/^(math|stat)/mi);
+    return isClass(str) && !!str.trim().match(/^(math|stat)/i);
 }
 
 /**
@@ -55,7 +55,7 @@ function isMathClass(str) {
  * @returns {boolean}
  */
 function isInterdisciplinary(str) {
-    return new RegExp(/(business|biology|economics|engineering|linguistics|phychology|informatics)/i).test(str.trim());
+    return new RegExp(/^(business|biology|economics|engineering|linguistics|phychology|informatics)$/i).test(str.trim());
 }
 
 /**
@@ -64,7 +64,7 @@ function isInterdisciplinary(str) {
  * @returns {boolean}
  */
 function isMisc(str) {
-    return new RegExp(/(snooper|daily coding problems)/i).test(str);
+    return new RegExp(/^(snooper|daily coding problems)$/i).test(str);
 }
 
 /**
