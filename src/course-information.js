@@ -6,7 +6,7 @@
 
 // Modules
 const fetch = require('node-fetch');
-const cheerio = require("cheerio");
+const cheerio = require('cheerio');
 
 let cache = {};
 
@@ -39,7 +39,7 @@ async function scrapeSemester(semester, year) {
             if (match) {
                 instructors.push(match[0]);
             } else {
-                instructors.push("None");
+                instructors.push('None');
             }
 
             step--;
