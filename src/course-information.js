@@ -64,7 +64,7 @@ async function scrapeSemester(semester, year) {
             title: titles[i].trim(),
             instructors: instructors[i].trim(),
             description: descriptions[i].trim(),
-            semester: `${semester.toUpperCase()} 20${year}`
+            semester: `${semester.substring(0, 1).toUpperCase() + semester.substring(1)} 20${year}`
         }
     }
 }
