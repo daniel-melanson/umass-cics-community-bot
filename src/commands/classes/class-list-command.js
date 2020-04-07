@@ -1,7 +1,7 @@
 /**
  * @author Daniel Melanson
  * @date 4/7/2020
- * @desc Source file for `!say` command class
+ * @desc Source file for `!classes` command class
  */
 
 // Modules
@@ -10,7 +10,7 @@ const { oneLine } = require('common-tags');
 const courseInfo = require('../../course-information');
 
 /**
- * @desc ClassListCommand singleton that defines behavior for the `!say` command.
+ * @desc ClassListCommand singleton that defines behavior for the `!classes` command.
  */
 class ClassListCommand extends Command {
     /**
@@ -22,7 +22,7 @@ class ClassListCommand extends Command {
             name: 'classes',
             group: 'classes',
             properName: 'classes',
-            description: 'Prints a list of all the classes that CICS has and does offer.',
+            description: 'Prints a list of all the classes that CICS offers',
             clientPermissions: ['SEND_MESSAGES'],
             examples: ['!classes'],
         });
