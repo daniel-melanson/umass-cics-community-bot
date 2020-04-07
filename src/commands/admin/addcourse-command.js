@@ -5,8 +5,8 @@
  */
 
 // Modules
-const Command = require("../command");
-const util = require("../../util");
+const Command = require('../command');
+const util = require('../../util');
 
 /**
  * @desc AddCourseCommand singleton that defines behavior for the `!addcourse` command.
@@ -18,33 +18,33 @@ class AddCourseCommand extends Command {
      */
     constructor(client) {
         super(client, {
-            name: "addcourse",
-            group: "admin",
-            properName: "Add Course",
-            description: "Creates a new role and channel and sets up permissions.",
+            name: 'addcourse',
+            group: 'admin',
+            properName: 'Add Course',
+            description: 'Creates a new role and channel and sets up permissions.',
             guildOnly: true,
-            userPermissions: ["ADMINISTRATOR"],
-            clientPermissions: ["ADMINISTRATOR"],
-            examples: ["!addcourse"],
+            userPermissions: ['ADMINISTRATOR'],
+            clientPermissions: ['ADMINISTRATOR'],
+            examples: ['!addcourse'],
             args: [
                 {
-                    key: "id",
-                    label: "id",
-                    prompt: "What is the ID of the course? (Example: CS 187)",
-                    type: "string",
+                    key: 'id',
+                    label: 'id',
+                    prompt: 'What is the ID of the course? (Example: CS 187)',
+                    type: 'string',
                     validate: (str) => {
                         if (!util.isClass(str))
-                            return "That is not a valid course ID. Please put it in the following format: [course topic][course number, optional letters]";
+                            return 'That is not a valid course ID. Please put it in the following format: [course topic][course number, optional letters]';
                         else
                             return true;
                     },
                     wait: 0
                 },
                 {
-                    key: "title",
-                    label: "title",
-                    prompt: "What is the title of the course? (Example: Programming With Data Structures)",
-                    type: "string",
+                    key: 'title',
+                    label: 'title',
+                    prompt: 'What is the title of the course? (Example: Programming With Data Structures)',
+                    type: 'string',
                     wait: 0
                 }
             ]
@@ -96,10 +96,10 @@ class AddCourseCommand extends Command {
                     permissions: [],
                     position: separator.position
                 },
-                reason: "Automatic course creation."
+                reason: 'Automatic course creation.'
             });
         } catch(e) {
-            return msg.reply("unable to create role. This might be because the bot role is too low on the role list.");
+            return msg.reply('unable to create role. This might be because the bot role is too low on the role list.');
         }
 
         let channels = guild.channels;
@@ -107,7 +107,7 @@ class AddCourseCommand extends Command {
         // Find the category to place the new channel under
         let category = channels.find(c => c.type === 'category' && !!c.name.match(new RegExp(`\\W+${topic} classes`, 'i')));
         if (!category)
-            return msg.reply("unable to find category. Role created without channel.");
+            return msg.reply('unable to find category. Role created without channel.');
 
 
         // Update the overwrites on the category so non-course channels in that category can been seen with the new role
@@ -119,12 +119,12 @@ class AddCourseCommand extends Command {
         
         try {
             channel = await guild.channels.create(number, {
-                type: "text",
+                type: 'text',
                 parent: category,
                 topic: args.title
             });
         } catch (e) {
-            return msg.reply("unable to create channel. Make sure that I have the correct permissions.");    
+            return msg.reply('unable to create channel. Make sure that I have the correct permissions.');    
         }
 
         try {
@@ -133,7 +133,7 @@ class AddCourseCommand extends Command {
                 permissionOverwrites: []
             });
 
-            let snooper = roles.find(r => r.name === "Snooper");
+            let snooper = roles.find(r => r.name === 'Snooper');
             if (snooper) {
                 await channel.updateOverwrite(snooper, {
                     VIEW_CHANNEL: true
@@ -148,10 +148,10 @@ class AddCourseCommand extends Command {
                 VIEW_CHANNEL: true
             });
         } catch (e) {
-            return msg.reply("unable to set permissions on the new channel.");
+            return msg.reply('unable to set permissions on the new channel.');
         }
         
-        return msg.reply("created the new channel and role. Positioning is not handled.");
+        return msg.reply('created the new channel and role. Positioning is not handled.');
     }
 }
 
