@@ -5,7 +5,7 @@
  */
 
 // Modules
-const Command = require("../command");
+const Command = require('../command');
 const courseInfo = require('../../course-information');
 
 /**
@@ -18,10 +18,10 @@ class ClassCommand extends Command {
      */
     constructor(client) {
         super(client, {
-            name: "class",
-            group: "classes",
-            description: "Fetches info about a class and reply with an embedded message.",
-            examples: ["!cs121"],
+            name: 'class',
+            group: 'classes',
+            description: 'Fetches info about a class and reply with an embedded message.',
+            examples: ['!cs121'],
             clientPermissions: ['SEND_MESSAGES'],
             defaultHandling: false,
             patterns: [/^what is\s+(cs|info|cics)\s*(\d{3}[a-z]*\d?)/i, ],
@@ -60,11 +60,11 @@ class ClassCommand extends Command {
                 description: info.description,
                 fields: [
                     {
-                        name: "Instructors",
+                        name: 'Instructors',
                         value: info.instructors
                     },
                     {
-                        name: "Most Recent Semester",
+                        name: 'Most Recent Semester',
                         value: info.semester,
                     }
                 ],
