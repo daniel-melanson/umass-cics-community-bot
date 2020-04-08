@@ -43,6 +43,7 @@ class SayCommand extends Command {
      * @returns {Promise<Message|Message[]|*>}
      */
     async fn(msg, args) {
+        await msg.delete();
         return msg.channel.send(args.phrase.join(' '));
     }
 }
