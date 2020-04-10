@@ -1,5 +1,15 @@
-const Command = require('../Command');
+/**
+ * @author Daniel Melanson
+ * @date 4/10/2020
+ * @desc Source file for `!vote` command class
+ */
 
+// Modules
+const Command = require("../command");
+
+/**
+ * @desc VoteCommand singleton that defines behavior for the `!vote` command.
+ */
 class VoteCommand extends Command {
     constructor (client) {
         super(client, {
