@@ -27,7 +27,6 @@ class SayCommand extends Command {
             args: [
                 {
                     key: 'phrase',
-                    label: 'phrase',
                     prompt: 'What would you like me to say?',
                     type: 'string'
                 }

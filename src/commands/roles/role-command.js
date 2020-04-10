@@ -28,7 +28,6 @@ class RoleCommand extends Command {
             args: [
                 {
                     key: 'role',
-                    label: 'role',
                     prompt: 'Which class/residence role?',
                     type: 'role',
                     validate: () => true
