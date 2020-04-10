@@ -42,6 +42,7 @@ class PollCommand extends Command {
             userPermissions: ['ADMINISTRATOR'],
             clientPermissions: ['ADMINISTRATOR'],
             examples: [`!poll #welcome 'Which do you think is better?' 'A.' 'B.' 'C.'`],
+            guildOnly: true,
             args: [
                 {
                     key: 'channel',
