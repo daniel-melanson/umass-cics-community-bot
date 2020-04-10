@@ -35,6 +35,7 @@ class RulesCommand extends Command {
      * @returns {Promise<Message|Message[]|*>}
      */
     async fn(msg) {
+        await msg.delete();
         return msg.channel.send(this.client.generateEmbed({
             description: oneLine(`By joining this discord server, you are bounded to the following rules. 
             **Failure to follow these rules will result in punishment.** 
@@ -49,7 +50,7 @@ class RulesCommand extends Command {
                 },
                 {
                     name: "Rule 2: Absolutely **zero** Not Safe For Work content (NSFW)",
-                    value: "There is no reason to have it in this discord. Take it to DMs. This includes intense conversations about religion or politics."
+                    value: "There is no reason to have it in this discord. Take it to DMs. This includes: intense conversations about politics or religion, sexual innuendos or references, slurs. Light swearing is fine. But do not get carried away."
                 },
                 {
                     name: "Rule 3: Do not abuse the bot and/or bot commands",
