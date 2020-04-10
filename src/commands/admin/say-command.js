@@ -29,8 +29,7 @@ class SayCommand extends Command {
                     key: 'phrase',
                     label: 'phrase',
                     prompt: 'What would you like me to say?',
-                    type: 'string',
-                    infinite: true,
+                    type: 'string'
                 }
             ]
         });
@@ -44,7 +43,7 @@ class SayCommand extends Command {
      */
     async fn(msg, args) {
         await msg.delete();
-        return msg.channel.send(args.phrase.join(' '));
+        return msg.channel.send(args.phrase);
     }
 }
 
