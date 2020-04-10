@@ -1,6 +1,6 @@
 const Command = require('../Command');
 
-class PurgeCommand extends Command {
+class VoteCommand extends Command {
     constructor (client) {
         super(client, {
             name: 'vote',
@@ -91,4 +91,4 @@ class PurgeCommand extends Command {
     }
 }
 
-module.exports = PurgeCommand;
+module.exports = VoteCommand;
