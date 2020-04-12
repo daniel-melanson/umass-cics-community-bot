@@ -55,32 +55,34 @@ class RolesCommand extends Command {
 
         // Display the roles in a visually pleasing way
         let content = this.client.generateEmbed({
-            title: "List of Assignable Roles",
+            title: 'List of Assignable Roles',
             description: oneLine(`The following categories list out the available roles that users can assign themselves using the \`!role [role name]\` command. 
-                These roles grant users permission to related channels. If you would like access to all related channels, you may assign yourself the \`Snooper\` role.`),
+                You do not need the \`[\` or \`]\` when using the command. 
+                These roles grant users permission to related channels. If you would like access to all related channels, you may assign yourself the \`Snooper\` role. 
+                Example: \`!role cs 121\``),
             fields: [
                 {
-                    name: "Graduating Class or Graduation Status",
+                    name: 'Graduating Class or Graduation Status',
                     value: gradClassOrStatus.join(', ')
                 },
                 {
-                    name: "Residential Areas",
+                    name: 'Residential Areas',
                     value: resAreas.join(', ')
                 },
                 {
-                    name: "Computer Science Courses",
+                    name: 'Computer Science Courses',
                     value: csCourses.join(', ')
                 },
                 {
-                    name: "Math Courses",
+                    name: 'Math Courses',
                     value: mathCourses.join(', ')
                 },
                 {
-                    name: "Interdisciplinary",
+                    name: 'Interdisciplinary',
                     value: interdisciplinary.join(', ')
                 },
                 {
-                    name: "Miscellaneous",
+                    name: 'Miscellaneous',
                     value: misc.join(', ')
                 }
             ]
