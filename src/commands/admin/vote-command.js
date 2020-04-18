@@ -87,7 +87,7 @@ class VoteCommand extends Command {
         collector.on('collect', async reaction => {
             if (reaction.emoji.name === '✅') {
                 try { // Try and send the poll out to the channel
-                    let msg = await args.channel.send('@everyone', embed);
+                    let msg = await args.channel.send(embed);
 
                     await msg.react(upvote);
                     await msg.react(downvote);

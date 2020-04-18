@@ -64,7 +64,7 @@ function isInterdisciplinary(str) {
  * @returns {boolean}
  */
 function isMisc(str) {
-    return new RegExp(/^(snooper|daily coding problems)$/i).test(str);
+    return new RegExp(/^(snooper|daily coding problems|community events)$/i).test(str);
 }
 
 /**
