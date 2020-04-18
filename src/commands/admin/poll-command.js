@@ -87,8 +87,8 @@ class PollCommand extends Command {
         if (!args.responses || args.responses.length <= 1)
             return msg.reply('you need to supply a response to the question.');
 
-        let responses = args.responses;
 
+        let responses = args.responses;
         // Set up a test embed
         let fields = [];
         for (let i = 0; i < responses.length; i++) {
@@ -113,6 +113,8 @@ class PollCommand extends Command {
         // Let the author choose to send out the poll or not
         let confirmation = await msg.channel.send('Is this ok? Expires in 30 seconds.', embed);
 
+        await confirmation.react('✅');
+
         // Collect reactions from the message, if the reactions are from the creator of the poll
         let collector = confirmation.createReactionCollector((reaction, user) => user.id === author.id, {
             time: 30000
@@ -122,7 +124,7 @@ class PollCommand extends Command {
         collector.on('collect', async reaction => {
             if (reaction.emoji.name === '✅') {
                 try { // Try and send the poll out to the channel
-                    let msg = await args.channel.send('@everyone', embed);
+                    let msg = await args.channel.send(embed);
 
                     for (let i = 0; i < responses.length; i++) {
                         await msg.react(REACTION_EMOJIS[i]);
@@ -132,8 +134,6 @@ class PollCommand extends Command {
                 }
             }
         });
-
-        await confirmation.react('✅');
     }
 }
 
