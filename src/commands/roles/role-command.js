@@ -53,10 +53,18 @@ class RoleCommand extends Command {
 
         // Check to see if the assignable role has an exploitable feature
         if (util.hasExploitable(role.permissions)) {
-            let success = await util.resetPermissions(role);
+            let success = false;
+
+            try {
+                await util.resetPermissions(role);
+                success = true;
+            } catch(e) {}
 
             // Alert the admins
-            this.client.logMessage('WARN', `@everyone Caught the ${role.name} role being assigned to ${msg.author.tag}. ${role.name} ${success ? 'previously had' : 'has'} an exploitable feature.`);
+            this.client.logMessage({
+                type: 'WARN',
+                message: `The ${role.name} role being assigned to ${msg.author.tag}. ${role.name} ${success ? 'previously had' : 'has'} an exploitable feature.`
+            });
 
             // Tell the user why they did not get the role
             return msg.reply(`unable to provide role. You should not see this error. If you do, contact an admin ASAP.`);

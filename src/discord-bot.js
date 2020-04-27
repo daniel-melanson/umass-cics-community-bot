@@ -55,14 +55,43 @@ class DiscordBot extends Commando.Client {
     }
 
     /**
-     * Attempts to log a message if there is a log channel
-     * @param {'ERROR'|'WARN'|'MSG'} type The type of message to log
-     * @param {string} message The message to log
+     *
+     * @param options
      * @returns {Promise<*>}
      */
-    async logMessage(type, message) {
-        if (this.log)
-            return await this.log.send(`${type}: ${message}`);
+    async logMessage(options = {}) {
+        if (!this.log) return;
+
+        if (typeof options.type === "undefined") options.type = "MSG";
+
+        let type = options.type;
+
+        let content;
+        if (type === 'WARN') {
+            content = this.generateEmbed({
+                title: 'Warning!',
+                description: options.message,
+                time: true
+            });
+        } else if (type === 'USR') {
+            content = this.generateEmbed({
+                author: {
+                    name: options.user.tag,
+                    iconURL: options.user.avatarURL(),
+                },
+                title: options.title || options.user.tag,
+                description: options.message + `\n\nUser embed (will expire after they leave): <@${options.user.id}>`,
+                time: true
+            });
+        } else if (type === 'ERR') {
+            content = this.generateEmbed({
+                title: "The bot reached an error while trying to complete a task.",
+                description: options.message,
+                time: true
+            });
+        }
+
+        return await this.log.send(content);
     }
 
     /**
@@ -100,9 +129,17 @@ class DiscordBot extends Commando.Client {
      */
     async roleUpdate(oldRole, newRole) {
         if (util.hasExploitable(newRole.permissions) && util.isAssignable(newRole.name)) {
-            let success = await util.resetPermissions(newRole);
+            let success = false;
 
-            await this.logMessage('WARN', `The ${newRole.name} has been updated and it ${success ? 'had' : 'has'} an exploitable feature.`);
+            try {
+                await util.resetPermissions(newRole);
+                success = true;
+            } catch(e) { }
+
+            await this.logMessage({
+                type: 'WARN',
+                message: `The ${newRole.name} has been updated, and it ${success ? 'had' : 'has'} an exploitable feature.`
+            });
         }
     }
 
@@ -114,7 +151,11 @@ class DiscordBot extends Commando.Client {
         let verifiedRole = this.guild.roles.find(r => r.name === "Verified");
 
         if (guildMember.roles && guildMember.roles.has(verifiedRole.id)) {
-            return this.logMessage('MSG', `The verified user ${guildMember.user.tag} has left the server.`);
+            return this.logMessage({
+                type: 'USR',
+                user: guildMember.user,
+                message: `The verified user ${guildMember.user.tag} has left the server.`
+            });
         }
     }
 
@@ -136,7 +177,7 @@ class DiscordBot extends Commando.Client {
         this.log = channels.find(c => c.name === "bot-log" && c.type === "text");
         this.welcome = channels.find(c => c.name === "welcome" && c.type === "text");
 
-        this.setupVerification();
+        await this.setupVerification();
     }
 
     /**
@@ -145,7 +186,7 @@ class DiscordBot extends Commando.Client {
      */
     async setupVerification() {
         let channel = this.welcome;
-        let verifiedRole = this.guild.roles.find(r => r.name === "Verified");
+        let verifiedRole = this.guild.roles.find(r => r.name === 'Verified');
         let botCommands = this.guild.channels.find(c => c.name === 'bot-commands');
 
         await channel.bulkDelete(await this.welcome.messages.fetch());
@@ -191,10 +232,6 @@ class DiscordBot extends Commando.Client {
                     If you have an unfavorable name, you are subject to moderation. Once you verify, the bot will be waiting for you in the #bot-commands channel for next steps. Enjoy!`),
                 }
             ],
-            footer: {
-                icon_url: this.user.avatarURL(),
-                test: "UMass CICS Community"
-            },
             time: true,
         }));
 
@@ -208,7 +245,15 @@ class DiscordBot extends Commando.Client {
             if (guildMember) {
                 await guildMember.roles.add(verifiedRole);
 
-                this.logMessage('MSG', `Just verified the user ${user.tag}. Their identifier is ${guildMember.nickname ? guildMember.nickname : user.username}.`);
+                try {
+                    await this.logMessage({
+                        type: 'USR',
+                        user: user,
+                        message: `Just verified the user ${user.tag}. Their identifier is ${guildMember.nickname ? guildMember.nickname : user.username}.`
+                    });
+                } catch(e) {
+
+                }
 
                 await this.registry.resolveCommand('roles').fn({
                     author: user,
