@@ -8,6 +8,14 @@
 const Command = require('../command');
 const util = require('../../util.js');
 
+function nameFilterExact(search) {
+    return thing => thing.name.toLowerCase() === search;
+}
+
+function nameFilterInexact(search) {
+    return thing => thing.name.toLowerCase().includes(search);
+}
+
 /**
  * @desc RoleCommand singleton that defines behavior for the `!role [role name]` command.
  */
@@ -29,8 +37,33 @@ class RoleCommand extends Command {
                 {
                     key: 'role',
                     prompt: 'Which class/residence role?',
-                    type: 'role',
-                    validate: () => true
+                    // Remove the validation so users do not get multiple prompts
+                    validate: () => true,
+                    parse: async (val, msg) => {
+                        // Taken from the discord.js-commando library, edited so I can look for roles without a space
+                        const matches = val.match(/^(?:<@&)?([0-9]+)>?$/);
+
+                        if (matches) return msg.guild.roles.get(matches[1]) || null;
+
+                        const search = val.toLowerCase();
+                        let roles = msg.guild.roles.filter(nameFilterInexact(search));
+
+                        if (util.isClass(val)) {
+                            let letters = val.match(/[a-z]+(?=\d)/i), numbers = val.match(/(?<=[a-z])\d.+/i);
+
+                            if (!letters[0] || !numbers[0])
+                                return null;
+
+                            roles = msg.guild.roles.filter(nameFilterExact(`${letters[0]} ${numbers[0]}`));
+                        } else if(roles.size === 0) return null;
+
+                        if(roles.size === 1) return roles.first();
+
+                        const exactRoles = roles.filter(nameFilterExact(search));
+                        if(exactRoles.size === 1) return exactRoles.first();
+
+                        return null;
+                    }
                 }
             ]
         });
