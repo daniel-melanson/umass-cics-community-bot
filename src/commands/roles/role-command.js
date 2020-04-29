@@ -48,14 +48,16 @@ class RoleCommand extends Command {
                         const search = val.toLowerCase();
                         let roles = msg.guild.roles.filter(nameFilterInexact(search));
 
-                        if (util.isClass(val)) {
-                            let letters = val.match(/[a-z]+(?=\d)/i), numbers = val.match(/(?<=[a-z])\d.+/i);
+                        if (roles.size === 0 && util.isClass(val)) {
+                            let letters = val.match(/[a-z]+(?=\d)/i), numbers = val.match(/(?<=\D)\d.+/i);
 
                             if (!letters[0] || !numbers[0])
                                 return null;
 
                             roles = msg.guild.roles.filter(nameFilterExact(`${letters[0]} ${numbers[0]}`));
-                        } else if(roles.size === 0) return null;
+                        }
+
+                        if(roles.size === 0) return null;
 
                         if(roles.size === 1) return roles.first();
 
