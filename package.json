@@ -25,5 +25,6 @@
     "erlpack": "github:discordapp/erlpack",
     "node-fetch": "^2.6.0",
     "utf-8-validate": "^5.0.2"
-  }
+  },
+  "devDependencies": {}
 }
