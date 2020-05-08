@@ -37,7 +37,7 @@ function isGraduationStatus(str) {
  * @returns {boolean}
  */
 function isCSClass(str) {
-    return isClass(str) && !!str.trim().match(/^(cs|cicis|info)/i)
+    return isClass(str) && !!str.trim().match(/^(cs|cics|info)/i)
 }
 
 /**
@@ -55,7 +55,7 @@ function isMathClass(str) {
  * @returns {boolean}
  */
 function isInterdisciplinary(str) {
-    return new RegExp(/^(business|biology|economics|engineering|linguistics|phychology|informatics)$/i).test(str.trim());
+    return new RegExp(/^(business|biology|economics|engineering|linguistics|psychology|informatics)$/i).test(str.trim());
 }
 
 /**
