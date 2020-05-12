@@ -6,10 +6,9 @@
 
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-const baseURL = "https://www.math.umass.edu/course-descriptions/";
 
-// const cachePeriod = 1000*60*60*24;  // 1 day
-const cachePeriod = 0;
+const baseURL = "https://www.math.umass.edu/course-descriptions/";
+const cachePeriod = 1000*60*60*24;  // 1 day
 
 let cache = {
     lastUpdatedStamp: new Date().getTime(),
@@ -19,50 +18,46 @@ let cache = {
     courses: []
 };
 
-// console.log(cache.lastUpdatedStamp);
-// console.log(cache.expirationStamp);
+async function updateCache() {
+    let $ = cheerio();
 
-/**
- *
- * @param semester
- * @return {Promise<cheerio>}
- */
-async function scrapeWebsiteFor(semester) {
-    let text = cheerio();
-
+    // Fetch the courses from the website
     await fetch(baseURL)
         .then((res) => res.text())
-        .then((body) => text = cheerio.load(body).text())
+        .then((body) => $ = cheerio.load(body))
         .catch((err) => console.error(err));
 
-    return text;
-}
+    // Empty the cache and reset the clock
+    cache.courses = [];
+    cache.lastUpdatedStamp = new Date().getTime();
 
-async function updateCache() {
-    await scrapeWebsiteFor(0)
-        .then(($) => {
-            cache.courses = [];
-        });
+    // Parse the website and load the cache
+    $('.node').each((index, element) => {
+        cache.courses.push({
+            courseID: $('.field-title', element).text().split(":")[0].trim(),
+            courseName: $('.field-title', element).text().split(":")[1].trim(),
+            courseInstrTime: $('.field-course-descr-instrtime', element).text().trim(),
+            courseDescription: $('.field-course-descr-description', element).text().trim()
+        })
+    });
 }
 
 async function getClass(id) {
-    console.log("Getting courses");
+    console.log("Getting course " + id);
 
-    // if cache has expired, reload cache
-    if (Date.now() > cache.expirationStamp) {
-        await scrapeWebsiteFor(0)
+    // if cache has expired, reload cache (or if there is no cache)
+    if (Date.now() > cache.expirationStamp || cache.courses.length === 0) {
+        console.log("Updating cache.");
+        await updateCache();
     }
 
-    console.log("Cache is already up-to-date");
+    // parse id
+
+
 }
 
-scrapeWebsiteFor(0);
-
+getClass('math131')
 
 module.exports = {
     getClass: getClass,
-    getClassList: async () => {
-        await updateCache();
-        return Object.getOwnPropertyNames(cache);
-    }
 };
