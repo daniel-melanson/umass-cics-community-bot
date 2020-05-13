@@ -53,6 +53,14 @@ async function updateCache() {
     console.log("Math courses cache loaded. Number of courses: " + cache.courses.length);
 }
 
+async function cacheExpirationChecker() {
+    // if cache has expired, reload cache (or if there is no cache)
+    if (Date.now() > cache.expirationStamp || cache.courses.length === 0) {
+        console.log("Updating cache.");
+        await updateCache();
+    }
+}
+
 /**
  * Gets the specified math class from the cache.
  * @param id The id of the Math class, stylized uppercase (ex "MATH 131")
@@ -61,11 +69,7 @@ async function updateCache() {
 async function getMathClass(id) {
     console.log("Getting course " + id);
 
-    // if cache has expired, reload cache (or if there is no cache)
-    if (Date.now() > cache.expirationStamp || cache.courses.length === 0) {
-        console.log("Updating cache.");
-        await updateCache();
-    }
+    await cacheExpirationChecker();
 
     let result = cache.courses.find((course) => course.name === id);
     if (result === undefined) {
@@ -76,6 +80,16 @@ async function getMathClass(id) {
     return result;
 }
 
+/**
+ * Retrieves a list of all the names of available math courses.
+ * @return {Promise<string[]>}
+ */
+async function getMathClassList() {
+    await cacheExpirationChecker();
+    return cache.courses.flatMap((course) => course.name);
+}
+
 module.exports = {
     getMathClass: getMathClass,
+    getMathClassList: getMathClassList
 };

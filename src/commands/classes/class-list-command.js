@@ -8,6 +8,7 @@
 const Command = require('../command');
 const { oneLine } = require('common-tags');
 const courseInfo = require('../../course-information');
+const courseInfoMath = require('../../course-information-math');
 
 /**
  * @desc ClassListCommand singleton that defines behavior for the `!classes` command.
@@ -22,7 +23,7 @@ class ClassListCommand extends Command {
             name: 'classes',
             group: 'classes',
             properName: 'classes',
-            description: 'Prints a list of all the classes that CICS offers',
+            description: 'Prints a list of all the classes that CICS and Math offer',
             clientPermissions: ['SEND_MESSAGES'],
             examples: ['!classes'],
         });
@@ -36,6 +37,8 @@ class ClassListCommand extends Command {
     async fn(msg) {
         try {
             let classList = await courseInfo.getClassList();
+            let mathClasses = await courseInfoMath.getMathClassList();
+
             let list = classList.sort((a, b) => a.localeCompare(b));
 
             let join = (l, regExp) => {
@@ -47,8 +50,13 @@ class ClassListCommand extends Command {
             let infoList = join(list, (/^info/i));
             let cicsList = join(list, /^cics/i);
 
+            let mathList = mathClasses.filter(c => c.match(/^math/i)).toString();
+            let statList = mathClasses.filter(c => c.match(/^stat/i)).toString();
+
+            console.log(mathList);
+
             await msg.reply(this.client.generateEmbed({
-                title: "UMass CICS Course List",
+                title: "UMass CICS/Math Course List",
                 description: oneLine(`The following list is a collection of all the offered courses from the spring 2018 semester onwards. 
                 Some courses on this list might not be offered anymore. To gain information about a course simply say \`What is [course id]?\` and the bot will reply with information.`),
                 fields: [
@@ -83,10 +91,19 @@ class ClassListCommand extends Command {
                     {
                         name: "College of Information and Computer Sciences",
                         value: cicsList
+                    },
+                    {
+                        name: "Mathematics",
+                        value: mathList ? mathList : ""
+                    },
+                    {
+                        name: "Statistics",
+                        value: statList ? statList : ""
                     }
                 ]
             }));
         } catch (e) {
+            console.error(e);
             return msg.reply('it seems that I was unable to get information about the courses. Try again later. If this problem persists, contact an admin.');
         }
     }
