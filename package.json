@@ -1,10 +1,12 @@
 {
   "name": "umass-cics-discord-bot",
-  "version": "1.0.0",
-  "description": "Simple discord bot for an unofficial UMass CICS discord server.",
+  "version": "2.0.0",
+  "description": "Discord bot for an unofficial UMass CICS discord server.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run build && node lib/index.js",
+    "eslint": "npx eslint src/**/*.ts --max-warnings 0",
+    "build": "npm run eslint && tsc -p ."
   },
   "repository": {
     "type": "git",
@@ -17,14 +19,14 @@
   },
   "homepage": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot#readme",
   "dependencies": {
-    "bufferutil": "^4.0.1",
-    "cheerio": "^1.0.0-rc.3",
-    "common-tags": "^1.8.0",
     "discord.js": "github:discordjs/discord.js#ea8b4e73559d118a826ac3b242c1a3626b4f6d29",
-    "discord.js-commando": "github:discordjs/commando#4beeec829ed25fc2c6ec0896edf7e0ac4d8bfcf0",
-    "erlpack": "github:discordapp/erlpack",
-    "node-fetch": "^2.6.0",
-    "utf-8-validate": "^5.0.2"
+    "discord.js-commando": "github:discordjs/commando#4beeec829ed25fc2c6ec0896edf7e0ac4d8bfcf0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/node": "^14.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "eslint": "^7.0.0",
+    "typescript": "^3.9.2"
+  }
 }
