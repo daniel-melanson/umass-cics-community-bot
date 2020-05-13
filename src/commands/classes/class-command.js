@@ -7,6 +7,7 @@
 // Modules
 const Command = require('../command');
 const courseInfo = require('../../course-information');
+const mathCourseInfo = require('../../course-information-math')
 
 /**
  * @desc ClassCommand singleton that defines behavior for the special class command
@@ -24,7 +25,7 @@ class ClassCommand extends Command {
             examples: ['!cs121'],
             clientPermissions: ['SEND_MESSAGES'],
             defaultHandling: false,
-            patterns: [/^what is\s+(cs|info|cics)\s*(\d{3}[a-z]*\d?)/i, ],
+            patterns: [/^what is\s+(cs|info|cics|math|stat)\s*(\d{3}[a-z]*\d?)/i, ],
         });
     }
 
@@ -47,10 +48,27 @@ class ClassCommand extends Command {
 
         // Attempt to get class info
         let info;
-        try {
-            info = await courseInfo.getClass(id);
-        } catch (e) {
-            return;
+
+        switch (topic) {
+            case "MATH":
+            case "STAT":
+                try {
+                    await mathCourseInfo.getMathClass(id).then((res) => info = res);
+                } catch (e) {
+                    return;
+                }
+                break;
+            case "CS":
+            case "CICS":
+            case "INFO":
+                try {
+                    info = await courseInfo.getClass(id);
+                } catch (e) {
+                    return;
+                }
+                break;
+            default:
+                console.error("ERROR: class-command.js – " + topic + "is not a valid topic!");
         }
 
         // If we have something to display
