@@ -8,8 +8,12 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
 const baseURL = "https://www.math.umass.edu/course-descriptions/";
-const cachePeriod = 1000*60*60*24;  // 1 day
+const cachePeriod = 1000 * 60 * 60 * 24;  // 1 day
 
+/**
+ * The cache object for the courses.
+ * @type {{lastUpdatedStamp: number, courses: [], readonly expirationStamp: *}}
+ */
 let cache = {
     lastUpdatedStamp: new Date().getTime(),
     get expirationStamp() {
@@ -18,6 +22,10 @@ let cache = {
     courses: []
 };
 
+/**
+ * Parses the website and updates the cache object.
+ * @return {Promise<void>}
+ */
 async function updateCache() {
     let $ = cheerio();
 
@@ -37,7 +45,7 @@ async function updateCache() {
             name: $('.field-title', element).text().split(":")[0].trim(),
             title: $('.field-title', element).text().split(":")[1].trim(),
             instructors: $('.field-course-descr-instrtime', element).text().trim(),
-            description: $('.field-course-descr-description', element).text().trim().trimEnd(),
+            description: $('.field-course-descr-description', element).text().trim(),
             semester: "Fall 2020"
         })
     });
@@ -45,6 +53,11 @@ async function updateCache() {
     console.log("Math courses cache loaded. Number of courses: " + cache.courses.length);
 }
 
+/**
+ * Gets the specified math class from the cache.
+ * @param id The id of the Math class, stylized uppercase (ex "MATH 131")
+ * @return {Promise<object>}
+ */
 async function getMathClass(id) {
     console.log("Getting course " + id);
 
@@ -62,8 +75,6 @@ async function getMathClass(id) {
     // parse id
     return result;
 }
-
-// getMathClass('MATH 131').then((res) => console.log(res));
 
 module.exports = {
     getMathClass: getMathClass,
