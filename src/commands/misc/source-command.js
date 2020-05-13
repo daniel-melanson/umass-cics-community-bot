@@ -6,6 +6,7 @@
 
 // Modules
 const Command = require('../command');
+const pjson = require('../../../package.json');
 
 /**
  * @desc SourceCommand singleton that defines behavior for the `!source` command.
@@ -31,20 +32,38 @@ class SourceCommand extends Command {
      * @returns {Promise<Message|Message[]|*>}
      */
     async fn(msg) {
-        let pjson = require('./package.json');
         let home = pjson.homepage;
         let license = pjson.license;
         let bugsURL = pjson.bugs.url;
-        
-        let message = "I'm not sure where I live, sorry! Please contact an admin.";
-        
-        if (home || license || bugs) message = "";
-        
-        if (home) message += `A link to my source code can be found here: ${home}.`;
-        if (license) message += `\nI am licensed under the ${license}.`;
-        if (bugs) message += `\nIf you find a bug, you can report it to an admin, or make a ticket here: ${bugsURL}`;
-        
-        msg.reply(message.trim());
+
+        // let message = "I'm not sure where I live, sorry! Please contact an admin.";
+        //
+        // if (home || license || bugsURL) message = "";
+        //
+        // if (home) message += `A link to my source code can be found here: ${home}.`;
+        // if (license) message += `\nI am licensed under the ${license}.`;
+        // if (bugsURL) message += `\nIf you find a bug, you can report it to an admin, or make a ticket here: ${bugsURL}`;
+
+        // msg.reply(message.trim());
+
+        msg.reply(this.client.generateEmbed({
+            title: "Bot Information",
+            description: "",
+            fields: [
+                {
+                    name: 'Source Code',
+                    value: `${home}`
+                },
+                {
+                    name: 'License',
+                    value: `${license}`
+                },
+                {
+                    name: 'Report Bugs',
+                    value: `If you find a bug, you can report it to an admin, or make a ticket here: ${bugsURL}`,
+                }
+            ],
+        }));
     }
 }
 
