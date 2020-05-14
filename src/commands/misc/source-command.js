@@ -23,6 +23,7 @@ class SourceCommand extends Command {
             aliases: ['license', 'info', 'bugs'],
             description: 'Prints out link to source code.',
             examples: ['!source'],
+            guildOnly: true
         });
     }
 
@@ -51,8 +52,8 @@ class SourceCommand extends Command {
             description: "",
             fields: [
                 {
-                    name: 'Source Code',
-                    value: `${home}`
+                    name: 'Contribute',
+                    value: `Check out the source code on [github](${home})! :github:`
                 },
                 {
                     name: 'License',
@@ -60,7 +61,7 @@ class SourceCommand extends Command {
                 },
                 {
                     name: 'Report Bugs',
-                    value: `If you find a bug, you can report it to an admin, or make a ticket here: ${bugsURL}`,
+                    value: `If you find a bug, you can report it to an admin, or make a ticket [here](${bugsURL}).`,
                 }
             ],
         }));
