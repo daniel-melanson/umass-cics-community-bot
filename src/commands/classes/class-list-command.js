@@ -50,10 +50,8 @@ class ClassListCommand extends Command {
             let infoList = join(list, (/^info/i));
             let cicsList = join(list, /^cics/i);
 
-            let mathList = mathClasses.filter(c => c.match(/^math/i)).toString();
-            let statList = mathClasses.filter(c => c.match(/^stat/i)).toString();
-
-            console.log(mathList);
+            let mathList = mathClasses.filter(c => c.match(/^math/i)).join(", ");
+            let statList = mathClasses.filter(c => c.match(/^stat/i)).join(", ");
 
             await msg.reply(this.client.generateEmbed({
                 title: "UMass CICS/Math Course List",
