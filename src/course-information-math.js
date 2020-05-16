@@ -41,13 +41,19 @@ async function updateCache() {
 
     // Parse the website and load the cache
     $('.node').each((index, element) => {
-        cache.courses.push({
-            name: $('.field-title', element).text().split(":")[0].trim(),
-            title: $('.field-title', element).text().split(":")[1].trim(),
-            instructors: $('.field-course-descr-instrtime', element).text().trim(),
-            description: $('.field-course-descr-description', element).text().trim(),
-            semester: "Fall 2020"
-        })
+        let titleParts = $('.field-title', element).text().split(":")
+
+        let title = titleParts[0].trim().match(/(math|stat) (\d{3}[a-gi-z]*)/i);
+
+        if (title) {
+            cache.courses.push({
+                name: title[0],
+                title: titleParts[1].trim(),
+                instructors: $('.field-course-descr-instrtime', element).text().trim(),
+                description: $('.field-course-descr-description', element).text().trim(),
+                semester: "Fall 2020"
+            })
+        }
     });
 
     console.log("Math courses cache loaded. Number of courses: " + cache.courses.length);
