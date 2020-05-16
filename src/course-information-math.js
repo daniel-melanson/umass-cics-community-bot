@@ -45,7 +45,7 @@ async function updateCache() {
 
         let title = titleParts[0].trim().match(/(math|stat) (\d{3}[a-gi-z]*)/i);
 
-        if (title) {
+        if (title && !cache.courses.find(c => c.name === title[0])) {
             cache.courses.push({
                 name: title[0],
                 title: titleParts[1].trim(),
