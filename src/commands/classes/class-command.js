@@ -25,7 +25,7 @@ class ClassCommand extends Command {
             examples: ['!cs121'],
             clientPermissions: ['SEND_MESSAGES'],
             defaultHandling: false,
-            patterns: [/^what is\s+(cs|info|cics|math|stat)\s*(\d{3}[a-z]*\d?)/i, ],
+            patterns: [/^what is\s+(cs|info|cics|math|stat)\s*(\d{3}[a-z\.\d]*)/i],
         });
     }
 
