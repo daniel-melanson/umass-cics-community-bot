@@ -21,7 +21,6 @@ class ResetClassesCommand extends Command {
             name: 'reset-classes',
             group: 'roles',
             description: 'Removes a users class related roles.',
-            userPermissions: ['ADMINISTRATOR'],
             clientPermissions: ['MANAGE_ROLES'],
             examples: ['!reset-classes'],
             guildOnly: true,
