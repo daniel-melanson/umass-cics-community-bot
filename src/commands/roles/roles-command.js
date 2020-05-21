@@ -56,9 +56,9 @@ class RolesCommand extends Command {
         // Display the roles in a visually pleasing way
         let content = this.client.generateEmbed({
             title: 'List of Assignable Roles',
-            description: oneLine(`The following categories list out the available roles that users can assign themselves using the \`!role [role name]\` command. 
+            description: oneLine(`The following categories list out the available roles that users can assign and remove themselves using the \`!role [role name]\` command. 
                 You do not need the \`[\` or \`]\` when using the command. 
-                These roles grant users permission to related channels. If you would like access to all related channels, you may assign yourself the \`Snooper\` role. 
+                These roles grant and remove your permission to view specific channels. If you would like access to all related channels, assign yourself the \`Snooper\` role. 
                 Example: \`!role cs 121\``),
             fields: [
                 {
