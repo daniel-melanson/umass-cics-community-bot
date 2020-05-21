@@ -29,7 +29,7 @@ class RoleCommand extends Command {
             name: 'role',
             group: 'roles',
             properName: 'Role',
-            description: 'Allows the user to assign themselves one of the assignable roles.',
+            description: 'Allows for users to assign themselves or remove themselves from an assignable role.',
             clientPermissions: ['MANAGE_ROLES'],
             guildOnly: true,
             examples: ['!role CS 121'],
