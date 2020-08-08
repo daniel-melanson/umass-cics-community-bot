@@ -19,7 +19,7 @@ function isClass(str) {
  * @returns {boolean}
  */
 function isResidential(str) {
-    return new RegExp(/^(central|ohill|northeast|southwest|honors|sylvan|off-campus|rap data science|rap ethics society)$/i).test(str.trim());
+    return new RegExp(/^(zoomer|central|ohill|northeast|southwest|honors|sylvan|off-campus|rap data science|rap ethics society)$/i).test(str.trim());
 }
 
 /**
