@@ -46,6 +46,7 @@ class RolesCommand extends Command {
         };
 
         // Define arrays for each category
+        let pronouns = fetchRoles(util.isPronoun)
         let gradClassOrStatus = fetchRoles(util.isGraduationStatus);
         let resAreas = fetchRoles(util.isResidential);
         let csCourses = fetchRoles(util.isCSClass);
@@ -61,6 +62,10 @@ class RolesCommand extends Command {
                 These roles grant and remove your permission to view specific channels. If you would like access to all related channels, assign yourself the \`Snooper\` role. 
                 Example: \`!role cs 121\``),
             fields: [
+                {
+                    name: 'Pronouns',
+                    value: pronouns.join(', ')
+                },
                 {
                     name: 'Graduating Class or Graduation Status',
                     value: gradClassOrStatus.join(', ')

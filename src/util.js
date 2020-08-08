@@ -68,12 +68,21 @@ function isMisc(str) {
 }
 
 /**
+ * If the str is a string that represents a pronoun role.
+ * @param str
+ * @returns {boolean}
+ */
+function isPronoun(str) {
+    return new RegExp(/^(he\/him|she\/her|they\/them|ze\/hir)$/i).test(str);
+}
+
+/**
  * If a user can assign the role to themselves
  * @param str
  * @returns {boolean}
  */
 function isAssignable(str) {
-    return isClass(str) || isInterdisciplinary(str) || isMisc(str) || isGraduationStatus(str) || isResidential(str);
+    return isClass(str) || isInterdisciplinary(str) || isMisc(str) || isGraduationStatus(str) || isResidential(str) || isPronoun(str);
 }
 
 /**
@@ -107,6 +116,7 @@ module.exports = {
     isMathClass: isMathClass,
     isInterdisciplinary: isInterdisciplinary,
     isMisc: isMisc,
+    isPronoun: isPronoun,
     isAssignable: isAssignable,
     hasExploitable: hasExploitable,
     resetPermissions: resetPermissions
