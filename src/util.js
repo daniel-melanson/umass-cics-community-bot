@@ -55,7 +55,7 @@ function isMathClass(str) {
  * @returns {boolean}
  */
 function isInterdisciplinary(str) {
-    return new RegExp(/^(business|biology|economics|engineering|linguistics|psychology|informatics)$/i).test(str.trim());
+    return new RegExp(/^(business|biology|economics|engineering|linguistics|psychology|informatics|physics)$/i).test(str.trim());
 }
 
 /**
