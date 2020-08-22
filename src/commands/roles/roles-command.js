@@ -57,7 +57,7 @@ class RolesCommand extends Command {
         // Display the roles in a visually pleasing way
         let content = this.client.generateEmbed({
             title: 'Obtain and Remove Roles',
-            description: oneLine(`We have a brand new website where you can obtain and remove roles to access different features on this server. 
+            description: oneLine(`We have a website where you can obtain and remove roles to access different features on this server. 
                 Visit the link below to access the tool. You will need to sign in with your Discord account. Questions? DM an Admin.
                 `),
             fields: [
