@@ -34,62 +34,65 @@ class RolesCommand extends Command {
      * @returns {Promise<Message|Message[]|*>}
      */
     async fn(msg) {
-        // Update our RoleManager to have any new roles that might
-        // be in the cache
-        let cache = await msg.guild.roles.fetch();
-
-        // Filter, sort, and map a range of roles
-        let fetchRoles = (check) => {
-            return cache.filter(r => check(r.name))
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map(r => r.name);
-        };
-
-        // Define arrays for each category
-        let pronouns = fetchRoles(util.isPronoun)
-        let gradClassOrStatus = fetchRoles(util.isGraduationStatus);
-        let resAreas = fetchRoles(util.isResidential);
-        let csCourses = fetchRoles(util.isCSClass);
-        let mathCourses = fetchRoles(util.isMathClass);
-        let interdisciplinary = fetchRoles(util.isInterdisciplinary);
-        let misc = fetchRoles(util.isMisc);
+        // // Update our RoleManager to have any new roles that might
+        // // be in the cache
+        // let cache = await msg.guild.roles.fetch();
+        //
+        // // Filter, sort, and map a range of roles
+        // let fetchRoles = (check) => {
+        //     return cache.filter(r => check(r.name))
+        //         .sort((a, b) => a.name.localeCompare(b.name))
+        //         .map(r => r.name);
+        // };
+        //
+        // // Define arrays for each category
+        // let pronouns = fetchRoles(util.isPronoun)
+        // let gradClassOrStatus = fetchRoles(util.isGraduationStatus);
+        // let resAreas = fetchRoles(util.isResidential);
+        // let csCourses = fetchRoles(util.isCSClass);
+        // let mathCourses = fetchRoles(util.isMathClass);
+        // let interdisciplinary = fetchRoles(util.isInterdisciplinary);
+        // let misc = fetchRoles(util.isMisc);
 
         // Display the roles in a visually pleasing way
         let content = this.client.generateEmbed({
-            title: 'List of Assignable Roles',
-            description: oneLine(`The following categories list out the available roles that users can assign and remove themselves using the \`!role [role name]\` command. 
-                You do not need the \`[\` or \`]\` when using the command. 
-                These roles grant and remove your permission to view specific channels. If you would like access to all related channels, assign yourself the \`Snooper\` role. 
-                Example: \`!role cs 121\``),
+            title: 'Obtain and Remove Roles',
+            description: oneLine(`We have a website where you can obtain and remove roles to access different features on this server. 
+                Visit the link below to access the tool. You will need to sign in with your Discord account. Questions? DM an Admin.
+                `),
             fields: [
                 {
-                    name: 'Pronouns',
-                    value: pronouns.join(', ')
-                },
-                {
-                    name: 'Graduating Class or Graduation Status',
-                    value: gradClassOrStatus.join(', ')
-                },
-                {
-                    name: 'Residential Areas',
-                    value: resAreas.join(', ')
-                },
-                {
-                    name: 'Computer Science Courses',
-                    value: csCourses.join(', ')
-                },
-                {
-                    name: 'Math Courses',
-                    value: mathCourses.join(', ')
-                },
-                {
-                    name: 'Interdisciplinary',
-                    value: interdisciplinary.join(', ')
-                },
-                {
-                    name: 'Miscellaneous',
-                    value: misc.join(', ')
+                    name: "Link to Website",
+                    value: "[https://discord.ltseng.me](https://discord.ltseng.me)"
                 }
+                // {
+                //     name: 'Pronouns',
+                //     value: pronouns.join(', ')
+                // },
+                // {
+                //     name: 'Graduating Class or Graduation Status',
+                //     value: gradClassOrStatus.join(', ')
+                // },
+                // {
+                //     name: 'Residential Areas',
+                //     value: resAreas.join(', ')
+                // },
+                // {
+                //     name: 'Computer Science Courses',
+                //     value: csCourses.join(', ')
+                // },
+                // {
+                //     name: 'Math Courses',
+                //     value: mathCourses.join(', ')
+                // },
+                // {
+                //     name: 'Interdisciplinary',
+                //     value: interdisciplinary.join(', ')
+                // },
+                // {
+                //     name: 'Miscellaneous',
+                //     value: misc.join(', ')
+                // }
             ]
         });
 
