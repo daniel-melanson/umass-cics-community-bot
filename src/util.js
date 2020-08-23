@@ -19,7 +19,7 @@ function isClass(str) {
  * @returns {boolean}
  */
 function isResidential(str) {
-    return new RegExp(/^(zoomer|central|ohill|northeast|southwest|honors|sylvan|off-campus|rap data science|rap ethics society)$/i).test(str.trim());
+    return new RegExp(/^(central|ohill|northeast|southwest|honors|sylvan|off-campus|rap data science|rap ethics society)$/i).test(str.trim());
 }
 
 /**
@@ -55,7 +55,7 @@ function isMathClass(str) {
  * @returns {boolean}
  */
 function isInterdisciplinary(str) {
-    return new RegExp(/^(business|biology|economics|engineering|linguistics|psychology|informatics|physics)$/i).test(str.trim());
+    return new RegExp(/^(business|linguistics|physics)$/i).test(str.trim());
 }
 
 /**
