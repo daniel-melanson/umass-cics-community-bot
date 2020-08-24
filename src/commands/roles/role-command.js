@@ -114,14 +114,14 @@ class RoleCommand extends Command {
         if (guildMember.roles.has(role.id)) {
             try {
                 await guildMember.roles.remove(role);
-                return msg.reply(`removed your ${role.name} role.`);
+                return msg.reply(`removed your ${role.name} role. If you want an easier way to manage your roles, use this: https://discord.ltseng.me/`);
             } catch(e) {
                 return msg.reply(`unable to remove your ${role.name} role.`);
             }
         } else { // If they do not have the role, then try and give it to them
             try {
                 await guildMember.roles.add(role);
-                return msg.reply(`you now have the ${role.name} role.`);
+                return msg.reply(`you now have the ${role.name} role. If you want an easier way to manage your roles, use this: https://discord.ltseng.me/`);
             } catch(e) {
                 return msg.reply(`it seems that I do not have permission to give you that role`);
             }
