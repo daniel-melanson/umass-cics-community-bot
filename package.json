@@ -1,32 +1,40 @@
 {
   "name": "umass-cics-discord-bot",
   "version": "2.0.0",
-  "description": "Discord bot for an unofficial UMass CICS discord server.",
-  "main": "src/index.js",
+  "description": "A bot for the UMass CICS Community discord server.",
+  "main": "out/index.js",
   "scripts": {
-    "start": "npm run build && node lib/index.js",
-    "eslint": "npx eslint src/**/*.ts --max-warnings 0",
-    "build": "npm run eslint && tsc -p ."
+    "prepare": "npm run build",
+    "build": "ttsc -b",
+    "build-watch": "ttsc -b -w",
+    "eslint": "eslint \"src/**/*.ts\" --max-warnings 0",
+    "start": "npm run build && node out/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/daniel-melanson/UMass-CICS-Discord-Bot.git"
   },
   "author": "Daniel Melanson",
-  "license": "AGPL-3.0",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot/issues"
   },
   "homepage": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot#readme",
-  "dependencies": {
-    "discord.js": "github:discordjs/discord.js#ea8b4e73559d118a826ac3b242c1a3626b4f6d29",
-    "discord.js-commando": "github:discordjs/commando#4beeec829ed25fc2c6ec0896edf7e0ac4d8bfcf0"
-  },
   "devDependencies": {
-    "@types/node": "^14.0.1",
-    "@typescript-eslint/eslint-plugin": "^2.33.0",
-    "@typescript-eslint/parser": "^2.33.0",
-    "eslint": "^7.0.0",
-    "typescript": "^3.9.2"
+    "@types/node": "^14.11.2",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
+    "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2",
+    "ttypescript": "^1.5.12",
+    "typescript": "^4.0.3",
+    "typescript-transform-paths": "^2.0.1"
+  },
+  "dependencies": {
+    "discord.js": "^12.3.1",
+    "discord.js-commando": "^0.10.0",
+    "dotenv": "^8.2.0"
   }
 }
