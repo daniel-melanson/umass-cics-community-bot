@@ -11,3 +11,5 @@ Semester IDs
 7 fall
 
 http://web.cs.umass.edu/csinfo/autogen/cicsdesc1203.html
+
+https://www.umass.edu/registrar/calendars/academic-calendar
