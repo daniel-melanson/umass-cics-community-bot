@@ -10,5 +10,4 @@ Semester IDs
 5 summer
 7 fall
 
-
 http://web.cs.umass.edu/csinfo/autogen/cicsdesc1203.html

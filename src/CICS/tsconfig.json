@@ -1,0 +1,10 @@
+{
+	"extends": "../../tsconfig-base.json",
+	"compilerOptions": {
+		"outDir": "../../out/CICS",
+		"rootDir": "."
+	},
+	"references": [
+		{ "path": "../Shared" }
+	]
+}
