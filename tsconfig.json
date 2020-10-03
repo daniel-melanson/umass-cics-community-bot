@@ -7,6 +7,8 @@
 	},
 	"references": [
 		{ "path": "./src/Shared" },
-		{ "path": "./src/Discord" }
+		{ "path": "./src/Discord" },
+		{ "path": "./src/CICS" },
+		{ "path": "./src/WebServer" }
 	]
 }
