@@ -53,7 +53,7 @@ class SourceCommand extends Command {
             fields: [
                 {
                     name: 'Contribute',
-                    value: `Check out the source code on [github](${home})! :github:`
+                    value: `Check out the source code on [github](${home})! <:github:710221621469642808>`
                 },
                 {
                     name: 'License',
