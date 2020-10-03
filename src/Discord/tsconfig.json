@@ -1,7 +1,7 @@
 {
 	"extends": "../../tsconfig-base.json",
 	"compilerOptions": {
-		"outDir": "../../out/Project",
+		"outDir": "../../out/Discord",
 		"rootDir": "."
 	},
 	"references": [
