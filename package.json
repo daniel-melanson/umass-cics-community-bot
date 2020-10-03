@@ -8,7 +8,7 @@
     "build": "ttsc -b",
     "build-watch": "ttsc -b -w",
     "eslint": "eslint \"src/**/*.ts\" --max-warnings 0",
-    "start": "npm run build && node out/index.js"
+    "start": "npm run build && node out/Discord/index.js"
   },
   "repository": {
     "type": "git",
