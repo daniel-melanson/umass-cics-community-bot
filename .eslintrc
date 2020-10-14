@@ -27,7 +27,8 @@
 				"printWidth": 120,
 				"tabWidth": 4,
 				"useTabs": true,
-				"endOfLine":"auto"
+				"endOfLine":"auto",
+				"arrowParens": "avoid"
 			}
 		],
 		"@typescript-eslint/array-type": [
