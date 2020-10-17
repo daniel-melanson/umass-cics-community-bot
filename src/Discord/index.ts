@@ -2,9 +2,16 @@ import cron from "node-cron";
 import calendar from "CICS/calendar";
 import courses from "CICS/courses";
 
-cron.schedule("* * 0 * * *", async () => {
+async function update() {
 	await calendar.update();
 	await courses.update();
+}
+
+cron.schedule("* * 0 * * *", update);
+
+update().catch(e => {
+	console.error(`Error on first update: ${e}`);
+	process.exit(-1);
 });
 
 /*
