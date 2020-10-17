@@ -5,9 +5,9 @@
   "main": "out/index.js",
   "scripts": {
     "prepare": "npm run build",
-    "build": "ttsc -b",
-    "build-watch": "ttsc -b -w",
-    "eslint": "eslint \"src/**/*.ts\" --max-warnings 0",
+    "build": "npx ttsc -b",
+    "build-watch": "npx ttsc -b -w",
+    "eslint": "npx eslint \"src/**/*.ts\" --max-warnings 0",
     "start": "npm run build && node out/Discord/index.js"
   },
   "repository": {
