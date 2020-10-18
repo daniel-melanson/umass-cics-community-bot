@@ -42,9 +42,7 @@ class Calender {
 			});
 
 			const startDate = semesterDates.find(x => !!x.description.match(/^(first day of classes)/i));
-			if (!startDate) {
-				throw new Error(`Unable to find start date for semester ${season} ${year}.`);
-			}
+			if (!startDate) throw new Error(`Unable to find start date for semester ${season} ${year}.`);
 
 			const endDate = semesterDates.find(x => !!x.description.match(/^(last day of classes)/i));
 			if (!endDate) throw new Error(`Unable to find end date for semester ${season} ${year}.`);
