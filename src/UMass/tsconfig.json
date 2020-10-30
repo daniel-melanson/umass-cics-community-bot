@@ -1,7 +1,7 @@
 {
 	"extends": "../../tsconfig-base.json",
 	"compilerOptions": {
-		"outDir": "../../out/CICS",
+		"outDir": "../../out/UMass",
 		"rootDir": "."
 	},
 	"references": [

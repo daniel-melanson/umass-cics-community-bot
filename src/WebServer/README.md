@@ -1,1 +1,0 @@
-This portion of the project will handle the WebServer for the role assigning website. 
