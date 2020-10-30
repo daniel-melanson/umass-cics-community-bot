@@ -1,5 +1,5 @@
 import data from "UMass/data";
-import { getCurrentSemester } from "UMass/calender";
+import { getCurrentSemester } from "UMass/calendar";
 
 void data.then(success => {
 	if (!success) {
