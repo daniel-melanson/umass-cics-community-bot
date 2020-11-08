@@ -21,10 +21,10 @@ interface PreviousSemester {
 export interface Course {
 	id: string;
 	title: string;
-	description: string;
-	credits: string;
-	mostRecentSemester: string;
-	frequency: string;
-	staff: Array<string>;
+	description?: string;
+	credits?: string;
+	mostRecentSemester?: string;
+	frequency?: string;
+	staff?: Array<string>;
 	prerequisites?: Map<string, boolean>;
 }

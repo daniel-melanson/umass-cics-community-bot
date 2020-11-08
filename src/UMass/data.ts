@@ -1,3 +1,5 @@
+// I hate writing scraping logic.
+
 import fetch from "node-fetch";
 import cheerio from "cheerio";
 import cron from "node-cron";
@@ -66,11 +68,9 @@ async function scrapeCICS(updated: Map<string, Course>) {
 		updated.set(id, {
 			id: id,
 			title: attributes[2],
-			description: "Unable to find description from recent semesters. This course might not be offered anymore.",
 			credits: attributes[3],
 			mostRecentSemester: "This course has not been offered since before Spring 2017.",
 			frequency: attributes[4],
-			staff: new Array<string>(),
 		});
 	}
 
@@ -89,7 +89,6 @@ async function scrapeCICS(updated: Map<string, Course>) {
 			if ($("title:contains('404 Not Found')").length !== 0) continue;
 
 			const currentSemester = `${semesterNames[semester]} 20${year}`;
-			console.log(currentSemester);
 			for (const titleElement of $("h2:not(:first-child)").toArray()) {
 				const fullTitle = $("a", titleElement).text().trim();
 				const [id, title] = fullTitle.split(": ");
@@ -100,11 +99,7 @@ async function scrapeCICS(updated: Map<string, Course>) {
 					course = {
 						id: id,
 						title: title,
-						description: "",
-						credits: "",
 						mostRecentSemester: currentSemester,
-						frequency: "Unable to find information regarding frequency.",
-						staff: new Array<string>(),
 					};
 
 					updated.set(id, course);
@@ -113,7 +108,7 @@ async function scrapeCICS(updated: Map<string, Course>) {
 				if (!processedMap.get(id)) {
 					course.description = $(header).next("p").text();
 
-					if (course.credits === "") {
+					if (course.credits === undefined) {
 						const match = course.description.match(/(1|2|3|4) credit[s]?./i);
 						if (match && match[1]) course.credits = match[1];
 					}
@@ -138,7 +133,79 @@ async function scrapeCICS(updated: Map<string, Course>) {
 	}
 }
 
-async function scrapeMath(updated: Map<string, Course>) {}
+async function scrapeMath(updated: Map<string, Course>) {
+	let $ = await scrape("https://www.math.umass.edu/course-offerings");
+
+	for (const course of $("table > tbody > tr").toArray()) {
+		const attributes = $(course)
+			.children("td")
+			.toArray()
+			.map(x => $(x).text().trim());
+
+		const id = attributes[0].toUpperCase();
+		updated.set(id, {
+			id: id,
+			title: attributes[1],
+			mostRecentSemester: "This course has not been offered since before Spring 2017.",
+			frequency: attributes[2].replace("/", " and "),
+		});
+	}
+
+	const processedMap = new Map<string, boolean>();
+
+	const min = 87;
+	$ = await scrape("https://www.math.umass.edu/course-descriptions");
+	const query = $("#edit-semester-tid > option:first-child");
+	const start = Number.parseInt(query[0].attribs["value"]);
+
+	for (let i = start; i >= min; i--) {
+		$ = await scrape(`https://www.math.umass.edu/course-descriptions?semester_tid=${i}`);
+		const semester = $("#edit-semester-tid > option:selected").text();
+
+		for (const article of $("div > article").toArray()) {
+			const header = $(":first-child > :first-child > :first-child", article).text().trim();
+			const description = $(
+				"div[class='field-course-descr-description inline clearfix'] > div:first-child > p:first-child",
+				article,
+			).text();
+			const prerequisites = $(
+				"div[class='field-course-descr-prereq inline clearfix'] > div:first-child > p:first-child",
+				article,
+			).text();
+
+			const split = header.split(":");
+			const id = split[0].split(".")[0];
+			const title = split[1];
+
+			if (!processedMap.get(id)) {
+				const course = updated.get(id);
+
+				const courseUpdate = course || {
+					id: id,
+					title: title,
+				};
+
+				courseUpdate.description = description;
+				courseUpdate.mostRecentSemester = semester;
+
+				if (prerequisites.length > 0) {
+					const prerequisitesMatches = prerequisites.match(
+						/(?<=\W)(cs|math|stat|cics|info)\s*\d{3}[a-z]*(?=\W)/gi,
+					);
+
+					if (prerequisitesMatches !== null) {
+						courseUpdate.prerequisites = new Map<string, boolean>(
+							prerequisitesMatches.map(x => [x.toUpperCase(), true]),
+						);
+					}
+				}
+
+				if (course === undefined) updated.set(id, courseUpdate);
+				processedMap.set(id, true);
+			}
+		}
+	}
+}
 
 async function scrapeCourses() {
 	const updated = new Map<string, Course>();
