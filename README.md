@@ -2,8 +2,6 @@
 
 ## Contributing
 
-
-## Development
 ### Where do I start?
 1. [Fork the repository](https://github.com/daniel-melanson/UMass-CICS-Discord-Bot/fork)
 2. Clone your fork: `git clone https://github.com/your-username/UMass-CICS-Discord-Bot.git`
@@ -24,4 +22,4 @@ DISCORD_TOKEN=the-token-of-your-bot
 4. Run `npm start`
 
 ## Credits
-This bot uses [discord.js](https://github.com/discordjs/discord.js) to communicate with the discord API. From 
+This bot uses [discord.js](https://github.com/discordjs/discord.js) to communicate with the discord API.
