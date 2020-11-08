@@ -20,7 +20,8 @@ async function scrapeSemesters() {
 
 	const updated = [];
 	for (const semesterHeader of $(".field-item h3").toArray()) {
-		const titleMatch = semesterHeader?.lastChild?.data
+		const titleMatch = $(semesterHeader)
+			.text()
 			?.trim()
 			.match(/^(university )?(spring|summer|fall) (\d{4})/i);
 		if (!titleMatch) continue;
@@ -28,13 +29,19 @@ async function scrapeSemesters() {
 		const season = titleMatch[2];
 		const year = titleMatch[3];
 
-		const semesterDates = semesterHeader.nextSibling.nextSibling.firstChild.children.map(x => {
-			const children = x.children.filter(x => x.type === "tag").map(x => x.firstChild.data?.trim() || "");
-			return {
-				date: new Date(`${children[2]} ${children[3]}, ${year}`),
-				description: children[0].trim(),
-			};
-		});
+		const semesterDates = $("tbody > tr", $(semesterHeader).next("table"))
+			.toArray()
+			.map(x => {
+				const children = $(x)
+					.children("td")
+					.toArray()
+					.map(x => $(x).text().trim());
+
+				return {
+					date: new Date(`${children[2]} ${children[3]}, ${year}`),
+					description: children[0].trim(),
+				};
+			});
 
 		const startDate = semesterDates.find(x => !!x.description.match(/^(first day of classes)/i));
 		if (!startDate) throw new Error(`Unable to find start date for semester ${season} ${year}.`);
