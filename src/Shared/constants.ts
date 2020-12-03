@@ -50,12 +50,12 @@ export const DISCORD_RULES = {
 			indirectly sharing answers through other mediums (i.e Chegg).
 			
 			**All instances of cheating will be reported.**
-			You can find more information about this rule (here)[https://www.umass.edu/honesty/].
+			You can find more information about this rule [here](https://www.umass.edu/honesty/).
 			`),
 		},
 		{
 			title: "Rule 4: Follow Discord's Terms of Service",
-			value: oneLine(`You can find information pertaining to this (here)[https://discord.com/terms].
+			value: oneLine(`You can find information pertaining to this [here](https://discord.com/terms).
 			You can find what we you are responsible for under the section titled "RULES OF CONDUCT AND USAGE".
 			**As an extention of these rules, do not discuss, or lead an individual to, pirated material.**`),
 		},
