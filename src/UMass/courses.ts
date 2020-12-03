@@ -1,4 +1,5 @@
-import { courseMap } from "UMass/data";
+/*
+import { courses } from "UMass/data/db";
 
 export function getCourseIdFromQuery(query: string): string | undefined {
 	const match = query
@@ -12,11 +13,9 @@ export function getCourseIdFromQuery(query: string): string | undefined {
 }
 
 export function getCourseDependents(id: string): Array<string> {
-	if (courseMap === undefined) throw new Error("Unable to get UMass data");
-
 	const dependents = [];
 
-	for (const course of courseMap.values()) {
+	for (const course of courses.values()) {
 		if (course.prerequisites !== undefined && course.prerequisites.has(id)) {
 			dependents.push(course.id);
 		}
@@ -24,3 +23,4 @@ export function getCourseDependents(id: string): Array<string> {
 
 	return dependents;
 }
+*/

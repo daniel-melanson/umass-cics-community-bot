@@ -1,13 +1,20 @@
 {
-	"files": [],
-	"compilerOptions": {
-		"composite": true,
-		"baseUrl": "src",
-		"outDir": "out"
-	},
-	"references": [
-		{ "path": "./src/Shared" },
-		{ "path": "./src/UMass" },
-		{ "path": "./src/Discord" },
-	]
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+	"forceConsistentCasingInFileNames": true,
+	"baseUrl": "./",
+	"sourceMap": true,
+	"outDir": "./out",
+	"resolveJsonModule": true,
+	"paths": {
+	  "UMass/*": ["./src/UMass/*"],
+	  "Discord/*": ["./src/Discord/*"],
+	  "Shared/*": ["./src/Shared/*"],
+    },
+    "plugins": [{ "transform": "typescript-transform-paths" }]
+  }
 }

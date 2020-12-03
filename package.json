@@ -1,46 +1,41 @@
 {
   "name": "umass-cics-discord-bot",
   "version": "2.0.0",
-  "description": "A bot for the UMass CICS Community discord server.",
+  "description": "Bot for unofficial UMass CICS discord.",
   "main": "out/index.js",
   "scripts": {
-    "prepare": "npm run build",
     "build": "npx ttsc -b",
-    "build-watch": "npx ttsc -b -w",
-    "eslint": "npx eslint \"src/**/*.ts\" --max-warnings 0",
-    "start": "npm run build && node out/Discord/index.js"
+	"start": "npm run build && node out/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/daniel-melanson/UMass-CICS-Discord-Bot.git"
   },
   "author": "Daniel Melanson",
-  "license": "ISC",
+  "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot/issues"
   },
   "homepage": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot#readme",
   "devDependencies": {
-    "@types/cheerio": "^0.22.22",
-    "@types/node": "^14.11.2",
+    "@types/common-tags": "^1.8.0",
     "@types/node-cron": "^2.0.3",
     "@types/node-fetch": "^2.5.7",
-    "@types/ws": "^7.2.7",
-    "@typescript-eslint/eslint-plugin": "^4.3.0",
-    "@typescript-eslint/parser": "^4.3.0",
-    "eslint": "^7.10.0",
-    "eslint-config-prettier": "^6.12.0",
+    "@typescript-eslint/eslint-plugin": "^4.8.2",
+    "@typescript-eslint/parser": "^4.8.2",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "prettier": "^2.1.2",
+    "prettier": "^2.2.0",
     "ttypescript": "^1.5.12",
-    "typescript": "^4.0.3",
-    "typescript-transform-paths": "^2.0.1"
+    "typescript": "^4.0.5",
+    "typescript-transform-paths": "^2.0.2"
   },
   "dependencies": {
-    "canvas": "^2.6.1",
-    "cheerio": "^1.0.0-rc.3",
-    "discord.js": "^12.3.1",
+    "common-tags": "^1.8.0",
+    "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
+    "mongodb": "^3.6.3",
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.1"
   }

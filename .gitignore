@@ -2,3 +2,4 @@ node_modules
 out
 .env
 .vscode/launch.json
+data.json

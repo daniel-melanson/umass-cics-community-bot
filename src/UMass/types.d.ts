@@ -7,7 +7,7 @@ export type Season = "Spring" | "Summer" | "Fall";
 
 export interface Semester {
 	season: Season;
-	year: string;
+	year: number;
 	startDate: Date;
 	endDate: Date;
 	significantDates: Array<SignificantDate>;
@@ -26,5 +26,5 @@ export interface Course {
 	mostRecentSemester?: string;
 	frequency?: string;
 	staff?: Array<string>;
-	prerequisites?: Map<string, boolean>;
+	prerequisites?: Set<string>;
 }
