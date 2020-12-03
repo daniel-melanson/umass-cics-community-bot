@@ -55,12 +55,14 @@ export const DISCORD_RULES = {
 		},
 		{
 			title: "Rule 4: Follow Discord's Terms of Service",
-			value: "You can find information pertaining to this (here)[https://discord.com/terms].",
+			value: oneLine(`You can find information pertaining to this (here)[https://discord.com/terms].
+			You can find what we you are responsible for under the section titled "RULES OF CONDUCT AND USAGE".
+			**As an extention of these rules, do not discuss, or lead an individual to, pirated material.**`),
 		},
 		{
 			title: "Rule 5: Each user must have their discord nickname set to a real life name",
 			value: oneLine(`If you don't know how to do this, then ping a moderator or admin to change it for you.
-			If you are uncomfortable with using your name, we suggest using a pet/nick name or the first letter of your name.`),
+			If you are uncomfortable with using your name, **we suggest using a pet/nick name or the first letter of your name.**`),
 		},
 	],
 	afterword: oneLine(`Keep in mind that by joining this discord you have lost part of your anonymity.
