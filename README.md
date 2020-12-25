@@ -19,11 +19,11 @@ DISCORD_OWNER_ID=your-discord-id
 DISCORD_GUILD_ID=your-discord-guilds-id
 DISCORD_TOKEN=the-token-of-your-bot
 
-DEBUG=true
+MONGO_CONNECTION_STRING=you-will-be-given-this
 ```
 4. Run `npm start`
 
-In debug mode, all database related queries will fail. This is by design, as it would be a pain to set up a local database for anyone wanting to contribute. Given that the amount of people contributing to this project is very small, I did not feel that it was worth the effort to setup something with docker. Even if I did, the people looking at this project are usually new to computer science and probably have difficulty. If you have an idea for a feature that would use the database, make an issue and I'll get around to it.
+Keep in mind that database related commands will fail if `MONGO_CONNECTION_STRING` is not defined in your `.env` file. If you would like to contribute you can contact me and I will give you a temporary connection string to the database.
 
 ## Credits
 This bot uses [discord.js](https://github.com/discordjs/discord.js) to communicate with the discord API.

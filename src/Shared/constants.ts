@@ -5,7 +5,7 @@ export const COLLEGE_NAME = "University of Massachusetts Amherst College of Info
 export const UMASS_MAROON = [131, 35, 38];
 
 export const DISCORD_RULES = {
-	updated: "12/2/2020",
+	updated: "12/25/2020",
 	preface:
 		oneLine(`
 		By joining this discord server, you are bound to the following rules.
@@ -33,12 +33,17 @@ export const DISCORD_RULES = {
 	rules: [
 		{
 			title: "Rule 1: Observe the Golden Rule",
-			value: "Do unto others as you would have them do unto you.",
+			value: oneLine(`Do unto others as you would have them do unto you.
+			Hate speech or harassment of any kind are strictly prohibited.
+			This includes, but is not limited to, insults based on someone's ethnicity, race, gender, sexuality, or disability.
+			If you take issue with someone and their behavior, either block or ignore their messages.
+			If you believe that they are committing rule breaking actions, report it to the moderation team and it will be dealt with on a case-by-case basis.
+			`),
 		},
 		{
-			title: "Rule 2: Keep content Safe For Work (SFW)",
-			value: oneLine(`Content that is *Not Safe For Work* (NSFW) includes: 
-			intense conversations about politics or religion, sexual innuendos or references, slurs or words derived from slurs.
+			title: "Rule 2: Keep content appropriate for a College Audience",
+			value: oneLine(`Use the demeanor that you might use when first meeting a classmate or speaking with members of a school club.
+			Examples of inappropriate behavior: having an intense conversation about politics or religion, referencing your or others gentiles, using sexual innuendos towards other users, using slurs or words derived from slurs.
 			Light swearing is fine. But do not get carried away.`),
 		},
 		{
@@ -57,7 +62,11 @@ export const DISCORD_RULES = {
 			title: "Rule 4: Follow Discord's Terms of Service",
 			value: oneLine(`You can find information pertaining to this [here](https://discord.com/terms).
 			You can find what we you are responsible for under the section titled "RULES OF CONDUCT AND USAGE".
-			**As an extention of these rules, do not discuss, or lead an individual to, pirated material.**`),
+			**As an extension of these rules, do not discuss, or lead an individual to, pirated material.**
+			This also applies to course material. You are not allowed to distribute documents that you did not create yourself.
+			**This includes, but is not limited to: lecture slides, homework assignments, exams, worksheets, recordings.**
+			Exceptions to this rule are if the materials are publicly available or you have direct permission from the instructor.
+			`),
 		},
 		{
 			title: "Rule 5: Each user must have their discord nickname set to a real life name",
