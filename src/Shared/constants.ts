@@ -2,7 +2,9 @@ import { oneLine } from "common-tags";
 
 export const COLLEGE_NAME = "University of Massachusetts Amherst College of Information and Computer Sciences";
 
-export const UMASS_MAROON = [131, 35, 38];
+export const UMASS_MAROON = "#832326";
+
+export const ICON_URL = "";
 
 export const DISCORD_RULES = {
 	updated: "12/25/2020",
@@ -43,7 +45,7 @@ export const DISCORD_RULES = {
 		{
 			title: "Rule 2: Keep content appropriate for a College Audience",
 			value: oneLine(`Use the demeanor that you might use when first meeting a classmate or speaking with members of a school club.
-			Examples of inappropriate behavior: having an intense conversation about politics or religion, referencing your or others gentiles, using sexual innuendos towards other users, using slurs or words derived from slurs.
+			Examples of inappropriate behavior: having an intense conversation about politics or religion, referencing gentiles, using sexual innuendos towards other users, using slurs or words derived from slurs.
 			Light swearing is fine. But do not get carried away.`),
 		},
 		{
