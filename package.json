@@ -2,10 +2,11 @@
   "name": "umass-cics-discord-bot",
   "version": "2.0.0",
   "description": "Bot for unofficial UMass CICS discord.",
-  "main": "out/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "npx ttsc -b",
-    "start": "npm run build && node out/index.js"
+    "build-watch": "npx ttsc -b -w",
+    "start": "node lib/index.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot#readme",
   "devDependencies": {
     "@types/common-tags": "^1.8.0",
+    "@types/mongodb": "^3.6.3",
     "@types/node-cron": "^2.0.3",
     "@types/node-fetch": "^2.5.7",
     "@typescript-eslint/eslint-plugin": "^4.8.2",
@@ -33,7 +35,7 @@
   },
   "dependencies": {
     "common-tags": "^1.8.0",
-    "discord.js": "^12.4.1",
+    "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "mongodb": "^3.6.3",
     "node-cron": "^2.0.3",

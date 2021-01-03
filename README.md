@@ -1,5 +1,14 @@
 # UMass CICS Discord Bot
 
+Simple discord bot for the UMass CICS Community server written in TypeScript.
+
+Currently waiting on [#5106](https://github.com/discordjs/discord.js/pull/5106) and [#4879](https://github.com/discordjs/discord.js/pull/4879) to go through before continuing any discord implementation.
+
+## Notable Features
+- Commands to display information about CICS related (CS, INFO, MATH, STAT) classes.
+- Announce academic calender events such as when the add/drop period ends.
+- TeX expression rendering.
+
 ## Contributing
 
 ### Where do I start?

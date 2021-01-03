@@ -1,5 +1,4 @@
 node_modules
-out
+lib
 .env
 .vscode/launch.json
-data.json

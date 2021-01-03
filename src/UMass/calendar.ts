@@ -1,34 +1,43 @@
-/*
-import { getSemesters } from "UMass/db";
-import { Season, Semester } from "UMass/types";
+import { connectToCollection } from "UMass/database";
 
-export async function getCurrentSemester(): Semester | undefined {
-	const semesters
+import { Semester } from "UMass/types";
 
-	const now = new Date();
-	for (const semester of semesters) {
-		if (semester.startDate < now && now < semester.endDate) {
+/**
+ * Returns the current in session semester based off of today's date.
+ * There can only be one semester in session at a time.
+ * The result of this method is based upon when classes start and end.
+ * Exams times are not considered part of the semester.
+ */
+export async function getInSessionSemester(): Promise<Semester | undefined> {
+	const semesterCollection = await connectToCollection("semesters");
+	const semesterCursor = semesterCollection.find();
+
+	const today = new Date();
+	for (let semester = await semesterCursor.next(); semester != null; semester = await semesterCursor.next()) {
+		if (today <= semester.endDate && today >= semester.startDate) {
 			return semester;
 		}
 	}
-
-	return undefined;
 }
 
-export async function getProceedingSemesterOf(semester: Semester): Semester | undefined {
-	let queryYear: number;
-	let querySeason: Season;
+/**
+ * Returns an array of semesters in which today's date is in between the first event and last event of the semester.
+ * Usually the first and last events of a semester are when classes start and when grades are due, respectively.
+ * As an example, by the time grades are due for the fall semester, the winter semester has already started.
+ * In such a case, this method will return both the fall semester and the winter semester.
+ */
+export async function getCurrentSemesters(): Promise<Array<Semester>> {
+	const semesterCollection = await connectToCollection("semesters");
+	const haveEvents: Array<Semester> = [];
 
-	if (semester.season === "Fall") {
-		querySeason = "Spring";
-		queryYear = semester.year + 1;
-	} else {
-		querySeason = semester.season === "Spring" ? "Summer" : "Fall"
-		queryYear = semester.year;
-	}
-
-	return semesters.find(s => {
-		return s.season === querySeason && s.year === queryYear;
+	const semesterCursor = await semesterCollection.find();
+	const today = new Date();
+	semesterCursor.forEach(semester => {
+		const events = semester.events;
+		if (events[0].date <= today && events[events.length - 1].date >= today) {
+			haveEvents.push(semester);
+		}
 	});
+
+	return haveEvents;
 }
-*/
