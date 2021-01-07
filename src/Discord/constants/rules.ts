@@ -1,8 +1,8 @@
 import { oneLine } from "common-tags";
+import { formatEmbed } from "Discord/formatting";
 
-export const DISCORD_RULES = {
-	updated: "12/31/2020",
-	preface:
+export const DISCORD_RULES = formatEmbed({
+	description:
 		oneLine(`
 		By joining this discord server, you are bound to the following rules.
 		Failure to follow these rules will result in punishment.
@@ -21,7 +21,7 @@ export const DISCORD_RULES = {
 		However, remember that you are among your peers. You are not anonymous. It is your choice of how you present yourself.`) +
 		"\n\n" +
 		oneLine(`
-		As adults, you should now how to conduct yourself in a public setting.
+		As adults, you should know how to conduct yourself in a public setting.
 		**Although the following punishment system is rarely used, it is documented here just incase.**
 		For instances of minor rule breaking, users will be given three strikes.
 		On the third strike they will receive a 12h mute.
@@ -30,9 +30,9 @@ export const DISCORD_RULES = {
 		Be respectful and you will be fine.
 		Major rule breaking will be dealt with on a case by case basis.
 		Usually the individual in question will get a indefinite mute unit the moderators decide what is reasonable.`),
-	rules: [
+	fields: [
 		{
-			title: "Rule 1: Observe the Golden Rule",
+			name: "Rule 1: Observe the Golden Rule",
 			value: oneLine(`Do unto others as you would have them do unto you.
 			Hate speech or harassment of any kind are strictly prohibited.
 			This includes, but is not limited to, insults based on someone's ethnicity, race, gender, sexuality, or disability.
@@ -41,13 +41,13 @@ export const DISCORD_RULES = {
 			`),
 		},
 		{
-			title: "Rule 2: Keep content appropriate for a College Audience",
+			name: "Rule 2: Keep content appropriate for a College Audience",
 			value: oneLine(`Use the demeanor that you might use when first meeting a classmate or speaking with members of a school club.
-			Examples of inappropriate behavior: anything considered 'x rated content', having an intense conversation about politics or religion, using sexual innuendos towards other users, using slurs or words derived from slurs.
+			Examples of inappropriate behavior: posting anything considered to be 'x rated', having an intense conversation about politics or religion, using sexual innuendos towards other users, using slurs or words derived from slurs.
 			Light swearing is fine. But do not get carried away.`),
 		},
 		{
-			title: "Rule 3: Follow the UMass Academic Honesty Policy",
+			name: "Rule 3: Follow the UMass Academic Honesty Policy",
 			value: oneLine(`
 			This includes: 
 			discussing exam/assignment solutions before the solutions are released publicly, 
@@ -59,9 +59,9 @@ export const DISCORD_RULES = {
 			`),
 		},
 		{
-			title: "Rule 4: Follow Discord's Terms of Service",
+			name: "Rule 4: Follow Discord's Terms of Service",
 			value: oneLine(`You can find information pertaining to this [here](https://discord.com/terms).
-			You can find what we you are responsible for under the section titled "RULES OF CONDUCT AND USAGE".
+			You can find what we you are responsible for under the section named "RULES OF CONDUCT AND USAGE".
 			**As an extension of these rules, do not discuss, or lead an individual to, pirated material.**
 			This also applies to course material. You are not allowed to distribute documents that you did not create yourself.
 			**This includes, but is not limited to: lecture slides, homework assignments, exams, worksheets, recordings.**
@@ -69,10 +69,9 @@ export const DISCORD_RULES = {
 			`),
 		},
 		{
-			title: "Rule 5: Each user must have their discord nickname set to a real life name",
+			name: "Rule 5: Each user must have their discord nickname set to a real life name",
 			value: oneLine(`If you don't know how to do this, then ping a moderator or admin to change it for you.
 			If you are uncomfortable with using your full name, **we suggest using a pet/nick name or the first letter of your name.**`),
 		},
 	],
-	afterword: 
-};
+});
