@@ -67,7 +67,7 @@ async function updateDatabase(recursive: boolean) {
 		currentDatabase = nextDatabase;
 		if (recursive) setTimeout(updateDatabase, UPDATE_TIME, true);
 	} catch (e) {
-		console.warn("Database: Unable to update next database.\n", e);
+		console.warn("[DATABASE] Unable to update next database.\n", e);
 
 		if (recursive) setTimeout(updateDatabase, HOUR, true);
 	}
