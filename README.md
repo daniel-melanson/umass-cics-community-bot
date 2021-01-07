@@ -2,7 +2,7 @@
 
 Simple discord bot for the UMass CICS Community server written in TypeScript.
 
-Currently waiting on [#5106](https://github.com/discordjs/discord.js/pull/5106) and [#4879](https://github.com/discordjs/discord.js/pull/4879) to go through before continuing any discord implementation.
+Once [#4879](https://github.com/discordjs/discord.js/pull/4879) and [#5106](https://github.com/discordjs/discord.js/pull/5106) go through, the project will need to be updated to use discord slash command.
 
 ## Notable Features
 - Commands to display information about CICS related (CS, INFO, MATH, STAT) classes.
