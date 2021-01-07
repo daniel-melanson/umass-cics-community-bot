@@ -22,11 +22,11 @@ export async function login(token: string): Promise<void> {
 		}
 	};
 
-	sendChannel("rules", DISCORD_RULES);
-	sendChannel("how-to-roles", ROLES_TUTORIAL);
-	sendChannel("how-to-notifications", NOTIFICATION_TUTORIALS);
-	sendChannel("how-to-commands", COMMANDS_TUTORIAL);
-	sendChannel("welcome", WELCOME_MESSAGES);
+	await sendChannel("rules", DISCORD_RULES);
+	await sendChannel("how-to-roles", ROLES_TUTORIAL);
+	await sendChannel("how-to-notifications", NOTIFICATION_TUTORIALS);
+	await sendChannel("how-to-commands", COMMANDS_TUTORIAL);
+	await sendChannel("welcome", WELCOME_MESSAGES);
 }
 
 export async function announce(channel: "general" | "university", message: string | MessageEmbed): Promise<void> {
