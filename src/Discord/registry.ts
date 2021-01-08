@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { Command, _Command, UserPermission } from "Discord/commands/types";
+import { capitalize } from "./formatting";
 
 function error(cmd: Command, reason: string) {
 	console.error(`[REGISTRY] Invalid command ${cmd.identifier}: ${reason}`);
@@ -28,8 +29,8 @@ export function registerCommands(): void {
 
 			if (!cmd.identifier.match(identifierMatch))
 				error(cmd, "identifier can only contain only contain alphabetic letters and dashes.");
-			if (cmd.formalName && !cmd.formalName.match(identifierMatch))
-				error(cmd, "formalName can only contain only contain alphabetic letters and dashes.");
+			if (cmd.formalName && !cmd.formalName.match(/^[a-zA-Z\- ]+$/))
+				error(cmd, "formalName can only contain only contain alphabetic letters, spaces and dashes.");
 			if (cmd.aliases && cmd.aliases.some(alias => !alias.match(identifierMatch)))
 				error(cmd, "aliases can only contain only contain alphabetic letters and dashes.");
 
@@ -61,7 +62,7 @@ export function registerCommands(): void {
 
 			commandList.push({
 				identifier: cmd.identifier,
-				formalName: cmd.formalName || cmd.identifier,
+				formalName: cmd.formalName || capitalize(cmd.identifier),
 				group: cmd.group,
 				aliases: cmd.aliases,
 				defaultPatterns: defaults.map(x => new RegExp(`/^!${x}/mi`)),

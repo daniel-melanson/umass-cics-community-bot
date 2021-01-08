@@ -1,6 +1,6 @@
 import { Client, Message, PermissionResolvable } from "discord.js";
 
-type Group = "Administrative" | "Information" | "Miscellaneous";
+type Group = "Administrative" | "Information" | "Miscellaneous" | "Roles";
 export enum UserPermission {
 	Member,
 	ClubOfficer,
@@ -8,7 +8,7 @@ export enum UserPermission {
 	Owner,
 }
 
-type ArgumentType = "string" | "GuildMember" | "GuildTextChannel";
+type ArgumentType = "string" | "GuildMember" | "GuildTextChannel" | "Role";
 
 interface ArgumentInfo {
 	name: string;
