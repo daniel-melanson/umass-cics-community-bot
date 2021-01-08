@@ -28,7 +28,7 @@ export interface Course {
 }
 
 export interface Staff {
-	name: string;
+	names: Array<string>;
 	title: string;
 	photo: string;
 	email: string;
