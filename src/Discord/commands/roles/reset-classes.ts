@@ -10,6 +10,7 @@ export default {
 	description: "Removes a users class related roles.",
 	examples: ["!reset-classes"],
 	clientPermissions: ["MANAGE_ROLES"],
+	guildOnly: true,
 	func: async (client: Client, message: Message) => {
 		const member = message.member!;
 		for (const role of member.roles.cache.array()) {

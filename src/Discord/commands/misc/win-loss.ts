@@ -8,6 +8,7 @@ export default {
 	group: "Miscellaneous",
 	description: "Creates a simple poll for the students reaction of an assessment.",
 	examples: ["!wl"],
+	guildOnly: true,
 	func: async (client: Client, message: Message) => {
 		const reply = await message.reply(`Was that assessment a W or an L?`);
 

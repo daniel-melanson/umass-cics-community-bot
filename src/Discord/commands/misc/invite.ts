@@ -8,6 +8,7 @@ export default {
 	group: "Miscellaneous",
 	description: "Responds with a permanent invite to the discord.",
 	examples: ["!invite"],
+	guildOnly: true,
 	clientPermissions: ["CREATE_INSTANT_INVITE"],
 	func: async (client: Client, message: Message) => {
 		const guild = message.guild!;

@@ -32,6 +32,7 @@ export interface _Command {
 	description: string;
 	details?: string;
 	examples?: Array<string>;
+	guildOnly: boolean;
 	userPermission: UserPermission;
 	clientPermissions?: Array<PermissionResolvable>;
 	arguments?: Array<ArgumentInfo>;

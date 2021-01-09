@@ -70,6 +70,7 @@ export function registerCommands(): void {
 				description: cmd.description,
 				details: cmd.details,
 				examples: cmd.examples,
+				guildOnly: cmd.guildOnly || false,
 				clientPermissions: cmd.clientPermissions,
 				userPermission: cmd.userPermission || UserPermission.Member,
 				arguments: cmd.arguments,
