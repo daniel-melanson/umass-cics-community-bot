@@ -2,20 +2,20 @@ import fs from "fs";
 import path from "path";
 
 import { Command, _Command, UserPermission } from "Discord/commands/types";
-import { capitalize } from "./formatting";
+import { capitalize } from "Discord/formatting";
 
-function error(cmd: Command, reason: string) {
-	console.error(`[REGISTRY] Invalid command ${cmd.identifier}: ${reason}`);
+function error(cmd: _Command, reason: string) {
+	console.error(`[COMMANDS] Invalid command ${cmd.identifier}: ${reason}`);
 	process.exit(-1);
 }
 
-const commandList = new Array<Readonly<_Command>>();
-const identifierMatch = /^[a-zA-Z\-]+$/;
-export function registerCommands(): void {
+const identifierMatch = /^[a-zA-Z][a-zA-Z-]+$/;
+export function requireCommandList(): Array<Readonly<_Command>> {
+	const commandList = [];
 	const basePath = path.join(__dirname, "commands");
 
 	const reservedIdentifiers = new Set();
-	for (const folder in ["admin", "info", "misc"]) {
+	for (const folder in ["admin", "info", "misc", "roles"]) {
 		const groupPath = path.join(basePath, folder);
 
 		for (const file in fs.readdirSync(groupPath)) {
@@ -28,11 +28,11 @@ export function registerCommands(): void {
 			if (cmd.aliases) defaults.push(...cmd.aliases);
 
 			if (!cmd.identifier.match(identifierMatch))
-				error(cmd, "identifier can only contain only contain alphabetic letters and dashes.");
-			if (cmd.formalName && !cmd.formalName.match(/^[a-zA-Z\- ]+$/))
-				error(cmd, "formalName can only contain only contain alphabetic letters, spaces and dashes.");
+				error(cmd, "identifier must start with a letter and be proceeded by letters or dashes.");
+			if (cmd.formalName && !cmd.formalName.match(/^[a-zA-Z][a-zA-Z\- ]+$/))
+				error(cmd, "formalName must start with a letter and be proceeded by letters, spaces, or dashes.");
 			if (cmd.aliases && cmd.aliases.some(alias => !alias.match(identifierMatch)))
-				error(cmd, "aliases can only contain only contain alphabetic letters and dashes.");
+				error(cmd, "aliases must start with a letter and be proceeded by letters or dashes.");
 
 			if (cmd.arguments && cmd.arguments.length > 1) {
 				for (const arg of cmd.arguments.slice(0, cmd.arguments.length - 1)) {
@@ -65,7 +65,7 @@ export function registerCommands(): void {
 				formalName: cmd.formalName || capitalize(cmd.identifier),
 				group: cmd.group,
 				aliases: cmd.aliases,
-				defaultPatterns: defaults.map(x => new RegExp(`/^!${x}/mi`)),
+				defaultPatterns: defaults.map(x => new RegExp(`/^!${x}(.*)/mi`)),
 				patterns: cmd.patterns,
 				description: cmd.description,
 				details: cmd.details,
@@ -78,4 +78,6 @@ export function registerCommands(): void {
 			});
 		}
 	}
+
+	return commandList;
 }
