@@ -53,6 +53,7 @@ export default {
 		{
 			name: "person",
 			type: "string",
+			prompt: "which staff member should I search for?",
 		},
 	],
 	func: async (client: Client, message: Message, result: ArgumentResult) => {

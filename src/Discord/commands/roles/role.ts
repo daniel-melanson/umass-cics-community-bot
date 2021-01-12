@@ -12,6 +12,7 @@ export default {
 		{
 			name: "roles",
 			type: "Role",
+			prompt: "which roles do you want added or removed?",
 			infinite: true,
 		},
 	],

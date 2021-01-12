@@ -20,6 +20,7 @@ export default {
 	arguments: [
 		{
 			name: "expression",
+			prompt: "which class should I search for?",
 			type: "string",
 		},
 	],

@@ -10,9 +10,10 @@ export enum UserPermission {
 
 type ArgumentType = "string" | "GuildMember" | "GuildTextChannel" | "Role";
 
-interface ArgumentInfo {
+export interface ArgumentInfo {
 	name: string;
 	type: ArgumentType;
+	prompt: string;
 	infinite?: boolean;
 }
 
