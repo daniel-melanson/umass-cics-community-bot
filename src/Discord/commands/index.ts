@@ -4,7 +4,7 @@ import path from "path";
 import { Command, _Command, UserPermission } from "Discord/commands/types";
 import { capitalize } from "Discord/formatting";
 
-function error(cmd: _Command, reason: string) {
+function error(cmd: Command, reason: string) {
 	console.error(`[COMMANDS] Invalid command ${cmd.identifier}: ${reason}`);
 	process.exit(-1);
 }
@@ -65,7 +65,7 @@ export function requireCommandList(): Array<Readonly<_Command>> {
 				formalName: cmd.formalName || capitalize(cmd.identifier),
 				group: cmd.group,
 				aliases: cmd.aliases,
-				defaultPatterns: defaults.map(x => new RegExp(`/^!${x}(.*)/mi`)),
+				defaultPatterns: defaults.map(x => new RegExp(`/^!${x}\s*(.*)/mi`)),
 				patterns: cmd.patterns,
 				description: cmd.description,
 				details: cmd.details,
