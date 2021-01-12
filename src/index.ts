@@ -53,52 +53,6 @@ async function semesterPercentAnnouncement() {
 	}
 }
 
-async function weeklyAcademicCalendarAnnouncement() {
-	try {
-		const semesters = await getCurrentSemesters();
-
-		if (semesters) {
-			const format = (d: Date) => `${d.getUTCFullYear()}-${d.getUTCMonth()}-${d.getUTCDate()}`;
-
-			const today = new Date();
-			const weekSet = new Set();
-			for (let i = 0; i < 5; i++) {
-				weekSet.add(format(new Date(today.setDate(today.getDate() + i))));
-			}
-
-			const weekEvents: Array<{ date: Date; description: string; semester: string }> = [];
-			semesters.forEach(sem => {
-				sem.events.forEach(event => {
-					if (weekSet.has(format(event.date))) {
-						weekEvents.push({
-							date: event.date,
-							description: event.description,
-							semester: `${sem.season} ${sem.year}`,
-						});
-					}
-				});
-			});
-
-			if (weekEvents.length > 0) {
-				announce(
-					"university",
-					formatEmbed({
-						title: "Weekly UMass Academic Calender Summary",
-						fields: weekEvents.map(event => {
-							return {
-								name: event.date.toLocaleDateString(),
-								value: `${event.semester}: ${event.description}`,
-							};
-						}),
-					}),
-				);
-			}
-		}
-	} catch (e) {
-		console.warn(`Unable to post weekly semester update: ${e}`);
-	}
-}
-
 login(process.env["DISCORD_TOKEN"]!).then(() => {
 	if (process.env["DEBUG"]) return;
 
@@ -110,10 +64,8 @@ login(process.env["DISCORD_TOKEN"]!).then(() => {
 	/*
 	localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
 	localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
-	localSchedule("0 0 7 * * *", weeklyAcademicCalendarAnnouncement);
 	*/
 
 	localSchedule("0 * * * * *", semesterPercentAnnouncement);
 	localSchedule("0 * * * * *", academicCalendarAnnouncement);
-	//localSchedule("0 * * * * *", weeklyAcademicCalendarAnnouncement);
 });
