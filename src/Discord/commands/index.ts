@@ -10,7 +10,7 @@ function error(cmd: Command, reason: string) {
 }
 
 const identifierMatch = /^[a-zA-Z][a-zA-Z-]+$/;
-export function requireCommandList(): Array<Readonly<_Command>> {
+export function requireCommandList(ignore?: string): Array<Readonly<_Command>> {
 	const commandList = [];
 	const basePath = path.join(__dirname, "commands");
 
@@ -19,7 +19,7 @@ export function requireCommandList(): Array<Readonly<_Command>> {
 		const groupPath = path.join(basePath, folder);
 
 		for (const file in fs.readdirSync(groupPath)) {
-			if (!file.match(/\.js$/)) continue;
+			if (!file.match(/^\.js$/) || (ignore && file.match(new RegExp(`^${ignore}\.js$`)))) continue;
 
 			// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 			const cmd = require(path.join(groupPath, file)) as Command;
