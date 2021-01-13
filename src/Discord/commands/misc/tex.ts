@@ -29,10 +29,7 @@ export default {
 			const res = await fetch(`https://latex2image.joeraut.com/convert`, {
 				method: "POST",
 				body: new URLSearchParams([
-					[
-						"latexInput",
-						result.groups ? result.groups[1] : (result.args as Record<string, string>)["expression"],
-					],
+					["latexInput", result.expression],
 					["outputScale", "500%"],
 					["outputFormat", "JPG"],
 				]),
