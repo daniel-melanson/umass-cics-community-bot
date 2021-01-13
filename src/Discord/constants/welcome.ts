@@ -16,6 +16,7 @@ export const WELCOME_MESSAGES = [
 			Welcome to people who live with mental illness.
 			Welcome to those of you who are financially broke, or those broken in spirit.
 			It is my firm belief that you all belong here, and I want you to feel welcome. Whoever you, wherever you are on your journey in computer science, you are welcome here.*`),
+		timestamp: false,
 	}),
 	formatEmbed({
 		title:
@@ -54,5 +55,6 @@ export const WELCOME_MESSAGES = [
 				`),
 			},
 		],
+		timestamp: false,
 	}),
 ];

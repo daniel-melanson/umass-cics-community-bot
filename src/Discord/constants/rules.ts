@@ -2,6 +2,7 @@ import { oneLine } from "common-tags";
 import { formatEmbed } from "Discord/formatting";
 
 export const DISCORD_RULES = formatEmbed({
+	title: "UMass CICS Discord Server Rules",
 	description:
 		oneLine(`
 		By joining this discord server, you are bound to the following rules.
