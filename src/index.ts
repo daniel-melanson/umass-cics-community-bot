@@ -3,9 +3,7 @@ import { config } from "dotenv";
 config();
 
 import { login, announce } from "Discord/server";
-import { formatEmbed } from "Discord/formatting";
-
-import { getCurrentSemesters, getInSessionSemester } from "UMass/calendar";
+import { getInSessionSemester } from "UMass/calendar";
 
 const sameDay = (d0: Date, d1: Date) =>
 	d0.getUTCDate() === d1.getUTCDate() &&
