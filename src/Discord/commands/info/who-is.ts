@@ -4,7 +4,7 @@ import { Client, Message } from "discord.js";
 
 import { getStaffListFromQuery } from "UMass/staff";
 import { Staff } from "UMass/types";
-import { ArgumentResult, Command } from "Discord/commands/types";
+import { Command } from "Discord/commands/types";
 
 import { formatEmbed, capitalize } from "Discord/formatting";
 
