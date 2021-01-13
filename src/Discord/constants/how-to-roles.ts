@@ -5,7 +5,7 @@ import { formatEmbed } from "Discord/formatting";
 export const ROLES_TUTORIAL = formatEmbed({
 	title: "Role Management",
 	description: oneLine(`There are dozens of channels in this server that are linked to roles.
-	You can obtain the roles by either using the \`!roles\` command or using this (website)[https://discord.ltseng.me/].
+	You can obtain the roles by either using the \`!roles\` command or using this [website](https://discord.ltseng.me/).
 	If you would like to see all channels, you can give yourself the \`Snooper\` role.
 	Some roles require verification to obtain. You can read more about those below.`),
 	fields: [
