@@ -1,10 +1,9 @@
 import { connectToCollection } from "UMass/database";
 import { Staff } from "UMass/types";
+import { sanitize } from "Shared/stringUtil";
 
 export async function getStaffListFromQuery(query: string): Promise<Array<Staff>> {
-	query = query.trim();
-	query = query.toLowerCase();
-	while (query.includes("  ")) query.replaceAll("  ", " ");
+	query = sanitize(query);
 
 	const staffCollection = await connectToCollection("staff");
 	return staffCollection

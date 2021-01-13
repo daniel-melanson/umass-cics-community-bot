@@ -1,5 +1,6 @@
 import { connectToCollection } from "UMass/database";
 import { Course } from "UMass/types";
+import { sanitize } from "Shared/stringUtil";
 
 function getCourseIdFromQuery(query: string): string | undefined {
 	const match = query
@@ -32,9 +33,7 @@ function getCourseIdFromQuery(query: string): string | undefined {
 }
 
 export async function getCourseFromQuery(query: string): Promise<Course | Array<Course> | null> {
-	query = query.trim();
-	query = query.toUpperCase();
-	while (query.includes("  ")) query.replaceAll("  ", " ");
+	query = sanitize(query);
 
 	const courseId = getCourseIdFromQuery(query);
 
