@@ -1,6 +1,6 @@
 import { Client, Message, Role } from "discord.js";
 
-import { ArgumentResult, Command } from "../types";
+import { Command } from "../types";
 
 export default {
 	identifier: "role",
@@ -16,12 +16,12 @@ export default {
 			infinite: true,
 		},
 	],
-	func: async (client: Client, message: Message, result: ArgumentResult) => {
-		const roleList = result!.args["roles"] as Array<Role>;
+	func: async (client: Client, message: Message, result: { roles: Array<Role> }) => {
+		const roleList = result["roles"];
 
 		const added = [];
 		const removed = [];
-		const roleManager = message.member.roles;
+		const roleManager = message.member!.roles;
 		for (const role of roleList) {
 			if (roleManager.cache.has(role.id)) {
 				removed.push(role.name);
@@ -30,7 +30,9 @@ export default {
 				added.push(role.name);
 				await roleManager.add(role);
 			} else {
-				message.reply(`unable to give you the ${role.name} role. Contact an administrator.`);
+				message.reply(
+					`unable to give you the ${role.name} role. Role contains permissions. Contact an administrator.`,
+				);
 			}
 		}
 

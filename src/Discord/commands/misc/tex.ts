@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 
 import { Client, Message } from "discord.js";
 
-import { Command, ArgumentResult } from "Discord/commands/types";
+import { Command } from "Discord/commands/types";
 
 export default {
 	identifier: "TeX",
@@ -20,8 +20,8 @@ export default {
 			infinite: true,
 		},
 	],
-	func: async (client: Client, message: Message, result: ArgumentResult) => {
-		const reply = (await message.reply(`processing...`)) as Message;
+	func: async (client: Client, message: Message, result: { expression: string }) => {
+		const reply = await message.reply(`processing...`);
 
 		let image,
 			error = "Unknown";

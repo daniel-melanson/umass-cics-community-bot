@@ -56,8 +56,8 @@ export default {
 			prompt: "which staff member should I search for?",
 		},
 	],
-	func: async (client: Client, message: Message, result: ArgumentResult) => {
-		const queryResult = await searchStaff(result.groups ? result.groups[2] : (result.args!["person"] as string));
+	func: async (client: Client, message: Message, result: { person: string }) => {
+		const queryResult = await searchStaff(result.person);
 		if (!queryResult) {
 			return message.reply("I encountered an error while attempting this query. Try again later.");
 		} else if (queryResult.length === 0) {

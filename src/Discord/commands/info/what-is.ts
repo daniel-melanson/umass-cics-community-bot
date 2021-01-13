@@ -3,7 +3,7 @@ import { oneLine } from "common-tags";
 import { Client, Message } from "discord.js";
 
 import { getCourseFromQuery } from "UMass/courses";
-import { ArgumentResult, Command } from "Discord/commands/types";
+import { Command } from "Discord/commands/types";
 
 import { formatEmbed, capitalize } from "Discord/formatting";
 
@@ -19,17 +19,15 @@ export default {
 	examples: ["What is CS 187?", "What's 220?"],
 	arguments: [
 		{
-			name: "expression",
+			name: "course",
 			prompt: "which class should I search for?",
 			type: "string",
 		},
 	],
-	func: async (client: Client, message: Message, result: ArgumentResult) => {
+	func: async (client: Client, message: Message, result: { course: string }) => {
 		let queryResult;
 		try {
-			queryResult = await getCourseFromQuery(
-				result.groups ? result.groups[2] : (result.args!["expression"] as string),
-			);
+			queryResult = await getCourseFromQuery(result.course);
 		} catch (e) {
 			console.log("[DATABASE]", e);
 			return message.reply("I encountered an error while attempting this query. Try again later.");

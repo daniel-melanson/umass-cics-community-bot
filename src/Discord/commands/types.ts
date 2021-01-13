@@ -7,19 +7,11 @@ export enum UserPermission {
 	Moderator,
 	Owner,
 }
-
-type ArgumentType = "string" | "GuildMember" | "GuildTextChannel" | "Role";
-
 export interface ArgumentInfo {
 	name: string;
-	type: ArgumentType;
+	type: "string" | "number" | "GuildMember" | "GuildTextChannel" | "Role";
 	prompt: string;
 	infinite?: boolean;
-}
-
-export interface ArgumentResult {
-	groups?: Array<string>;
-	args?: Record<string, unknown>;
 }
 
 // Internal command that has additional properties for processing
@@ -37,7 +29,7 @@ export interface _Command {
 	userPermission: UserPermission;
 	clientPermissions?: Array<PermissionResolvable>;
 	arguments?: Array<ArgumentInfo>;
-	func: (client: Client, message: Message, result: ArgumentResult) => Promise<Message | Array<Message>>;
+	func: (client: Client, message: Message, result: unknown) => Promise<Message | Array<Message>>;
 }
 
 type RequiredFields = "identifier" | "description" | "func" | "group";
