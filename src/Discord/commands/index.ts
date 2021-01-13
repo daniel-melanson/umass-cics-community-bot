@@ -12,13 +12,12 @@ function error(cmd: Command, reason: string) {
 const identifierMatch = /^[a-zA-Z][a-zA-Z-]+$/;
 export function requireCommandList(ignore?: string): Array<Readonly<_Command>> {
 	const commandList = [];
-	const basePath = path.join(__dirname, "commands");
 
 	const reservedIdentifiers = new Set();
-	for (const folder in ["admin", "info", "misc", "roles"]) {
-		const groupPath = path.join(basePath, folder);
+	for (const folder of ["admin", "info", "misc", "roles"]) {
+		const groupPath = path.join(__dirname, folder);
 
-		for (const file in fs.readdirSync(groupPath)) {
+		for (const file of fs.readdirSync(groupPath)) {
 			if (!file.match(/^\.js$/) || (ignore && file.match(new RegExp(`^${ignore}\.js$`)))) continue;
 
 			// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
