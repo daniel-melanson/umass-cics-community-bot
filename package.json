@@ -2,11 +2,11 @@
   "name": "umass-cics-discord-bot",
   "version": "2.0.0",
   "description": "Bot for unofficial UMass CICS discord.",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "npx ttsc -b",
     "build-watch": "npx ttsc -b -w",
-    "start": "node lib/index.js"
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "prettier": "^2.2.0",
     "ttypescript": "^1.5.12",
     "typescript": "^4.0.5",
-    "typescript-transform-paths": "^2.0.2"
+    "typescript-transform-paths": "^2.2.2"
   },
   "dependencies": {
     "common-tags": "^1.8.0",
