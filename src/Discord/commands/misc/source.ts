@@ -4,7 +4,8 @@ import { oneLine } from "common-tags";
 import { Command } from "Discord/commands/types";
 import { formatEmbed } from "Discord/formatting";
 
-import { bugs, homepage } from "../../../../package.json";
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+const { bugs, homepage } = require("../../../../package.json");
 
 export default {
 	identifier: "source",
