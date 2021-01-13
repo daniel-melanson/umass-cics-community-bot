@@ -58,7 +58,7 @@ async function updateDatabase(recursive: boolean) {
 	const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
 
 	try {
-		const client = new MongoClient(CONNECTION_STRING);
+		const client = new MongoClient(CONNECTION_STRING, { useUnifiedTopology: true });
 		await client.connect();
 
 		client.db(nextDatabase).dropDatabase();
