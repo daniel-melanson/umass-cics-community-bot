@@ -19,6 +19,6 @@ export default {
 			maxAge: 0,
 		});
 
-		return message.reply(`here is a permanent invite to this discord: ${invite}`);
+		return message.reply(`here is a permanent invite to this discord: ${invite.toString()}`);
 	},
 } as Command;
