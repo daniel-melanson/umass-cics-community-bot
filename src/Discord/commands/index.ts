@@ -69,7 +69,7 @@ export function requireCommandList(ignore?: string): Array<Readonly<_Command>> {
 				formalName: cmd.formalName || capitalize(cmd.identifier),
 				group: cmd.group,
 				aliases: cmd.aliases,
-				defaultPatterns: defaults.map(x => new RegExp(`/^!${x}\s*(.*)/mi`)),
+				defaultPatterns: defaults.map(x => new RegExp(`^!${x}\\s*(.*)`, "mi")),
 				patterns: cmd.patterns,
 				description: cmd.description,
 				details: cmd.details,
