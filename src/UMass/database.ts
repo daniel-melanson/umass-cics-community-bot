@@ -1,9 +1,10 @@
 import { exec, ExecException } from "child_process";
-
-import { MongoClient, MongoError, Collection, Db } from "mongodb";
+import dotenv from "dotenv";
+import Mongo from "mongodb";
 
 import { Staff, Semester, Course } from "UMass/types";
 
+dotenv.config();
 const CONNECTION_STRING = process.env["MONGO_CONNECTION_STRING"] || "";
 
 const SECOND = 1000;
@@ -12,16 +13,14 @@ const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
 const UPDATE_TIME = DAY * 3;
 
-let currentDatabase = "umass_0";
-function connectToDatabase(): Promise<Db> {
+let currentDatabase = "umass";
+function connectToDatabase(): Promise<Mongo.Db> {
 	return new Promise((res, rej) => {
-		MongoClient.connect(CONNECTION_STRING, (error: MongoError, client: MongoClient) => {
-			if (error) {
-				return rej(error);
-			}
-
-			return res(client.db(currentDatabase));
-		});
+		const client = new Mongo.MongoClient(CONNECTION_STRING, { useUnifiedTopology: true });
+		client
+			.connect()
+			.then(() => res(client.db(currentDatabase)))
+			.catch(error => rej(error));
 	});
 }
 
@@ -35,7 +34,7 @@ type UMassCollectionData<T> = T extends "staff"
 	: never;
 export async function connectToCollection<T extends UMassCollection>(
 	collection: T,
-): Promise<Collection<UMassCollectionData<T>>> {
+): Promise<Mongo.Collection<UMassCollectionData<T>>> {
 	const db = await connectToDatabase();
 
 	return db.collection(collection);
@@ -58,7 +57,7 @@ async function updateDatabase(recursive: boolean) {
 	const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
 
 	try {
-		const client = new MongoClient(CONNECTION_STRING, { useUnifiedTopology: true });
+		const client = new Mongo.MongoClient(CONNECTION_STRING, { useUnifiedTopology: true });
 		await client.connect();
 
 		client.db(nextDatabase).dropDatabase();
