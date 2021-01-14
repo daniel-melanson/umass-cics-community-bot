@@ -12,6 +12,7 @@ export interface ArgumentInfo {
 	type: "string" | "number" | "GuildMember" | "GuildTextChannel" | "Role";
 	prompt: string;
 	infinite?: boolean;
+	matchGroupIndex?: number;
 }
 
 // Internal command that has additional properties for processing

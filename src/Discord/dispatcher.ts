@@ -223,10 +223,11 @@ async function attemptCommandRun(
 				}
 			}
 		} else {
-			result = {} as Record<string, unknown>;
-			for (let i = 0; i < command.arguments.length; i++) {
-				const arg = command.arguments[i];
-				result[arg.name] = match[i + 1];
+			result = {} as Record<string, string>;
+			for (const arg of command.arguments) {
+				if (arg.matchGroupIndex) {
+					result[arg.name] = match[arg.matchGroupIndex];
+				}
 			}
 		}
 	}

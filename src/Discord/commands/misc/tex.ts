@@ -8,7 +8,7 @@ export default {
 	identifier: "TeX",
 	group: "Miscellaneous",
 	aliases: ["latex"],
-	patterns: [/\$(.)+\$/],
+	patterns: [/\$(.+)\$/],
 	description: "Renders a given TeX expression and posts the output.",
 	details: "This command will only render valid **TeX** expressions. ",
 	examples: [],
@@ -18,6 +18,7 @@ export default {
 			type: "string",
 			prompt: "supply an expression for me to render.",
 			infinite: true,
+			matchGroupIndex: 1,
 		},
 	],
 	func: async (client: Client, message: Message, result: { expression: string }) => {

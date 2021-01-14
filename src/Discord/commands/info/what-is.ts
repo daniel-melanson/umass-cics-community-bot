@@ -13,7 +13,7 @@ export default {
 	identifier: "what-is",
 	formalName: "What Is",
 	group: "Information",
-	patterns: [/^(what is|what'?s) ([\w ]+)\??$/i],
+	patterns: [/^(what is|what'?s) ([\w ]+)\??$/im],
 	description: "Displays information about a UMass course if it exists.",
 	details: "Attempts to retrieve course information given a search query.",
 	examples: ["What is CS 187?", "What's 220?"],
@@ -22,6 +22,7 @@ export default {
 			name: "course",
 			prompt: "which class should I search for?",
 			type: "string",
+			matchGroupIndex: 2,
 		},
 	],
 	func: async (client: Client, message: Message, result: { course: string }) => {
