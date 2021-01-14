@@ -9,8 +9,10 @@ function error(cmd: Command, reason: string) {
 	process.exit(-1);
 }
 
+const __filename = import.meta.url.replace("file:/", "/");
+const __dirname = __filename.substring(0, __filename.lastIndexOf("/") + 1);
 const identifierMatch = /^[a-zA-Z][a-zA-Z-]+$/;
-export function requireCommandList(ignore?: string): Array<Readonly<_Command>> {
+export async function requireCommandList(ignore?: string): Promise<Array<Readonly<_Command>>> {
 	const commandList = [];
 
 	const reservedIdentifiers = new Set();
@@ -21,12 +23,8 @@ export function requireCommandList(ignore?: string): Array<Readonly<_Command>> {
 			if (!file.match(/^[\w\-]+\.js$/) || (ignore && file.match(new RegExp(`^${ignore}\.js$`)))) continue;
 
 			// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-			const cmdModule = require(path.join(groupPath, file));
-			const cmd = cmdModule.default as Command | undefined;
-			if (!cmd) {
-				console.error(`[COMMANDS] Unable to register command '${file}'. Check exports clause.`);
-				continue;
-			}
+			const cmdModule = await import(path.join(groupPath, file));
+			const cmd = cmdModule.default as Command;
 
 			const defaults = [cmd.identifier];
 			if (cmd.aliases) defaults.push(...cmd.aliases);

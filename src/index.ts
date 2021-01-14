@@ -1,10 +1,10 @@
-import { schedule } from "node-cron";
-import { config } from "dotenv";
-config();
+import nodecron from "node-cron";
+import dotenv from "dotenv";
 
 import { login, announce } from "Discord/server";
 import { getInSessionSemester } from "UMass/calendar";
 
+dotenv.config();
 const sameDay = (d0: Date, d1: Date) =>
 	d0.getUTCDate() === d1.getUTCDate() &&
 	d0.getUTCMonth() === d1.getUTCMonth() &&
@@ -52,10 +52,8 @@ async function semesterPercentAnnouncement() {
 }
 
 login(process.env["DISCORD_TOKEN"]!).then(() => {
-	if (process.env["DEBUG"]) return;
-
 	const localSchedule = (exp: string, func: () => void) =>
-		schedule(exp, func, {
+		nodecron.schedule(exp, func, {
 			timezone: "America/New_York",
 		});
 
