@@ -10,8 +10,9 @@ import { handleCommandMessage } from "./dispatcher";
 
 const client = new Client();
 client.on("message", async (message: Message) => {
-	const content = message.content;
+	if (message.partial || message.author.bot) return;
 
+	const content = message.content;
 	if (message.deletable && content === "^") {
 		const previousMessage = (
 			await message.channel.messages.fetch({
