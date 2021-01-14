@@ -25,6 +25,19 @@ client.on("message", async (message: Message) => {
 		return message.delete();
 	}
 
+	const guild = message.guild;
+	if (guild && (message.channel as TextChannel).name === "welcome") {
+		if (message.content === "verify") {
+			const roleManager = await guild.roles.fetch();
+			const verifiedRole = roleManager.cache.find(role => role.name === "Verified");
+
+			if (verifiedRole) message.member!.roles.add(verifiedRole);
+			else console.error("[DISCORD] Unable to find Verified role.");
+		}
+
+		return message.delete();
+	}
+
 	handleCommandMessage(client, message);
 });
 
