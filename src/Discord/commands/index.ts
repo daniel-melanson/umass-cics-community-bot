@@ -18,10 +18,15 @@ export function requireCommandList(ignore?: string): Array<Readonly<_Command>> {
 		const groupPath = path.join(__dirname, folder);
 
 		for (const file of fs.readdirSync(groupPath)) {
-			if (!file.match(/^\.js$/) || (ignore && file.match(new RegExp(`^${ignore}\.js$`)))) continue;
+			if (!file.match(/^[\w\-]+\.js$/) || (ignore && file.match(new RegExp(`^${ignore}\.js$`)))) continue;
 
 			// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-			const cmd = require(path.join(groupPath, file)) as Command;
+			const cmdModule = require(path.join(groupPath, file));
+			const cmd = cmdModule.default as Command | undefined;
+			if (!cmd) {
+				console.error(`[COMMANDS] Unable to register command '${file}'. Check exports clause.`);
+				continue;
+			}
 
 			const defaults = [cmd.identifier];
 			if (cmd.aliases) defaults.push(...cmd.aliases);
