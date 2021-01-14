@@ -3,12 +3,10 @@ import { Client, Message } from "discord.js";
 import { Command } from "Discord/commands/types";
 
 export default {
-	identifier: "pit",
-	group: "Administrative",
-	description: "Temporarily caches and removes the roles of a list of users.",
-	examples: ["!pit @John @Jane @Jordan"],
-	guildOnly: true,
-	clientPermissions: ["MANAGE_ROLES"],
+	identifier: "courses",
+	group: "Information",
+	description: "Generates a list of courses given a subject.",
+	examples: ["!courses", "!courses stat"],
 	func: async (client: Client, message: Message) => {
 		throw new Error("not implemented");
 	},
