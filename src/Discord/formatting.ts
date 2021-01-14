@@ -12,7 +12,7 @@ import {
 	MessageEmbed,
 } from "discord.js";
 
-import { UMASS_MAROON, ICON_URL } from "Shared/constants";
+import { UMASS_MAROON, ICON_URL } from "Discord/constants";
 
 interface EmbedOptions {
 	title?: string;
