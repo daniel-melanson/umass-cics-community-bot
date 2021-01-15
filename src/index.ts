@@ -1,8 +1,10 @@
 import nodecron from "node-cron";
 import dotenv from "dotenv";
 
-import { login, announce } from "Discord/server";
-import { getInSessionSemester } from "UMass/calendar";
+dotenv.config();
+
+const { login, announce } = await import("Discord/server");
+const { getInSessionSemester } = await import("UMass/calendar");
 
 dotenv.config();
 const sameDay = (d0: Date, d1: Date) =>

@@ -1,10 +1,9 @@
 import { exec, ExecException } from "child_process";
-import dotenv from "dotenv";
+
 import Mongo from "mongodb";
 
 import { Staff, Semester, Course } from "UMass/types";
 
-dotenv.config();
 const CONNECTION_STRING = process.env["MONGO_CONNECTION_STRING"] || "";
 
 const SECOND = 1000;
