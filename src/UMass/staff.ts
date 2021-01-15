@@ -1,6 +1,6 @@
 import { connectToCollection } from "UMass/database";
 import { Staff } from "UMass/types";
-import { sanitize } from "Shared/stringUtil";
+import { sanitize } from "UMass/utility";
 
 export async function getStaffListFromQuery(query: string): Promise<Array<Staff>> {
 	query = sanitize(query);
