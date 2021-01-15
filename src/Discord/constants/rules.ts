@@ -1,4 +1,4 @@
-import { oneLine } from "common-tags";
+import { oneLine } from "Shared/stringUtil";
 import { formatEmbed } from "Discord/formatting";
 
 export const DISCORD_RULES = formatEmbed({

@@ -1,6 +1,6 @@
 import { connectToCollection } from "UMass/database";
 import { Course } from "UMass/types";
-import { sanitize } from "UMass/utility";
+import { sanitize } from "Shared/stringUtil";
 
 function getCourseIdFromQuery(query: string): string | undefined {
 	const match = query

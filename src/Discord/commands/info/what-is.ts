@@ -5,7 +5,8 @@ import { Client, Message } from "discord.js";
 import { getCourseFromQuery } from "UMass/courses";
 import { Command } from "Discord/commands/types";
 
-import { formatEmbed, capitalize } from "Discord/formatting";
+import { formatEmbed } from "Discord/formatting";
+import { capitalize, oneLine } from "Shared/stringUtil";
 
 const ignoredKeys = new Set(["id", "title", "website", "description"]);
 

@@ -1,4 +1,5 @@
 import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
+import { oneLine } from "Shared/stringUtil";
 
 import { NOTIFICATION_TUTORIALS } from "./constants/how-to-notifications";
 import { ROLES_TUTORIAL } from "./constants/how-to-roles";

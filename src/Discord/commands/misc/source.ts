@@ -1,5 +1,5 @@
 import { Client, Message } from "discord.js";
-import { oneLine } from "common-tags";
+import { oneLine } from "Shared/stringUtil";
 
 import { Command } from "Discord/commands/types";
 import { formatEmbed } from "Discord/formatting";

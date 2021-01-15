@@ -37,7 +37,6 @@
     "typescript-transform-paths": "^2.2.2"
   },
   "dependencies": {
-    "common-tags": "^1.8.0",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "mongodb": "^3.6.3",

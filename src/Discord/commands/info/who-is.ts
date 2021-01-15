@@ -1,12 +1,10 @@
-import { oneLine } from "common-tags";
-
 import { Client, Message } from "discord.js";
 
-import { getStaffListFromQuery } from "UMass/staff";
-import { Staff } from "UMass/types";
-import { Command } from "Discord/commands/types";
-
 import { formatEmbed, capitalize } from "Discord/formatting";
+import { Command } from "Discord/commands/types";
+import { oneLine } from "Shared/stringUtil";
+import { Staff } from "UMass/types";
+import { getStaffListFromQuery } from "UMass/staff";
 
 const ignoredKeys = new Set(["names", "website"]);
 function createStaffEmbed(staff: Staff) {

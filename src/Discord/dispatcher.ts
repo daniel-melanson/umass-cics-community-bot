@@ -1,4 +1,4 @@
-import { oneLine } from "common-tags";
+import { oneLine } from "Shared/stringUtil";
 import { GuildMember, Message, TextChannel, Collection, Client, Channel, User } from "discord.js";
 
 import { requireCommandList } from "Discord/commands";
