@@ -2,15 +2,19 @@ import { connectToCollection } from "UMass/database";
 import { Staff } from "UMass/types";
 import { sanitize } from "Shared/stringUtil";
 
-export async function getStaffListFromQuery(query: string): Promise<Array<Staff>> {
+interface ScoredStaff extends Staff {
+	_score: number;
+}
+
+export async function getStaffListFromQuery(query: string): Promise<Array<ScoredStaff>> {
 	query = sanitize(query);
 
 	const staffCollection = await connectToCollection("staff");
 	return staffCollection
 		.aggregate([
 			{ $match: { $text: { $search: query } } },
-			{ $sort: { score: { $meta: "textScore" } } },
-			{ $match: { score: { $gt: 0.75 } } },
+			{ $addFields: { _score: { $meta: "textScore" } } },
+			{ $match: { _score: { $gt: 0.5 } } },
 		])
-		.toArray();
+		.toArray() as Promise<Array<ScoredStaff>>;
 }

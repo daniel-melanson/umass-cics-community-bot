@@ -6,7 +6,7 @@ import {
 	User,
 	MessageEmbedOptions,
 	MessageEmbedFooter,
-	MessageEmbedImage,
+	MessageEmbedAuthor,
 	MessageEmbedThumbnail,
 	MessageEmbedVideo,
 	MessageEmbed,
@@ -22,9 +22,9 @@ interface EmbedOptions {
 	color?: ColorResolvable;
 	fields?: Array<EmbedFieldData>;
 	files?: Array<MessageAttachment | string | FileOptions>;
-	author?: User | boolean;
+	author?: User | MessageEmbedAuthor | boolean;
 	thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
-	image?: Partial<MessageEmbedImage> & { proxy_url?: string };
+	image?: string;
 	video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
 	footer?: Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string };
 }
@@ -36,20 +36,26 @@ export function formatEmbed(opts: EmbedOptions): MessageEmbed {
 		description: opts.description,
 		timestamp: opts.timestamp !== false ? new Date() : undefined,
 		color: opts.color || UMASS_MAROON,
+		image: {
+			url: opts.image,
+		},
 		fields: opts.fields,
 		footer: opts.footer,
 	};
 
-	if (opts.author === true) {
+	const author = opts.author;
+	if (author === true) {
 		generated.author = {
 			name: "UMass CICS Community",
 			iconURL: ICON_URL,
 		};
-	} else if (opts.author instanceof User) {
+	} else if (author instanceof User) {
 		generated.author = {
-			name: opts.author.tag,
-			iconURL: opts.author.avatarURL({ dynamic: true }) || undefined,
+			name: author.tag,
+			iconURL: author.avatarURL({ dynamic: true }) || undefined,
 		};
+	} else if (author) {
+		generated.author = author;
 	}
 
 	return new MessageEmbed(generated);
