@@ -53,17 +53,23 @@ async function semesterPercentAnnouncement() {
 	}
 }
 
-login(process.env["DISCORD_TOKEN"]!).then(() => {
-	const localSchedule = (exp: string, func: () => void) =>
-		nodecron.schedule(exp, func, {
-			timezone: "America/New_York",
-		});
+console.log("Logging in...");
+login(process.env["DISCORD_TOKEN"]!)
+	.then(() => {
+		const localSchedule = (exp: string, func: () => void) =>
+			nodecron.schedule(exp, func, {
+				timezone: "America/New_York",
+			});
 
-	/*
+		/*
 	localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
 	localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
 	*/
 
-	localSchedule("0 * * * * *", semesterPercentAnnouncement);
-	localSchedule("0 * * * * *", academicCalendarAnnouncement);
-});
+		localSchedule("0 * * * * *", semesterPercentAnnouncement);
+		localSchedule("0 * * * * *", academicCalendarAnnouncement);
+	})
+	.catch(error => {
+		console.error("[DISCORD] Unable to login: ", error);
+		process.exit(-1);
+	});

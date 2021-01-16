@@ -52,6 +52,12 @@ export function login(token: string): Promise<void> {
 		console.log(`Logged in as ${client.user?.tag}`);
 
 		const guild = await client.guilds.fetch(process.env["DISCORD_GUILD_ID"]!);
+		const botMember = await guild.members.fetch(client.user!);
+		if (!botMember.permissions.has("ADMINISTRATOR")) {
+			console.error("[SERVER] Insignificant permissions in guild.");
+			process.exit(-1);
+		}
+
 		const sendChannel = async (name: string, embeds: MessageEmbed | Array<MessageEmbed>) => {
 			const channel = guild.channels.cache.find(x => x.type === "text" && x.name === name) as
 				| TextChannel
