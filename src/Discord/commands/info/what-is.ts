@@ -1,14 +1,12 @@
-import { oneLine } from "common-tags";
-
 import { Client, Message } from "discord.js";
 
 import { getCourseFromQuery } from "UMass/courses";
 import { Command } from "Discord/commands/types";
 
 import { formatEmbed } from "Discord/formatting";
-import { capitalize, oneLine } from "Shared/stringUtil";
+import { splitCamelCase, oneLine } from "Shared/stringUtil";
 
-const ignoredKeys = new Set(["id", "title", "website", "description"]);
+const ignoredKeys = new Set(["id", "title", "website", "description", "subject"]);
 
 export default {
 	identifier: "what-is",
@@ -35,22 +33,22 @@ export default {
 			return message.reply("I encountered an error while attempting this query. Try again later.");
 		}
 
-		if (queryResult == null || (queryResult instanceof Array && queryResult.length === 0)) {
+		if (!queryResult || (queryResult instanceof Array && queryResult.length === 0)) {
 			return message.reply("I cannot seem to find a course with an identifier like that.");
-		} else if (queryResult instanceof Array) {
+		} else if (queryResult instanceof Array && queryResult.length > 1) {
 			return message.reply(
 				oneLine(`I was unable to narrow down your search to a single course.
-				Which one of the following did you mean: ${queryResult.map(x => x.id).join()}?`),
+					Which one of the following did you mean: ${queryResult.map(x => x.id).join(", ")}?`),
 			);
 		} else {
-			const course = queryResult;
+			const course = queryResult instanceof Array ? queryResult[0] : queryResult;
 			const fields = [];
 
 			for (const [key, value] of Object.entries(course)) {
-				if (!ignoredKeys.has(key) && value) {
+				if (!ignoredKeys.has(key) && value && !key.startsWith("_")) {
 					fields.push({
-						name: capitalize(key),
-						value: value,
+						name: splitCamelCase(key),
+						value: value instanceof Array ? value.join(", ") : value,
 					});
 				}
 			}

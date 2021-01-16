@@ -32,6 +32,7 @@ interface EmbedOptions {
 export function formatEmbed(opts: EmbedOptions): MessageEmbed {
 	const generated: MessageEmbedOptions = {
 		title: opts.title,
+		url: opts.url,
 		description: opts.description,
 		timestamp: opts.timestamp !== false ? new Date() : undefined,
 		color: opts.color || UMASS_MAROON,

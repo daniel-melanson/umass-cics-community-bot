@@ -12,7 +12,7 @@ const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
 const UPDATE_TIME = DAY * 3;
 
-let currentDatabase = "umass";
+let currentDatabase = "umass_0";
 function connectToDatabase(): Promise<Mongo.Db> {
 	return new Promise((res, rej) => {
 		const client = new Mongo.MongoClient(CONNECTION_STRING, { useUnifiedTopology: true });

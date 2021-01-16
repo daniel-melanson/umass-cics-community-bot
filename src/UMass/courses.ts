@@ -6,7 +6,7 @@ function getCourseIdFromQuery(query: string): string | undefined {
 	const match = query
 		.trim()
 		.toUpperCase()
-		.match(/^(C|CS|M|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS)\s*\d{3}[a-z]*$/i);
+		.match(/^(C|CS|M|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS)\s*(h?\d{3}[a-z0-9]*)$/im);
 
 	if (match === null) return undefined;
 
@@ -29,7 +29,7 @@ function getCourseIdFromQuery(query: string): string | undefined {
 			subject = "INFO";
 	}
 
-	return `${subject} ${match[1]}`;
+	return `${subject} ${match[2]}`;
 }
 
 export async function getCourseFromQuery(query: string): Promise<Course | Array<Course> | null> {
@@ -44,11 +44,7 @@ export async function getCourseFromQuery(query: string): Promise<Course | Array<
 		});
 	} else {
 		return courseCollection
-			.aggregate([
-				{ $match: { $text: { $search: query } } },
-				{ $sort: { score: { $meta: "textScore" } } },
-				{ $match: { score: { $gt: 1.0 } } },
-			])
+			.aggregate([{ $match: { $text: { $search: query } } }, { $sort: { score: { $meta: "textScore" } } }])
 			.toArray();
 	}
 }
