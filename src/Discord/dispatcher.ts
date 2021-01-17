@@ -1,27 +1,11 @@
 import { oneLine } from "Shared/stringUtil";
-import { GuildMember, Message, TextChannel, Collection, Client, Channel, User } from "discord.js";
+import { GuildMember, Message, TextChannel, Collection, Client } from "discord.js";
 
 import { requireCommandList } from "Discord/commands";
 import { _Command, ArgumentInfo, UserPermission } from "Discord/commands/types";
+import { hasPendingReply } from "Discord/nextUserReply";
 
 const OWNER_ID = process.env["DISCORD_OWNER_ID"];
-
-const pendingMessageSet = new Set();
-const serialize = (user: GuildMember | User, channel: Channel) => user.id + channel.id;
-export async function awaitNextUserMessage(
-	user: GuildMember | User,
-	channel: TextChannel,
-): Promise<Message | undefined> {
-	pendingMessageSet.add(serialize(user, channel));
-
-	const reply = await channel.awaitMessages((newMessage: Message) => newMessage.author.id === user.id, {
-		max: 1,
-		time: 30000,
-	});
-
-	pendingMessageSet.delete(serialize(user, channel));
-	return reply.first()!;
-}
 
 function fetchMemberLevel(userId: string, member: GuildMember | null) {
 	if (userId === OWNER_ID) return UserPermission.Owner;
@@ -121,7 +105,7 @@ async function collectRemainingArguments(
 ) {
 	for (let i = index; i < args.length; i++) {
 		const arg = args[i];
-		const parser = parserMap[arg.type];
+		//const parser = parserMap[arg.type];
 
 		message.reply(
 			`${arg.prompt}
@@ -131,7 +115,7 @@ async function collectRemainingArguments(
 
 		let parsedValue;
 		do {
-			const nextMessage = await awaitNextUserMessage(message.author, message.channel as TextChannel);
+			//const nextMessage = await nextUserMessage(message.author, message.channel as TextChannel);
 
 			if (!parsedValue) {
 				message.reply("Unable to parse value.");
@@ -219,7 +203,10 @@ async function attemptCommandRun(
 				result = await parseArguments(command, message, match[1]);
 			} catch (e) {
 				if (e instanceof Error) {
-					message.reply(`unable to parse arguments. Use \`!help ${command.identifier}\` for more information.`)
+					message.reply(
+						oneLine(`unable to parse arguments.
+							Use \`!help ${command.identifier}\` for more information.`),
+					);
 				}
 			}
 		} else {
@@ -233,7 +220,7 @@ async function attemptCommandRun(
 	}
 
 	try {
-		return command.func(client, message, result as unknown);
+		await command.func(client, message, result as unknown);
 	} catch (e) {
 		console.error(`[COMMAND ${command.identifier}] ${e}`);
 
@@ -245,12 +232,12 @@ async function attemptCommandRun(
 	}
 }
 
-const COMMAND_LIST = requireCommandList();
+const COMMAND_LIST = await requireCommandList();
 export async function handleCommandMessage(
 	client: Client,
 	message: Message,
 ): Promise<Message | Array<Message> | undefined> {
-	if (pendingMessageSet.has(serialize(message.author, message.channel))) return;
+	if (hasPendingReply(message)) return;
 	const content = message.content;
 
 	for (const command of COMMAND_LIST) {
@@ -273,7 +260,7 @@ export async function handleCommandMessage(
 	if (content.match(/!\w/)) {
 		return message.reply(
 			oneLine(`that does not seem to be an available command.
-			Use the \`!help\`, \`help <command-name>\`,
+			Use the \`!help\`, \`!help <command-name>\`,
 			or \`!commands\` for more information.`),
 		);
 	}

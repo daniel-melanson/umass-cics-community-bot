@@ -52,7 +52,7 @@ function cmd(cmdStr: string) {
 	});
 }
 
-async function updateDatabase(recursive: boolean) {
+async function updateDatabase(recursive?: boolean) {
 	const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
 
 	try {
@@ -70,5 +70,5 @@ async function updateDatabase(recursive: boolean) {
 		if (recursive) setTimeout(updateDatabase, HOUR, true);
 	}
 }
-setTimeout(updateDatabase, 3 * HOUR, false);
+setTimeout(updateDatabase, 3 * HOUR);
 setTimeout(updateDatabase, UPDATE_TIME, true);
