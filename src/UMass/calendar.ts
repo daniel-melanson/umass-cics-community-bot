@@ -10,10 +10,10 @@ import { Semester } from "UMass/types";
  */
 export async function getInSessionSemester(): Promise<Semester | undefined> {
 	const semesterCollection = await connectToCollection("semesters");
-	const semesterCursor = semesterCollection.find();
+	const semesterArray = await semesterCollection.find().toArray();
 
 	const today = new Date();
-	for (let semester = await semesterCursor.next(); semester != null; semester = await semesterCursor.next()) {
+	for (const semester of semesterArray) {
 		if (today <= semester.endDate && today >= semester.startDate) {
 			return semester;
 		}
@@ -30,7 +30,7 @@ export async function getCurrentSemesters(): Promise<Array<Semester>> {
 	const semesterCollection = await connectToCollection("semesters");
 	const haveEvents: Array<Semester> = [];
 
-	const semesterCursor = await semesterCollection.find();
+	const semesterCursor = await semesterCollection.find().toArray();
 	const today = new Date();
 	semesterCursor.forEach(semester => {
 		const events = semester.events;
@@ -39,5 +39,5 @@ export async function getCurrentSemesters(): Promise<Array<Semester>> {
 		}
 	});
 
-	return haveEvents;
+	return haveEvents.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 }

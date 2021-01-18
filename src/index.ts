@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const { login, announce } = await import("Discord/server");
-const { getInSessionSemester } = await import("UMass/calendar");
+const { getInSessionSemester, getCurrentSemesters } = await import("UMass/calendar");
 
 dotenv.config();
 const sameDay = (d0: Date, d1: Date) =>
@@ -14,16 +14,23 @@ const sameDay = (d0: Date, d1: Date) =>
 
 async function academicCalendarAnnouncement() {
 	const today = new Date();
-	const tomorrow = new Date(today.setDate(today.getDate() + 1));
+	const tomorrow = new Date(today);
+	tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
 	try {
-		const semester = await getInSessionSemester();
-		if (semester !== undefined) {
+		const semesters = await getCurrentSemesters();
+		for (const semester of semesters) {
 			for (const event of semester.events) {
 				const date = event.date;
 				if (sameDay(today, date)) {
-					await announce("university", `Academic Calendar Notice (**TODAY**): ${event.description}`);
+					await announce(
+						"university",
+						`${semester.season} ${semester.year} Academic Calendar Notice **(TODAY)**: ${event.description}`,
+					);
 				} else if (sameDay(tomorrow, date)) {
-					await announce("general", `Academic Calendar Notice (**TOMORROW**): ${event.description}`);
+					await announce(
+						"general",
+						`${semester.season} ${semester.year} Academic Calendar Notice **(TOMORROW)**: ${event.description}`,
+					);
 				}
 			}
 		}
@@ -61,13 +68,8 @@ login(process.env["DISCORD_TOKEN"]!)
 				timezone: "America/New_York",
 			});
 
-		/*
-	localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
-	localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
-	*/
-
-		localSchedule("0 * * * * *", semesterPercentAnnouncement);
-		localSchedule("0 * * * * *", academicCalendarAnnouncement);
+		localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
+		localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
 	})
 	.catch(error => {
 		console.error("[DISCORD] Unable to login: ", error);
