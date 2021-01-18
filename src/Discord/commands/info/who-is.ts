@@ -41,16 +41,6 @@ async function searchStaff(staff: string): Promise<Array<Staff> | undefined> {
 		console.log("[DATABASE]", e);
 	}
 
-	if (queryResult) {
-		queryResult
-			.map(staff => {
-				staff._score = staff._score / staff.names.length;
-
-				return staff;
-			})
-			.sort((a, b) => a._score - b._score);
-	}
-
 	return queryResult;
 }
 
