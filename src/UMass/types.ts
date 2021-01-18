@@ -3,7 +3,7 @@ interface Event {
 	description: string;
 }
 
-export type Season = "Spring" | "Summer" | "Fall";
+export type Season = "spring" | "summer" | "fall" | "winter";
 export interface Semester {
 	season: Season;
 	year: number;
