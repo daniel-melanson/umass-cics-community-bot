@@ -49,8 +49,8 @@ export const WELCOME_MESSAGES = [
 			},
 			{
 				name: "**Note to Professors**",
-				value: oneLine(`You are absolutely welcome to join this community.
-					However, this community is primarily made up of students.
+				value: oneLine(`You are absolutely welcome to join this community;
+					however, it is primarily made up of students.
 					Discussion has been kept civil, but community members may have expressed strong opinions towards you.
 				`),
 			},
