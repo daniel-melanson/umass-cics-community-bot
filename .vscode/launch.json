@@ -10,7 +10,7 @@
 		"name": "Launch Program",
 		"program": "${workspaceFolder}/out/index.js",
 		"preLaunchTask": "npm: build",
-		"runtimeArgs": ["--es-module-specifier-resolution=node", "--harmony", "--require=source-map-support/register"]
+		"runtimeArgs": ["--es-module-specifier-resolution=node", "--harmony"]
 	  }
 	]
   }

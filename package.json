@@ -9,7 +9,7 @@
     "build-watch": "npx ttsc -b -w",
     "clean": "rm -rf ./out",
     "lint": "eslint ./src/**/*.ts",
-    "start": "node --es-module-specifier-resolution=node --harmony -r source-map-support/register ./out/index.js"
+    "start": "node --es-module-specifier-resolution=node --harmony ./out/index.js"
   },
   "repository": {
     "type": "git",
