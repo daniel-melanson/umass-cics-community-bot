@@ -60,7 +60,3 @@ export function formatEmbed(opts: EmbedOptions): MessageEmbed {
 
 	return new MessageEmbed(generated);
 }
-
-export function capitalize(str: string): string {
-	return str[0].toUpperCase() + str.substring(1);
-}

@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { Command, _Command, UserPermission } from "Discord/commands/types";
-import { capitalize } from "Discord/formatting";
+import { capitalize } from "Shared/stringUtil";
 
 function error(cmd: Command, reason: string) {
 	console.error(`[COMMANDS] Invalid command ${cmd.identifier}: ${reason}`);
