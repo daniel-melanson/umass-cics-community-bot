@@ -1,17 +1,15 @@
 import { connectToCollection } from "UMass/database";
-import { Course } from "UMass/types";
+import { Course, CourseSubject } from "UMass/types";
 import { sanitize } from "Shared/stringUtil";
 
-function getCourseIdFromQuery(query: string): string | undefined {
-	const match = query
-		.trim()
-		.toUpperCase()
-		.match(/^(C|CS|M|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS)\s*(h?\d{3}[a-z0-9]*)$/im);
+export const SHORTENED_SUBJECT_REGEXP_STRING =
+	"(CS|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS)";
 
-	if (match === null) return undefined;
+export function getExactCourseSubject(subject: string): CourseSubject | undefined {
+	subject = subject.toUpperCase();
+	if (!subject.match(new RegExp(SHORTENED_SUBJECT_REGEXP_STRING))) return undefined;
 
-	let subject = match[1];
-	switch (match[1]) {
+	switch (subject) {
 		case "C":
 		case "CS":
 			subject = "COMPSCI";
@@ -29,7 +27,14 @@ function getCourseIdFromQuery(query: string): string | undefined {
 			subject = "INFO";
 	}
 
-	return `${subject} ${match[2]}`;
+	return subject as CourseSubject;
+}
+
+function getCourseIdFromQuery(query: string): string | undefined {
+	const match = query.trim().match(new RegExp(`^${SHORTENED_SUBJECT_REGEXP_STRING}s*(h?d{3}[a-z0-9]*)$`, "im"));
+
+	if (match === null) return undefined;
+	return `${getExactCourseSubject(match[1])} ${match[2]}`;
 }
 
 export async function getCourseFromQuery(query: string): Promise<Course | Array<Course> | null> {
@@ -47,4 +52,14 @@ export async function getCourseFromQuery(query: string): Promise<Course | Array<
 			.aggregate([{ $match: { $text: { $search: query } } }, { $sort: { score: { $meta: "textScore" } } }])
 			.toArray();
 	}
+}
+
+export async function getCoursesFromSubject(subject: CourseSubject): Promise<Array<Course>> {
+	const courseCollection = await connectToCollection("courses");
+
+	return courseCollection
+		.find({
+			subject: subject,
+		})
+		.toArray();
 }

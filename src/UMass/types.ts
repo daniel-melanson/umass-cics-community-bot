@@ -12,8 +12,9 @@ export interface Semester {
 	events: Array<Event>;
 }
 
+export type CourseSubject = "CICS" | "COMPSCI" | "INFO" | "MATH" | "STATISTIC";
 export interface Course {
-	subject: string;
+	subject: CourseSubject;
 	id: string;
 	title: string;
 	description: string;
