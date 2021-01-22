@@ -3,7 +3,7 @@ import { Course, CourseSubject } from "UMass/types";
 import { sanitize } from "Shared/stringUtil";
 
 export const SHORTENED_SUBJECT_REGEXP_STRING =
-	"(CS|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS)";
+	"(CS|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS|COMP SCI)";
 
 export function getExactCourseSubject(subject: string): CourseSubject | undefined {
 	subject = subject.toUpperCase();
@@ -12,6 +12,7 @@ export function getExactCourseSubject(subject: string): CourseSubject | undefine
 	switch (subject) {
 		case "C":
 		case "CS":
+		case "COMP SCI":
 			subject = "COMPSCI";
 			break;
 		case "MATHEMATICS":
