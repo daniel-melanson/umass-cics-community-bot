@@ -238,7 +238,7 @@ export async function handleCommandMessage(
 	message: Message,
 ): Promise<Message | Array<Message> | undefined> {
 	if (hasPendingReply(message)) return;
-	const content = message.content;
+	const content = message.content.trim();
 
 	for (const command of COMMAND_LIST) {
 		let match;

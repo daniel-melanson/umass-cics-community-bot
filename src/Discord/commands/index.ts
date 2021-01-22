@@ -67,7 +67,11 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 				formalName: cmd.formalName || capitalize(cmd.identifier),
 				group: cmd.group,
 				aliases: cmd.aliases,
-				defaultPatterns: defaults.map(x => new RegExp(`^!${x}\\s*(.*)`, "mi")),
+				defaultPatterns: defaults.map(x =>
+					!cmd.arguments || cmd.arguments.length === 0
+						? new RegExp(`^!${x}$`, "im")
+						: new RegExp(`^!${x}(\\s+(.+)|$)`, "im"),
+				),
 				patterns: cmd.patterns,
 				description: cmd.description,
 				details: cmd.details,
