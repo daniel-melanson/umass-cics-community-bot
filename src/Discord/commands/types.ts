@@ -1,4 +1,4 @@
-import { Client, Message, PermissionResolvable } from "discord.js";
+import { Client, Message } from "discord.js";
 
 type Group = "Administrative" | "Information" | "Miscellaneous" | "Roles";
 export enum UserPermission {
@@ -28,7 +28,6 @@ export interface _Command {
 	examples?: Array<string>;
 	guildOnly: boolean;
 	userPermission: UserPermission;
-	clientPermissions?: Array<PermissionResolvable>;
 	arguments?: Array<ArgumentInfo>;
 	func: (client: Client, message: Message, result: unknown) => Promise<Message | Array<Message>>;
 }

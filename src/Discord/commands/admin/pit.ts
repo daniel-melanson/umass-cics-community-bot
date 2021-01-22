@@ -8,7 +8,6 @@ export default {
 	description: "Temporarily caches and removes the roles of a list of users.",
 	examples: ["!pit @John @Jane @Jordan"],
 	guildOnly: true,
-	clientPermissions: ["MANAGE_ROLES"],
 	func: async (client: Client, message: Message) => {
 		throw new Error("not implemented");
 	},

@@ -77,7 +77,6 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 				details: cmd.details,
 				examples: cmd.examples,
 				guildOnly: cmd.guildOnly || false,
-				clientPermissions: cmd.clientPermissions,
 				userPermission: cmd.userPermission || UserPermission.Member,
 				arguments: cmd.arguments,
 				func: cmd.func,

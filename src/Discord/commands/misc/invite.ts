@@ -9,7 +9,6 @@ export default {
 	description: "Responds with a permanent invite to the discord.",
 	examples: ["!invite"],
 	guildOnly: true,
-	clientPermissions: ["CREATE_INSTANT_INVITE"],
 	func: async (client: Client, message: Message) => {
 		const guild = message.guild!;
 		const welcome = guild.channels.cache.find(c => c.name === "welcome");
