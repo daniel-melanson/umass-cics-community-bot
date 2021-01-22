@@ -18,7 +18,7 @@ export default {
 		},
 	],
 	func: async (client: Client, message: Message, result: { roles: Array<Role> }) => {
-		const roleList = result!["roles"];
+		const roleList = result.roles;
 
 		const rolesAdded = [];
 		const rolesRemoved = [];
