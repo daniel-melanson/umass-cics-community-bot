@@ -7,7 +7,7 @@ import { formatEmbed } from "Discord/formatting";
 export default {
 	identifier: "source",
 	aliases: ["bugs", "info"],
-	group: "Miscellaneous",
+	group: "Utility",
 	description: "Responds with information about the bot.",
 	examples: ["!source"],
 	func: async (client: Client, message: Message) => {

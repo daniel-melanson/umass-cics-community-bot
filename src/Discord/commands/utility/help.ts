@@ -3,10 +3,10 @@ import { Client, Message } from "discord.js";
 import { Command } from "Discord/commands/types";
 
 export default {
-	identifier: "commands",
-	group: "Miscellaneous",
-	description: "Lists out the commands available to a user.",
-	examples: ["!commands"],
+	identifier: "help",
+	group: "Utility",
+	description: "Provides general information about the bot or a specific command.",
+	examples: ["!help", "!help what-is"],
 	func: async (client: Client, message: Message) => {
 		throw new Error("not implemented");
 	},

@@ -5,7 +5,7 @@ import { Command } from "Discord/commands/types";
 export default {
 	identifier: "invite",
 	formalName: "Invite",
-	group: "Miscellaneous",
+	group: "Utility",
 	description: "Responds with a permanent invite to the discord.",
 	examples: ["!invite"],
 	guildOnly: true,

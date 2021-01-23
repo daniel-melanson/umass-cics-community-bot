@@ -4,7 +4,7 @@ import { Command } from "Discord/commands/types";
 
 export default {
 	identifier: "ping",
-	group: "Miscellaneous",
+	group: "Utility",
 	description: "Responds to the involving message with information about latency.",
 	examples: ["!ping"],
 	func: async (client: Client, message: Message) => {

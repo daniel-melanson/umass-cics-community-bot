@@ -1,6 +1,6 @@
 import { Client, Message } from "discord.js";
 
-type Group = "Administrative" | "Information" | "Miscellaneous" | "Roles";
+type Group = "Administrative" | "Information" | "Miscellaneous" | "Roles" | "Utility";
 export enum UserPermission {
 	Member,
 	ClubOfficer,
