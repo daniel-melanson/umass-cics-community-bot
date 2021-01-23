@@ -50,7 +50,11 @@ export default {
 	group: "Information",
 	patterns: [/^(who\s*is|who'?s)\s*([a-z ,.'-]+)\??$/i],
 	description: "Displays information about a UMass staff member.",
-	details: "Attempts to retrieve information about a staff member given a search query.",
+	details: oneLine(`
+		Searches for a UMass staff member and responds with information about them if found.
+		You can learn more about how queries are handled using the \`!source\` command.
+		This command can be invoked using phrases such as \`Who's Joe?\`.
+	`),
 	examples: ["Who is Marius?", "Who's Tim Richards?"],
 	arguments: [
 		{

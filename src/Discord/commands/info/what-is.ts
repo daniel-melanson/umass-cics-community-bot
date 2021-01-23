@@ -13,8 +13,13 @@ export default {
 	formalName: "What Is",
 	group: "Information",
 	patterns: [/^(what is|what'?s) ([\w ]+)\??$/im],
-	description: "Displays information about a UMass course if it exists.",
-	details: "Attempts to retrieve course information given a search query.",
+	description: "Responds with information about a UMass CICS related course.",
+	details: oneLine(`
+		Attempts to retrieve course information given a search query.
+		If a result is found, the bot will reply with information about that course.
+		To learn more use the \`!source\` command.
+		You invoke this command using phrases such as \`What's 187?\`.
+	`),
 	examples: ["What is CS 187?", "What's 220?"],
 	arguments: [
 		{

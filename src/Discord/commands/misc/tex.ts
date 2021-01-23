@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import { Client, Message } from "discord.js";
 
 import { Command } from "Discord/commands/types";
+import { oneLine } from "Shared/stringUtil";
 
 export default {
 	identifier: "TeX",
@@ -10,8 +11,11 @@ export default {
 	aliases: ["latex"],
 	patterns: [/\$(.+)\$/],
 	description: "Renders a given TeX expression and posts the output.",
-	details: "This command will only render valid **TeX** expressions. ",
-	examples: [],
+	details: oneLine(`
+		This command will only render valid **TeX** expressions.
+		Advanced LaTeX tags such as \`\\usepackage\` or \`\\align\` will not work.
+	`),
+	examples: ["!latex y = \\sum_{x=0}^{10} x^5", "$\\frac{n^2 + n}{n}$"],
 	arguments: [
 		{
 			name: "expression",
