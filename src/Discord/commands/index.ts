@@ -41,6 +41,10 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 					if (arg.infinite) {
 						error(cmd, "Only the last argument may have the infinite attribute.");
 					}
+
+					if (arg.optional) {
+						error(cmd, "Only the last argument may have the optional attribute.");
+					}
 				}
 			}
 

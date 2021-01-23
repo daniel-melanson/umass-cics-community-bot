@@ -13,6 +13,7 @@ export interface ArgumentInfo {
 	prompt: string;
 	infinite?: boolean;
 	matchGroupIndex?: number;
+	optional?: boolean;
 }
 
 // Internal command that has additional properties for processing
@@ -29,7 +30,7 @@ export interface _Command {
 	guildOnly: boolean;
 	userPermission: UserPermission;
 	arguments?: Array<ArgumentInfo>;
-	func: (client: Client, message: Message, result: unknown) => Promise<Message | Array<Message>>;
+	func: (client: Client, message: Message, result: unknown, commands: Array<Command>) => Promise<Message | Array<Message>>;
 }
 
 type RequiredFields = "identifier" | "description" | "func" | "group";

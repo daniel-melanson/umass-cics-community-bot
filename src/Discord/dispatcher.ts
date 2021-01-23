@@ -143,6 +143,8 @@ async function collectRemainingArguments(
 ) {
 	for (let i = index; i < argumentInformationArray.length; i++) {
 		const argumentInfo = argumentInformationArray[i];
+		if (argumentInfo.optional) break;
+
 
 		let prompt = argumentInfo.prompt;
 		if (argumentInfo.infinite) {
