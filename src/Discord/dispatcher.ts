@@ -1,9 +1,9 @@
-import { oneLine } from "Shared/stringUtil";
-import { GuildMember, Message, TextChannel, Collection, Client } from "discord.js";
+import { oneLine, sanitize } from "Shared/stringUtil";
+import { GuildMember, Message, Collection, Client } from "discord.js";
 
 import { requireCommandList } from "Discord/commands";
 import { _Command, ArgumentInfo, UserPermission } from "Discord/commands/types";
-import { hasPendingReply } from "Discord/nextUserReply";
+import { hasPendingReply, nextUserReply } from "Discord/nextUserReply";
 
 const OWNER_ID = process.env["DISCORD_OWNER_ID"];
 
@@ -25,7 +25,13 @@ function commonMatcher<T>(
 	matchBuilder: (fn: (str: string) => boolean) => (x: T) => boolean,
 ) {
 	const inexactMembers = collection.filter(
-		matchBuilder((possible: string) => possible.toLowerCase().includes(normalized)),
+		matchBuilder((possible: string) => {
+			const normalizedPossible = possible.toLowerCase();
+
+			return (
+				normalizedPossible.includes(normalized) || normalizedPossible.replace(/\s/g, "").includes(normalized)
+			);
+		}),
 	);
 	if (inexactMembers.size < 2) return inexactMembers.first() || null;
 
@@ -97,87 +103,114 @@ const parserMap = {
 	},
 };
 
-async function collectRemainingArguments(
-	message: Message,
-	args: Array<ArgumentInfo>,
-	index: number,
-	parsed: Record<string, unknown>,
-) {
-	for (let i = index; i < args.length; i++) {
-		const arg = args[i];
-		//const parser = parserMap[arg.type];
+function attempArgumentParse(message: Message, argumentInfo: ArgumentInfo, remainingRawArguments: Array<string>) {
+	let parsedValue;
 
-		message.reply(
-			`${arg.prompt}
-			${arg.infinite && "Respond with `finish` when you are done listing arguments."}
-			Respond with \`cancel\` to cancel the command. It will automatically be cancelled in 30 seconds if you do not reply.`,
-		);
+	function parseNextValue() {
+		if (remainingRawArguments.length === 0) return undefined;
+		const parser = parserMap[argumentInfo.type];
 
-		let parsedValue;
-		do {
-			//const nextMessage = await nextUserMessage(message.author, message.channel as TextChannel);
-
-			if (!parsedValue) {
-				message.reply("Unable to parse value.");
-			}
-		} while (!parsedValue);
-	}
-}
-
-async function parseArguments(command: _Command, message: Message, args: string | undefined) {
-	const commandArguments = command.arguments!;
-	const parsedArguments: Record<string, unknown> = {};
-
-	if (!args || args.length === 0) {
-		await collectRemainingArguments(message, commandArguments, 0, parsedArguments);
-	} else {
-		const remainingRawArguments = args.split(" ");
-
-		let parsed = 0;
-		for (let i = 0; i < commandArguments.length && remainingRawArguments.length > 0; i++) {
-			const arg = commandArguments[i];
-			const parser = parserMap[arg.type];
-
-			const getNextValue = () => {
-				let value;
-
-				let rawArgument = remainingRawArguments.shift()!;
-				while (!(value = parser(message, rawArgument)) && remainingRawArguments.length > 0) {
-					rawArgument += " " + remainingRawArguments.shift();
-				}
-
-				return value;
-			};
-
-			let parsedValue;
-			if (arg.infinite) {
-				if (arg.type === "string") {
-					parsedValue = remainingRawArguments.join(" ");
-				} else {
-					parsedValue = [];
-
-					let next;
-					while ((next = getNextValue())) {
-						parsedValue.push(next);
-					}
-				}
-			} else {
-				parsedValue = getNextValue();
-			}
-
-			if (parsedValue) {
-				parsed++;
-				parsedArguments[arg.name] = parsedValue;
-			}
+		let value;
+		let rawString = remainingRawArguments.shift()!;
+		while (!(value = parser(message, rawString)) && remainingRawArguments.length > 0) {
+			rawString += " " + remainingRawArguments.shift()!;
 		}
 
-		if (parsed < commandArguments.length)
-			await collectRemainingArguments(message, commandArguments, parsed, parsedArguments);
+		return value;
 	}
 
-	return parsedArguments;
+	if (argumentInfo.infinite) {
+		parsedValue = [];
+
+		let parsed;
+		while ((parsed = parseNextValue())) {
+			parsedValue.push(parsed);
+		}
+
+		if (parsedValue.length === 0) parsedValue = undefined;
+	} else {
+		parsedValue = parseNextValue();
+	}
+
+	return parsedValue;
 }
 
+async function collectRemainingArguments(
+	message: Message,
+	argumentInformationArray: Array<ArgumentInfo>,
+	index: number,
+	result: Record<string, unknown> = {},
+) {
+	for (let i = index; i < argumentInformationArray.length; i++) {
+		const argumentInfo = argumentInformationArray[i];
+
+		let prompt = argumentInfo.prompt;
+		if (argumentInfo.infinite) {
+			prompt += " Type `finish` when you are done supplying arguments.";
+		}
+		prompt += " Type `cancel` to cancel the command (30s timeout).";
+		await message.reply(prompt);
+
+		let parsedValue;
+		const parsedList: Array<unknown> = [];
+		do {
+			let userReplyMessage;
+			try {
+				userReplyMessage = await nextUserReply(message);
+			} catch (e) {
+				return undefined;
+			}
+
+			if (!userReplyMessage || userReplyMessage.content.toLowerCase() === "cancel") {
+				message.reply("cancelling command.");
+				return undefined;
+			}
+
+			const satitizedContent = sanitize(userReplyMessage.content);
+			if (satitizedContent === "finish") break;
+
+			parsedValue = attempArgumentParse(userReplyMessage, argumentInfo, [satitizedContent]);
+			if (!parsedValue) {
+				userReplyMessage.reply("I was unable to understand that. Try again.");
+			} else if (argumentInfo.infinite) {
+				parsedList.push(...(parsedValue as Array<unknown>));
+			}
+		} while (argumentInfo.infinite || !parsedValue);
+
+		result[argumentInfo.name] = argumentInfo.infinite ? parsedList : parsedValue;
+	}
+
+	return result;
+}
+
+async function attemptCommandParse(command: _Command, message: Message, suppliedRawArguments: string | undefined) {
+	const argumentInformationArray = command.arguments!;
+
+	if (!suppliedRawArguments || suppliedRawArguments.length === 0) {
+		return await collectRemainingArguments(message, argumentInformationArray, 0);
+	}
+	const result: Record<string, unknown> = {};
+
+	const remainingRawArguments = suppliedRawArguments.split(/,? /);
+	for (let i = 0; i < argumentInformationArray.length; i++) {
+		const argumentInfo = argumentInformationArray[i];
+
+		const parsedValue = attempArgumentParse(message, argumentInfo, remainingRawArguments);
+		if (parsedValue) {
+			result[argumentInfo.name] = parsedValue;
+		} else {
+			try {
+				return await collectRemainingArguments(message, argumentInformationArray, i, result);
+			} catch (e) {
+				return undefined;
+			}
+		}
+	}
+	
+	return result;
+}
+
+const COMMAND_LIST = await requireCommandList();
 async function attemptCommandRun(
 	client: Client,
 	command: _Command,
@@ -190,27 +223,20 @@ async function attemptCommandRun(
 	if (command.userPermission > fetchMemberLevel(message.author.id, message.member))
 		return message.reply("you do not have permissions to execute that command.");
 
-	if (command.clientPermissions) {
-		const clientPermissions = (message.channel as TextChannel).permissionsFor(client.user!);
-		if (!clientPermissions || !command.clientPermissions.every(perm => clientPermissions!.has(perm)))
-			return message.reply("I do not have permissions to execute this command here.");
-	}
-
-	let result;
+	let result: Record<string, unknown> | undefined = {};
 	if (command.arguments) {
 		if (fromDefault) {
 			try {
-				result = await parseArguments(command, message, match[1]);
+				result = await attemptCommandParse(command, message, match[2]);
 			} catch (e) {
 				if (e instanceof Error) {
 					message.reply(
 						oneLine(`unable to parse arguments.
-							Use \`!help ${command.identifier}\` for more information.`),
+							Use \`!about ${command.identifier}\` for more information.`),
 					);
 				}
 			}
 		} else {
-			result = {} as Record<string, string>;
 			for (const arg of command.arguments) {
 				if (arg.matchGroupIndex) {
 					result[arg.name] = match[arg.matchGroupIndex];
@@ -219,26 +245,27 @@ async function attemptCommandRun(
 		}
 	}
 
-	try {
-		await command.func(client, message, result as unknown);
-	} catch (e) {
-		console.error(`[COMMAND ${command.identifier}] ${e}`);
+	if (result) {
+		try {
+			await command.func(client, message, result, COMMAND_LIST);
+		} catch (e) {
+			console.error(`[COMMAND ${command.identifier}] ${e}`);
 
-		return message.reply(
-			oneLine(`I encountered an error while trying to execute that command.
-				You should never see this message.
-				Please contact <@${OWNER_ID}>.`),
-		);
+			return message.reply(
+				oneLine(`I encountered an error while trying to execute that command.
+					You should never see this message.
+					Please contact <@${OWNER_ID}>.`),
+			);
+		}
 	}
 }
 
-const COMMAND_LIST = await requireCommandList();
 export async function handleCommandMessage(
 	client: Client,
 	message: Message,
 ): Promise<Message | Array<Message> | undefined> {
 	if (hasPendingReply(message)) return;
-	const content = message.content.trim();
+	const content = sanitize(message.content);
 
 	for (const command of COMMAND_LIST) {
 		let match;
@@ -260,7 +287,7 @@ export async function handleCommandMessage(
 	if (content.match(/!\w/)) {
 		return message.reply(
 			oneLine(`that does not seem to be an available command.
-			Use the \`!help\`, \`!help <command-name>\`,
+			Use the \`!help\`, \`!about <command-name>\`,
 			or \`!commands\` for more information.`),
 		);
 	}
