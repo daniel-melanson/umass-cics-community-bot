@@ -31,7 +31,7 @@ export function getExactCourseSubject(subject: string): CourseSubject | undefine
 	return subject as CourseSubject;
 }
 
-function getCourseIdFromQuery(query: string): string | undefined {
+export function getCourseIdFromQuery(query: string): string | undefined {
 	const match = query.trim().match(new RegExp(`^${SHORTENED_SUBJECT_REGEXP_STRING}s*(h?d{3}[a-z0-9]*)$`, "im"));
 
 	if (match === null) return undefined;
