@@ -30,7 +30,7 @@ export interface _Command {
 	guildOnly: boolean;
 	userPermission: UserPermission;
 	arguments?: Array<ArgumentInfo>;
-	func: (client: Client, message: Message, result: unknown, commands: Array<Command>) => Promise<Message | Array<Message>>;
+	func: (client: Client, message: Message, result: unknown) => Promise<Message | Array<Message>>;
 }
 
 type RequiredFields = "identifier" | "description" | "func" | "group";

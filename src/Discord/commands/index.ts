@@ -16,7 +16,7 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 	const commandList = [];
 
 	const reservedIdentifiers = new Set();
-	for (const folder of ["admin", "info", "misc", "roles"]) {
+	for (const folder of ["admin", "info", "misc", "roles", "utility"]) {
 		const groupPath = path.join(__dirname, folder);
 
 		for (const file of fs.readdirSync(groupPath)) {
