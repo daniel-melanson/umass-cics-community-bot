@@ -10,10 +10,10 @@ export default {
 	examples: ["!wl"],
 	guildOnly: true,
 	func: async (client: Client, message: Message) => {
-		const reply = await message.reply(`Was that assessment a W or an L?`);
+		const reply = await message.channel.send(`Was that assessment a W or an L?`);
 
-		reply.react(":regional_indicator_w:");
-		reply.react(":regional_indicator_l:");
+		reply.react("🇼");
+		reply.react("🇱");
 
 		return reply;
 	},
