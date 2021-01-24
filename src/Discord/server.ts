@@ -3,7 +3,6 @@ import { oneLine } from "Shared/stringUtil";
 
 import { NOTIFICATION_TUTORIALS } from "Discord/constants/how-to-notifications";
 import { ROLES_TUTORIAL } from "Discord/constants/how-to-roles";
-import { COMMANDS_TUTORIAL } from "Discord/constants/how-to-commands";
 import { WELCOME_MESSAGES } from "Discord/constants/welcome";
 import { DISCORD_RULES } from "Discord/constants/rules";
 
@@ -48,7 +47,6 @@ export function login(token: string): Promise<void> {
 		await sendChannel("rules", DISCORD_RULES);
 		await sendChannel("how-to-roles", ROLES_TUTORIAL);
 		await sendChannel("how-to-notifications", NOTIFICATION_TUTORIALS);
-		await sendChannel("how-to-commands", COMMANDS_TUTORIAL);
 		await sendChannel("welcome", WELCOME_MESSAGES);
 	});
 }
