@@ -6,6 +6,7 @@ import { Command } from "../types";
 
 export default {
 	identifier: "role",
+	aliases: ["r"],
 	group: "Roles",
 	description: "Gives or removes a list of roles from a user.",
 	examples: ["!role CS 121, MATH 132"],

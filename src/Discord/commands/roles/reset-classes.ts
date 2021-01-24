@@ -6,6 +6,7 @@ import { isClass } from "Discord/roles";
 export default {
 	identifier: "reset-classes",
 	formalName: "Reset Classes",
+	aliases: ["reset-courses", "rc"],
 	group: "Roles",
 	description: "Removes a users class related roles.",
 	examples: ["!reset-classes"],

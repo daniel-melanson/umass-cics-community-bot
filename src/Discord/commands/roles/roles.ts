@@ -16,6 +16,7 @@ import {
 
 export default {
 	identifier: "roles",
+	aliases: ["role-list"],
 	group: "Roles",
 	description: "Lists out roles that a user may assign themselves.",
 	examples: ["!roles"],

@@ -5,6 +5,7 @@ import { oneLine } from "Shared/stringUtil";
 
 export default {
 	identifier: "help",
+	aliases: ["h"],
 	group: "Utility",
 	description: "Provides general information about the bot and available commands.",
 	examples: ["!help", "!help what-is"],

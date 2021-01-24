@@ -21,7 +21,6 @@ export default {
 			name: "expression",
 			type: "string",
 			prompt: "supply an expression for me to render.",
-			infinite: true,
 			matchGroupIndex: 1,
 		},
 	],

@@ -10,6 +10,7 @@ const SUBJECT_LIST = SHORTENED_SUBJECT_REGEXP_STRING.substring(1, SHORTENED_SUBJ
 
 export default {
 	identifier: "courses",
+	aliases: ["course-list", "class-list", "classes"],
 	group: "Information",
 	description: "Generates a list of courses given a subject.",
 	details: "This command can be invoked using phrases similar to `Which CS courses can I take?`.",

@@ -1,6 +1,6 @@
 import { Client, Message } from "discord.js";
 
-import { Command } from "Discord/commands/types";
+import { Command, UserPermission } from "Discord/commands/types";
 
 export default {
 	identifier: "pit",
@@ -9,6 +9,7 @@ export default {
 	details: "This command is used to create a temporary group chat within the server for a list of users.",
 	examples: ["!pit @John @Jane @Jordan"],
 	guildOnly: true,
+	userPermission: UserPermission.Moderator,
 	func: async (client: Client, message: Message) => {
 		throw new Error("not implemented");
 	},

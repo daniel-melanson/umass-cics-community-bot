@@ -6,6 +6,7 @@ import { getCourseIdFromQuery } from "UMass/courses";
 
 export default {
 	identifier: "add-course",
+	aliases: ["new-course", "add-class", "new-class"],
 	group: "Administrative",
 	description: "Creates a new role and channel and sets up permissions.",
 	details: oneLine(`
