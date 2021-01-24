@@ -1,4 +1,4 @@
-import { oneLine, sanitize } from "Shared/stringUtil";
+import { oneLine } from "Shared/stringUtil";
 import { GuildMember, Message, Collection, Client } from "discord.js";
 
 import { requireCommandList } from "Discord/commands";
@@ -44,7 +44,6 @@ function commonMatcher<T>(
 }
 
 const parserMap = {
-	string: (message: Message, str: string) => str,
 	number: (message: Message, str: string) => Number.parseInt(str) || Number.parseFloat(str),
 	GuildMember: (message: Message, str: string) => {
 		let match: RegExpMatchArray | null;
@@ -103,25 +102,56 @@ const parserMap = {
 	},
 };
 
-function attemptArgumentParse(message: Message, argumentInfo: ArgumentInfo, remainingRawArguments: Array<string>) {
-	let parsedValue;
+interface ArgumentTracker {
+	value: string;
+}
+
+function getNextWord(tracker: ArgumentTracker) {
+	const nextSpace = tracker.value.indexOf(" ");
+	if (nextSpace === -1) {
+		const value = tracker.value;
+		tracker.value = "";
+
+		return value;
+	} else {
+		const word = tracker.value.substring(0, nextSpace);
+		tracker.value = tracker.value.substring(nextSpace + 1);
+
+		return word;
+	}
+}
+
+function nextEncasedString(tracker: ArgumentTracker) {
+	const encase = tracker.value[0];
+	const nextEncase = tracker.value.indexOf(encase, 1);
+	if (nextEncase === -1) {
+		return undefined;
+	}
+
+	const encasedString = tracker.value.substring(1, nextEncase);
+	tracker.value = tracker.value.substring(nextEncase + 1).trim();
+
+	return encasedString;
+}
+
+function attemptArgumentParse(message: Message, argumentInfo: ArgumentInfo, tracker: ArgumentTracker) {
+	if (tracker.value.length === 0) return undefined;
 
 	function parseNextValue() {
-		if (remainingRawArguments.length === 0) return undefined;
+		if (argumentInfo.type === "string") return undefined;
 		const parser = parserMap[argumentInfo.type];
 
 		let value;
-		let rawString = remainingRawArguments.shift()!;
-		while (!(value = parser(message, rawString)) && remainingRawArguments.length > 0) {
-			rawString += " " + remainingRawArguments.shift()!;
+		let rawString = getNextWord(tracker);
+		while (!(value = parser(message, rawString)) && tracker.value.length > 0) {
+			rawString += " " + getNextWord(tracker);
 		}
 
 		return value;
 	}
 
+	let parsedValue;
 	if (argumentInfo.infinite) {
-		if (argumentInfo.type === "string") return remainingRawArguments.join(" ");
-
 		parsedValue = [];
 
 		let parsed;
@@ -147,10 +177,11 @@ async function collectRemainingArguments(
 		const argumentInfo = argumentInformationArray[i];
 		if (argumentInfo.optional) break;
 
-		const nonStringInfinite = argumentInfo.infinite && argumentInfo.type !== "string";
+		const argumentType = argumentInfo.type;
+		const isInfinite = argumentInfo.infinite;
 
 		let prompt = argumentInfo.prompt;
-		if (nonStringInfinite) {
+		if (isInfinite) {
 			prompt += " Type `finish` when you are done supplying arguments.";
 		}
 		prompt += " Type `cancel` to cancel the command (30s timeout).";
@@ -171,18 +202,28 @@ async function collectRemainingArguments(
 				return undefined;
 			}
 
-			const sanitizedContent = sanitize(userReplyMessage.content);
-			if (nonStringInfinite && sanitizedContent === "finish") break;
+			const content = userReplyMessage.content.trim();
+			if (isInfinite && content.match(/^finish$/im)) break;
+			if (argumentType === "string") {
+				let match;
+				if ((match = content.match(/^'([^']+)'$/m)) || (match = content.match(/^"([^"]+)"$/m))) {
+					parsedValue = match[1];
+				} else {
+					parsedValue = content;
+				}
 
-			parsedValue = attemptArgumentParse(userReplyMessage, argumentInfo, [sanitizedContent]);
+				break;
+			}
+
+			parsedValue = attemptArgumentParse(userReplyMessage, argumentInfo, { value: content });
 			if (!parsedValue) {
-				userReplyMessage.reply("I was unable to understand that. Try again.");
+				userReplyMessage.reply(`I was unable to parse that into a ${argumentType}. Try again.`);
 			} else if (parsedValue instanceof Array) {
 				parsedList.push(...parsedValue);
 			}
-		} while (nonStringInfinite || !parsedValue);
+		} while (isInfinite || !parsedValue);
 
-		result[argumentInfo.name] = nonStringInfinite ? parsedList : parsedValue;
+		result[argumentInfo.name] = isInfinite ? parsedList : parsedValue;
 	}
 
 	return result;
@@ -196,19 +237,43 @@ async function attemptCommandParse(command: _Command, message: Message, supplied
 	}
 	const result: Record<string, unknown> = {};
 
-	const remainingRawArguments = suppliedRawArguments.split(/,? /);
+	const remainingRawArguments = {
+		value: suppliedRawArguments,
+	};
+
 	for (let i = 0; i < argumentInformationArray.length; i++) {
 		const argumentInfo = argumentInformationArray[i];
 
-		const parsedValue = attemptArgumentParse(message, argumentInfo, remainingRawArguments);
-		if (parsedValue) {
-			result[argumentInfo.name] = parsedValue;
-		} else {
+		let parseResult;
+		if (remainingRawArguments.value.length > 0) {
+			if (argumentInfo.type === "string") {
+				const isEncased =
+					remainingRawArguments.value.startsWith(`'`) || remainingRawArguments.value.startsWith(`"`);
+
+				if (i === argumentInformationArray.length - 1 && !isEncased) {
+					parseResult = remainingRawArguments.value;
+				} else if (isEncased) {
+					parseResult = nextEncasedString(remainingRawArguments);
+				} else {
+					message.reply(
+						oneLine(`You must encase string arguments with ' or " if they are not the last argument supplied.
+							Try again.`),
+					);
+					return undefined;
+				}
+			} else {
+				parseResult = attemptArgumentParse(message, argumentInfo, remainingRawArguments);
+			}
+		}
+
+		if (!parseResult) {
 			try {
 				return await collectRemainingArguments(message, argumentInformationArray, i, result);
 			} catch (e) {
 				return undefined;
 			}
+		} else {
+			result[argumentInfo.name] = parseResult;
 		}
 	}
 
@@ -253,6 +318,8 @@ async function attemptCommandRun(
 	if (result) {
 		if (command.identifier === "help") result["commandList"] = COMMAND_LIST;
 
+		console.log(result);
+
 		try {
 			await command.func(client, message, result);
 		} catch (e) {
@@ -272,7 +339,7 @@ export async function handleCommandMessage(
 	message: Message,
 ): Promise<Message | Array<Message> | undefined> {
 	if (hasPendingReply(message)) return;
-	const content = sanitize(message.content);
+	const content = message.content.trim().replaceAll(/\s\s/g, " ");
 
 	for (const command of COMMAND_LIST) {
 		let match;

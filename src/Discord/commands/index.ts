@@ -36,15 +36,22 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 			if (cmd.aliases && cmd.aliases.some(alias => !alias.match(identifierMatch)))
 				error(cmd, "aliases must start with a letter and be proceeded by letters or dashes.");
 
-			if (cmd.arguments && cmd.arguments.length > 1) {
-				for (const arg of cmd.arguments.slice(0, cmd.arguments.length - 1)) {
-					if (arg.infinite) {
-						error(cmd, "Only the last argument may have the infinite attribute.");
-					}
+			if (cmd.arguments) {
+				if (cmd.arguments.length > 1) {
+					for (const arg of cmd.arguments.slice(0, cmd.arguments.length - 1)) {
+						if (arg.infinite) {
+							error(cmd, "Only the last argument may have the infinite attribute.");
+						}
 
-					if (arg.optional) {
-						error(cmd, "Only the last argument may have the optional attribute.");
+						if (arg.optional) {
+							error(cmd, "Only the last argument may have the optional attribute.");
+						}
 					}
+				}
+
+				const lastArg = cmd.arguments[cmd.arguments.length - 1];
+				if (lastArg.type === "string" && lastArg.infinite) {
+					error(cmd, "Strings are inherently infinite. Remove the infinite attribute.");
 				}
 			}
 
