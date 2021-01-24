@@ -12,7 +12,7 @@ export default {
 		const pingMsg = await message.reply("Pinging...");
 		return pingMsg.edit(
 			oneLine(`
-			Pong! 🏓 The message round-trip took ${
+			🏓 Pong! The message round-trip took ${
 				(pingMsg.editedTimestamp || pingMsg.createdTimestamp) -
 				(message.editedTimestamp || message.createdTimestamp)
 			}ms.
