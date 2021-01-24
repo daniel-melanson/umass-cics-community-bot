@@ -1,4 +1,5 @@
 import { Client, Message, Role } from "discord.js";
+import { isAssignable } from "Discord/roles";
 import { oneLine } from "Shared/stringUtil";
 
 import { Command } from "../types";
@@ -32,6 +33,8 @@ export default {
 					You are not allowed to manage roles with permissions.
 					If you believe this is a mistake, contact an administrator.`),
 				);
+			} else if (!isAssignable(role.name)) {
+				message.reply(`the ${role.name} role is not assignable.`);
 			} else if (updatedRoles.has(role.id)) {
 				updatedRoles.delete(role.id);
 				rolesRemoved.push(role.name);
