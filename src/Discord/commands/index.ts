@@ -33,8 +33,8 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 				error(cmd, "identifier must start with a letter and be proceeded by letters or dashes.");
 			if (cmd.formalName && !cmd.formalName.match(/^[a-zA-Z][a-zA-Z\- ]+$/))
 				error(cmd, "formalName must start with a letter and be proceeded by letters, spaces, or dashes.");
-			if (cmd.aliases && cmd.aliases.some(alias => !alias.match(identifierMatch)))
-				error(cmd, "aliases must start with a letter and be proceeded by letters or dashes.");
+			if (cmd.aliases && cmd.aliases.some(alias => !alias.match(/^[a-zA-Z]/)))
+				error(cmd, "aliases must start with a letter.");
 
 			if (cmd.arguments) {
 				if (cmd.arguments.length > 1) {
