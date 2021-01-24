@@ -9,7 +9,7 @@ export default {
 	identifier: "TeX",
 	group: "Miscellaneous",
 	aliases: ["latex"],
-	patterns: [/\$(.+)\$/],
+	patterns: [/\$?\$([^\$]+)\$\$?/],
 	description: "Renders a given TeX expression and posts the output.",
 	details: oneLine(`
 		This command will only render valid **TeX** expressions.
@@ -31,17 +31,17 @@ export default {
 		let image,
 			error = "Unknown";
 		try {
-			const res = await fetch(`https://latex2image.joeraut.com/convert`, {
+			const res = await fetch(`http://www.latex2png.com/api/convert`, {
 				method: "POST",
-				body: new URLSearchParams([
-					["latexInput", result.expression],
-					["outputScale", "500%"],
-					["outputFormat", "JPG"],
-				]),
+				body: JSON.stringify({
+					auth: { user: "guest", password: "guest" },
+					latex: result.expression,
+					resolution: 600,
+					color: "FFFFFF",
+				}),
 			});
-
 			const json = await res.json();
-			if (json.imageURL) image = `https://latex2image.joeraut.com/${json.imageURL}`;
+			if (json.url) image = `http://www.latex2png.com${json.url}`;
 			else if (json.error) error = json.error;
 		} catch (e) {
 			if (e instanceof Error) {
@@ -55,12 +55,12 @@ export default {
 				files: [
 					{
 						attachment: image,
-						name: "tex.jpg",
+						name: "tex.png",
 					},
 				],
 			});
 		} else {
-			return reply.edit(`Unable to convert TeX to JPG.`, {
+			return reply.edit(`Unable to convert TeX to png.`, {
 				code: error,
 			});
 		}
