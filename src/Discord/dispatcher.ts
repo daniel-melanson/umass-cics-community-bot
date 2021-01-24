@@ -103,7 +103,7 @@ const parserMap = {
 	},
 };
 
-function attempArgumentParse(message: Message, argumentInfo: ArgumentInfo, remainingRawArguments: Array<string>) {
+function attemptArgumentParse(message: Message, argumentInfo: ArgumentInfo, remainingRawArguments: Array<string>) {
 	let parsedValue;
 
 	function parseNextValue() {
@@ -120,6 +120,8 @@ function attempArgumentParse(message: Message, argumentInfo: ArgumentInfo, remai
 	}
 
 	if (argumentInfo.infinite) {
+		if (argumentInfo.type === "string") return remainingRawArguments.join(" ");
+
 		parsedValue = [];
 
 		let parsed;
@@ -145,9 +147,10 @@ async function collectRemainingArguments(
 		const argumentInfo = argumentInformationArray[i];
 		if (argumentInfo.optional) break;
 
+		const nonStringInfinite = argumentInfo.infinite && argumentInfo.type !== "string";
 
 		let prompt = argumentInfo.prompt;
-		if (argumentInfo.infinite) {
+		if (nonStringInfinite) {
 			prompt += " Type `finish` when you are done supplying arguments.";
 		}
 		prompt += " Type `cancel` to cancel the command (30s timeout).";
@@ -168,18 +171,18 @@ async function collectRemainingArguments(
 				return undefined;
 			}
 
-			const satitizedContent = sanitize(userReplyMessage.content);
-			if (satitizedContent === "finish") break;
+			const sanitizedContent = sanitize(userReplyMessage.content);
+			if (nonStringInfinite && sanitizedContent === "finish") break;
 
-			parsedValue = attempArgumentParse(userReplyMessage, argumentInfo, [satitizedContent]);
+			parsedValue = attemptArgumentParse(userReplyMessage, argumentInfo, [sanitizedContent]);
 			if (!parsedValue) {
 				userReplyMessage.reply("I was unable to understand that. Try again.");
-			} else if (argumentInfo.infinite) {
-				parsedList.push(...(parsedValue as Array<unknown>));
+			} else if (parsedValue instanceof Array) {
+				parsedList.push(...parsedValue);
 			}
-		} while (argumentInfo.infinite || !parsedValue);
+		} while (nonStringInfinite || !parsedValue);
 
-		result[argumentInfo.name] = argumentInfo.infinite ? parsedList : parsedValue;
+		result[argumentInfo.name] = nonStringInfinite ? parsedList : parsedValue;
 	}
 
 	return result;
@@ -197,7 +200,7 @@ async function attemptCommandParse(command: _Command, message: Message, supplied
 	for (let i = 0; i < argumentInformationArray.length; i++) {
 		const argumentInfo = argumentInformationArray[i];
 
-		const parsedValue = attempArgumentParse(message, argumentInfo, remainingRawArguments);
+		const parsedValue = attemptArgumentParse(message, argumentInfo, remainingRawArguments);
 		if (parsedValue) {
 			result[argumentInfo.name] = parsedValue;
 		} else {
@@ -208,7 +211,7 @@ async function attemptCommandParse(command: _Command, message: Message, supplied
 			}
 		}
 	}
-	
+
 	return result;
 }
 
@@ -291,8 +294,7 @@ export async function handleCommandMessage(
 	if (content.match(/!\w/)) {
 		return message.reply(
 			oneLine(`that does not seem to be an available command.
-			Use the \`!help\`, \`!about <command-name>\`,
-			or \`!commands\` for more information.`),
+			Use the \`!help\` or \`!help <command-name>\` for more information.`),
 		);
 	}
 }
