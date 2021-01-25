@@ -33,17 +33,6 @@ function createStaffEmbed(staff: Staff) {
 	});
 }
 
-async function searchStaff(staff: string): Promise<Array<Staff> | undefined> {
-	let queryResult;
-	try {
-		queryResult = await getStaffListFromQuery(staff);
-	} catch (e) {
-		console.log("[DATABASE]", e);
-	}
-
-	return queryResult;
-}
-
 export default {
 	identifier: "who-is",
 	formalName: "Who Is",
@@ -65,11 +54,16 @@ export default {
 		},
 	],
 	func: async (client: Client, message: Message, result: { person: string }) => {
-		const queryResult = await searchStaff(result.person);
+		let queryResult;
+		try {
+			queryResult = await getStaffListFromQuery(result.person);
+		} catch (e) {
+			console.log("[DATABASE]", e);
+		}
 
-		if (!queryResult || queryResult.length === 0) {
+		if (!queryResult || (queryResult instanceof Array && queryResult.length === 0)) {
 			return message;
-		} else if (queryResult.length === 1) {
+		} else if (queryResult.length === 1 || queryResult[0]._score >= 1) {
 			return message.reply(createStaffEmbed(queryResult[0]));
 		} else if (queryResult.length > 1) {
 			message.reply(
@@ -82,8 +76,7 @@ export default {
 			try {
 				nextMessage = await nextUserReply(message);
 			} catch (e) {
-				console.warn("[DISCORD] Unable to await messages.", e);
-				return message.reply("That was not one of the options ");
+				return message.reply("cancelling command.");
 			}
 
 			if (nextMessage) {
@@ -100,7 +93,6 @@ export default {
 					);
 				}
 			}
-		} else {
 		}
 	},
 } as Command;

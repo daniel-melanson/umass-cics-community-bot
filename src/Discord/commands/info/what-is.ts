@@ -40,12 +40,9 @@ export default {
 
 		if (!queryResult || (queryResult instanceof Array && queryResult.length === 0)) {
 			return message.reply("I cannot seem to find a course with an identifier like that.");
-		} else if (queryResult instanceof Array && queryResult.length > 1) {
-			return message.reply(
-				oneLine(`I was unable to narrow down your search to a single course.
-					Which one of the following did you mean: ${queryResult.map(x => x.id).join(", ")}?`),
-			);
-		} else {
+		} else if (queryResult instanceof Array && queryResult.length > 5) {
+			return message.reply("I found multiple courses that matched that. Please be more specific.");
+		} else if (!(queryResult instanceof Array) || queryResult.length === 1) {
 			const course = queryResult instanceof Array ? queryResult[0] : queryResult;
 			const fields = [];
 
@@ -64,7 +61,13 @@ export default {
 					url: course.website,
 					description: course.description,
 					fields: fields,
+					timestamp: false,
 				}),
+			);
+		} else {
+			return message.reply(
+				oneLine(`I was unable to narrow down your search to a single course.
+					Which one of the following did you mean: ${queryResult.map(x => x.id).join(", ")}?`),
 			);
 		}
 	},

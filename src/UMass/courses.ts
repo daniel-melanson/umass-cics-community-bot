@@ -35,7 +35,7 @@ export function getCourseIdFromQuery(query: string): string | undefined {
 	const match = query.trim().match(new RegExp(`^${SHORTENED_SUBJECT_REGEXP_STRING}\\s*(h?\\d{3}[a-z0-9]*)$`, "im"));
 
 	if (match === null) return undefined;
-	return `${getExactCourseSubject(match[1])} ${match[2]}`;
+	return `${getExactCourseSubject(match[1])} ${match[2].toUpperCase()}`;
 }
 
 export async function getCourseFromQuery(query: string): Promise<Course | Array<Course> | null> {
@@ -45,14 +45,27 @@ export async function getCourseFromQuery(query: string): Promise<Course | Array<
 
 	const courseCollection = await connectToCollection("courses");
 	if (courseId) {
-		return courseCollection.findOne({
+		let idMatch = await courseCollection.findOne({
 			id: courseId,
 		});
-	} else {
-		return courseCollection
-			.aggregate([{ $match: { $text: { $search: query } } }, { $sort: { score: { $meta: "textScore" } } }])
-			.toArray();
-	}
+
+		if (idMatch) return idMatch;
+
+		idMatch = await courseCollection.findOne({
+			id: { $regex: courseId }
+		});
+
+		if (idMatch) return idMatch;
+	} 
+	
+	return courseCollection
+		.aggregate([
+			{ $match: { $text: { $search: query } } },
+			{ $addFields: { _score: { $meta: "textScore" } } },
+			{ $sort: { _score: -1 } },
+			{ $match: { _score: { $gt: 0.7 } } },
+		])
+		.toArray();
 }
 
 export async function getCoursesFromSubject(subject: CourseSubject): Promise<Array<Course>> {
