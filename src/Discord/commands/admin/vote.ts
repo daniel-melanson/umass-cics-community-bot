@@ -1,6 +1,6 @@
 import { Client, Message, TextChannel } from "discord.js";
 
-import { Command } from "Discord/commands/types";
+import { Command, UserPermission } from "Discord/commands/types";
 import { formatEmbed } from "Discord/formatting";
 
 export default {
@@ -20,6 +20,7 @@ export default {
 		},
 	],
 	guildOnly: true,
+	userPermission: UserPermission.Moderator,
 	func: async (client: Client, message: Message, result: { question: string; channel: TextChannel }) => {
 		const emojis = message.guild!.emojis.cache;
 		const upvote = emojis.find(emoji => emoji.name === "upvote");

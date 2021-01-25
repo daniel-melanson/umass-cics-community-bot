@@ -1,6 +1,6 @@
 import { Client, Message } from "discord.js";
 
-import { Command } from "Discord/commands/types";
+import { Command, UserPermission } from "Discord/commands/types";
 import { oneLine } from "Shared/stringUtil";
 import { getCourseIdFromQuery } from "UMass/courses";
 
@@ -24,6 +24,7 @@ export default {
 			type: "string",
 		},
 	],
+	userPermission: UserPermission.Moderator,
 	guildOnly: true,
 	func: async (client: Client, message: Message, result: { id: string; title: string }) => {
 		const guild = message.guild!;

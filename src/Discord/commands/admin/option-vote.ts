@@ -1,6 +1,6 @@
 import { Client, Message, TextChannel } from "discord.js";
 
-import { Command } from "Discord/commands/types";
+import { Command, UserPermission } from "Discord/commands/types";
 import { formatEmbed } from "Discord/formatting";
 
 const REACTION_EMOJIS = ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳"];
@@ -29,6 +29,7 @@ export default {
 		},
 	],
 	guildOnly: true,
+	userPermission: UserPermission.Moderator,
 	func: async (
 		client: Client,
 		message: Message,
