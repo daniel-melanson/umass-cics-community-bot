@@ -358,7 +358,7 @@ export async function handleCommandMessage(
 		}
 	}
 
-	if (content.match(/!\w/)) {
+	if (content.match(/^!\w/)) {
 		return message.reply(
 			oneLine(`that does not seem to be an available command.
 			Use the \`!help\` or \`!help <command-name>\` for more information.`),
