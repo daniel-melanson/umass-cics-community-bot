@@ -22,6 +22,11 @@ export function login(token: string): Promise<void> {
 	}).then(async () => {
 		console.log(`Logged in as ${client.user?.tag}`);
 
+		await client.user?.setActivity({
+			type: "LISTENING",
+			name: "!help",
+		});
+
 		const guild = await client.guilds.fetch(process.env["DISCORD_GUILD_ID"]!);
 		const botMember = await guild.members.fetch(client.user!);
 		if (!botMember.permissions.has("ADMINISTRATOR")) {
