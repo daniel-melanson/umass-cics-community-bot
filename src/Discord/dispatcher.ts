@@ -318,8 +318,6 @@ async function attemptCommandRun(
 	if (result) {
 		if (command.identifier === "help") result["commandList"] = COMMAND_LIST;
 
-		console.log(result);
-
 		try {
 			await command.func(client, message, result);
 		} catch (e) {
