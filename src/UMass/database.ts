@@ -55,13 +55,15 @@ function cmd(cmdStr: string) {
 async function updateDatabase(recursive?: boolean) {
 	const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
 
+	console.log("[DATABASE] Updating...");
 	try {
 		const client = new Mongo.MongoClient(CONNECTION_STRING, { useUnifiedTopology: true });
 		await client.connect();
 
-		client.db(nextDatabase).dropDatabase();
-		await cmd(`${process.env["DATABASE_UPDATE_COMMAND"]} '${CONNECTION_STRING}' ${nextDatabase}`);
+		await client.db(nextDatabase).dropDatabase();
+		await cmd(`${process.env["DATABASE_UPDATE_COMMAND"]} ${nextDatabase}`);
 
+		console.log("[DATABASE] Finished updated.");
 		currentDatabase = nextDatabase;
 		if (recursive) setTimeout(updateDatabase, UPDATE_TIME, true);
 	} catch (e) {
@@ -70,5 +72,5 @@ async function updateDatabase(recursive?: boolean) {
 		if (recursive) setTimeout(updateDatabase, HOUR, true);
 	}
 }
-setTimeout(updateDatabase, 3 * HOUR);
+setTimeout(updateDatabase, HOUR * 3);
 setTimeout(updateDatabase, UPDATE_TIME, true);
