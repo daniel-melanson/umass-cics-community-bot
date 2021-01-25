@@ -117,7 +117,7 @@ function getNextWord(tracker: ArgumentTracker) {
 		const word = tracker.value.substring(0, nextSpace);
 		tracker.value = tracker.value.substring(nextSpace + 1);
 
-		return word;
+		return word.endsWith(",") ? word.substring(0, word.length - 1) : word;
 	}
 }
 
@@ -356,7 +356,7 @@ export async function handleCommandMessage(
 		}
 	}
 
-	if (content.match(/^!\w/)) {
+	if (content.match(/^!\w/m)) {
 		return message.reply(
 			oneLine(`that does not seem to be an available command.
 			Use the \`!help\` or \`!help <command-name>\` for more information.`),
