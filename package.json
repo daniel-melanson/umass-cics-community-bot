@@ -1,10 +1,15 @@
 {
   "name": "umass-cics-discord-bot",
-  "version": "1.0.0",
-  "description": "Simple discord bot for an unofficial UMass CICS discord server.",
-  "main": "src/index.js",
+  "version": "2.0.0",
+  "description": "Bot for unofficial UMass CICS discord.",
+  "main": "./out/index.js",
+  "type": "module",
   "scripts": {
-    "start": "node src/index.js"
+    "build": "npx ttsc -b",
+    "build-watch": "npx ttsc -b -w",
+    "clean": "rm -rf ./out",
+    "lint": "eslint ./src/**/*.ts",
+    "start": "node --es-module-specifier-resolution=node --harmony ./out/index.js"
   },
   "repository": {
     "type": "git",
@@ -16,15 +21,29 @@
     "url": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot/issues"
   },
   "homepage": "https://github.com/daniel-melanson/UMass-CICS-Discord-Bot#readme",
-  "dependencies": {
-    "bufferutil": "^4.0.1",
-    "cheerio": "^1.0.0-rc.3",
-    "common-tags": "^1.8.0",
-    "discord.js": "github:discordjs/discord.js#ea8b4e73559d118a826ac3b242c1a3626b4f6d29",
-    "discord.js-commando": "github:discordjs/commando#4beeec829ed25fc2c6ec0896edf7e0ac4d8bfcf0",
-    "erlpack": "github:discordapp/erlpack",
-    "node-fetch": "^2.6.1",
-    "utf-8-validate": "^5.0.2"
+  "devDependencies": {
+    "@types/common-tags": "^1.8.0",
+    "@types/mongodb": "^3.6.3",
+    "@types/node-cron": "^2.0.3",
+    "@types/node-fetch": "^2.5.7",
+    "@typescript-eslint/eslint-plugin": "^4.8.2",
+    "@typescript-eslint/parser": "^4.8.2",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.2.0",
+    "ttypescript": "^1.5.12",
+    "typescript": "^4.0.5",
+    "typescript-transform-paths": "^2.2.2"
   },
-  "devDependencies": {}
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.6.3",
+    "node-cron": "^2.0.3",
+    "node-fetch": "^2.6.1"
+  },
+  "engines": {
+    "node": ">=13.0.0"
+  }
 }
