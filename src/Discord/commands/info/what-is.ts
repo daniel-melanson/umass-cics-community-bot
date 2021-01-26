@@ -1,6 +1,6 @@
 import { Client, Message } from "discord.js";
 
-import { getCourseFromQuery } from "UMass/courses";
+import { getCourseFromQuery, SHORTENED_SUBJECT_REGEXP_STRING } from "UMass/courses";
 import { Command } from "Discord/commands/types";
 
 import { formatEmbed } from "Discord/formatting";
@@ -12,7 +12,7 @@ export default {
 	identifier: "what-is",
 	formalName: "What Is",
 	group: "Information",
-	patterns: [/^(what is|what'?s) ([\w ]+)\??$/im],
+	patterns: [new RegExp(`^(what is|what'?s)\\s*(${SHORTENED_SUBJECT_REGEXP_STRING}?\\s*h?\\d{3}\\w*)\\??$`, "im")],
 	description: "Responds with information about a UMass CICS related course.",
 	details: oneLine(`
 		Attempts to retrieve course information given a search query.
