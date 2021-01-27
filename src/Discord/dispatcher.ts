@@ -267,6 +267,10 @@ async function attemptCommandParse(command: _Command, message: Message, supplied
 		}
 
 		if (!parseResult) {
+			message.channel.send(
+				oneLine(`I had some problems parsing the ${argumentInfo.name} argument.
+				I'm going to collect the remaining arguments.`)
+			);
 			try {
 				return await collectRemainingArguments(message, argumentInformationArray, i, result);
 			} catch (e) {
