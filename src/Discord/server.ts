@@ -125,9 +125,18 @@ client.on("message", async (message: Message) => {
 					}),
 				);
 
+				const get = (name: string) => {
+					const channel = guild.channels.cache.find(c => c.name === `how-to-${name}`);
+					if (!channel) return "";
+
+					return `<#${channel.id}>`;
+				};
+
 				announce(
 					"bot-commands",
 					oneLine(`<@${member.id}>, welcome to the server.
+					If you are unfamiliar with the server,
+					make sure to read the how-to channels (${get("roles")}, ${"commands"}, ${"notifications"}).
 					You can use this website (https://discord.ltseng.me/) to assign yourself some roles.
 					If you want to quickly manage your roles, you can use the \`!role\` command is this channel.
 					You can use the \`!roles\` command if you want to see a list of assignable roles.`),
