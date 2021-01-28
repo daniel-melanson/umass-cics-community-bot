@@ -58,10 +58,11 @@ export default {
 			content += ` You no longer have: ${removedList}.`;
 		} else if (rolesRemoved.length === 0 && rolesAdded.length > 0) {
 			content += ` You now have: ${addedList}.`;
-		} else if (rolesAdded.length + rolesRemoved.length) {
+		} else if (rolesAdded.length + rolesRemoved.length > 0) {
 			content += ` You now have: ${addedList} and no longer have ${removedList}.`;
 		}
 
-		return message.reply(content);
+		if (rolesAdded.length + rolesRemoved.length > 0) return message.reply(content);
+		else return message; 
 	},
 } as Command;
