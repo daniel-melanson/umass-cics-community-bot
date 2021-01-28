@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
+import { Client, Message, MessageEmbed, TextChannel, VoiceChannel } from "discord.js";
 import { oneLine } from "Shared/stringUtil";
 
 import { NOTIFICATION_TUTORIALS } from "Discord/constants/how-to-notifications";
@@ -9,6 +9,12 @@ import { DISCORD_RULES } from "Discord/constants/rules";
 import { handleCommandMessage } from "Discord/dispatcher";
 import { formatEmbed } from "Discord/formatting";
 import { CONTACT_MESSAGE } from "Discord/constants";
+
+const DISCORD_GUILD_ID = process.env["DISCORD_GUILD_ID"]!;
+if (!DISCORD_GUILD_ID) {
+	console.error("DISCORD_GUILD_ID is not defined in env.")
+	process.exit(-1);
+}
 
 const client = new Client({
 	disableMentions: "everyone",
@@ -27,7 +33,7 @@ export function login(token: string): Promise<void> {
 			name: "!help",
 		});
 
-		const guild = await client.guilds.fetch(process.env["DISCORD_GUILD_ID"]!);
+		const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
 		const botMember = await guild.members.fetch(client.user!);
 		if (!botMember.permissions.has("ADMINISTRATOR")) {
 			console.error("[SERVER] Insignificant permissions in guild.");
@@ -49,6 +55,8 @@ export function login(token: string): Promise<void> {
 			}
 		};
 
+		if (!process.env["SEND_MESSAGES"]) return;
+
 		await sendChannel("rules", DISCORD_RULES);
 		await sendChannel("how-to-roles", ROLES_TUTORIAL);
 		await sendChannel("how-to-notifications", NOTIFICATION_TUTORIALS);
@@ -57,10 +65,10 @@ export function login(token: string): Promise<void> {
 }
 
 export async function announce(
-	channel: "general" | "university" | "bot-log",
+	channel: "general" | "university" | "bot-log" | "bot-commands",
 	message: string | MessageEmbed,
 ): Promise<void> {
-	const guild = await client.guilds.fetch(process.env["DISCORD_GUILD_ID"]!);
+	const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
 	const sendingChannel = guild.channels.cache.find(x => x.type === "text" && x.name === channel);
 	if (!sendingChannel) throw new Error(`Unable to find channel ${sendingChannel}`);
 
@@ -93,7 +101,6 @@ client.on("message", async (message: Message) => {
 	}
 
 	const guild = message.guild;
-
 	if (guild && (message.channel as TextChannel).name === "welcome") {
 		const member = message.member!;
 		if (message.content === "verify") {
@@ -116,9 +123,15 @@ client.on("message", async (message: Message) => {
 								Their identifier is **${member.nickname || member.user.username}**.`),
 						color: "#2ecc71",
 					}),
-				).catch(e => {
-					console.error("[SERVER-VERIFICATION] Unable to send verification message:", e);
-				});
+				);
+
+				announce(
+					"bot-commands",
+					oneLine(`<@${member.id}>, welcome to the server.
+					You can use this website (https://discord.ltseng.me/) to assign yourself some roles.
+					If you want to quickly manage your roles, you can use the \`!role\` command is this channel.
+					You can use the \`!roles\` command if you want to see a list of assignable roles.`),
+				);
 			} else {
 				console.error("[DISCORD] Unable to find Verified role.");
 			}
