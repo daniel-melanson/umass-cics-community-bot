@@ -134,12 +134,12 @@ client.on("message", async (message: Message) => {
 
 				announce(
 					"bot-commands",
-					oneLine(`<@${member.id}>, welcome to the server.
-					If you are unfamiliar with the server,
-					make sure to read the how-to channels (${get("roles")}, ${"commands"}, ${"notifications"}).
-					You can use this website (https://discord.ltseng.me/) to assign yourself some roles.
-					If you want to quickly manage your roles, you can use the \`!role\` command is this channel.
-					You can use the \`!roles\` command if you want to see a list of assignable roles.`),
+					`<@${member.id}>, welcome to the server!` + "\n\n" +
+					oneLine(`If you are unfamiliar with the server,
+					make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")}`) + "\n\n" + 
+					oneLine(`You can assign yourself some roles using this website: https://discord.ltseng.me/
+					or using the \`!role\` command. To view a list of all assignable roles,
+					you can use the \`!roles\` command.`),
 				);
 			} else {
 				console.error("[DISCORD] Unable to find Verified role.");
