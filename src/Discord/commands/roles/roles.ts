@@ -7,6 +7,7 @@ import {
 	isAssignable,
 	isCSClass,
 	isGraduationStatus,
+	isHobby,
 	isInterdisciplinary,
 	isMathClass,
 	isMisc,
@@ -62,6 +63,10 @@ export default {
 					{
 						name: "Interdisciplinary",
 						value: list(isInterdisciplinary),
+					},
+					{
+						name: "Hobbies",
+						value: list(isHobby),
 					},
 					{
 						name: "Miscellaneous",
