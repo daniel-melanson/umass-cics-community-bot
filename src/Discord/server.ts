@@ -120,7 +120,8 @@ client.on("message", async (message: Message) => {
 					formatEmbed({
 						author: message.author,
 						description: oneLine(`<@${member.user.id}> has just been verified.
-								Their identifier is **${member.nickname || member.user.username}**.`),
+								Their identifier is **${member.nickname || member.user.username}**.
+								Their account was created on ${message.author.createdAt.toLocaleDateString()}`),
 						color: "#2ecc71",
 					}),
 				);
