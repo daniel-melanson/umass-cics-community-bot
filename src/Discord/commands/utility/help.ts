@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { Command } from "Discord/commands/types";
 import { oneLine } from "Shared/stringUtil";
@@ -16,7 +16,7 @@ export default {
 			optional: true,
 		},
 	],
-	func: async (client: Client, message: Message, result: { command?: string; commandList: Array<Command> }) => {
+	func: async (message: Message, result: { command?: string; commandList: Array<Command> }) => {
 		const commandQuery = result.command;
 
 		let replyString;

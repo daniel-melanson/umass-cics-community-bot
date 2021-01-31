@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { oneLine } from "Shared/stringUtil";
 
 import { Command } from "Discord/commands/types";
@@ -10,7 +10,7 @@ export default {
 	group: "Utility",
 	description: "Responds with information about the bot.",
 	examples: ["!source"],
-	func: async (client: Client, message: Message) => {
+	func: async (message: Message) => {
 		return message.reply(
 			formatEmbed({
 				title: "Discord Bot Information",

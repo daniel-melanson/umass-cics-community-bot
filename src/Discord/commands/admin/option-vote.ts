@@ -1,4 +1,4 @@
-import { Client, Message, TextChannel } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 
 import { Command, UserPermission } from "Discord/commands/types";
 import { formatEmbed } from "Discord/formatting";
@@ -30,11 +30,7 @@ export default {
 	],
 	guildOnly: true,
 	userPermission: UserPermission.Moderator,
-	func: async (
-		client: Client,
-		message: Message,
-		result: { question: string; channel: TextChannel; options: string },
-	) => {
+	func: async (message: Message, result: { question: string; channel: TextChannel; options: string }) => {
 		const responses = result.options.split("/").map(s => s.trim());
 
 		if (responses.length <= 1) {

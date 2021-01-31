@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { Command, UserPermission } from "Discord/commands/types";
 
@@ -17,7 +17,7 @@ export default {
 			matchGroupIndex: 2,
 		},
 	],
-	func: async (client: Client, message: Message, result: { msg: string }) => {
+	func: async (message: Message, result: { msg: string }) => {
 		await message.delete();
 		return message.channel.send(result.msg);
 	},

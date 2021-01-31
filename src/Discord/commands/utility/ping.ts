@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { Command } from "Discord/commands/types";
 import { oneLine } from "Shared/stringUtil";
@@ -8,7 +8,7 @@ export default {
 	group: "Utility",
 	description: "Responds to the invoking message with information about latency.",
 	examples: ["!ping"],
-	func: async (client: Client, message: Message) => {
+	func: async (message: Message) => {
 		const pingMsg = await message.reply("Pinging...");
 		return pingMsg.edit(
 			oneLine(`
@@ -16,7 +16,7 @@ export default {
 				(pingMsg.editedTimestamp || pingMsg.createdTimestamp) -
 				(message.editedTimestamp || message.createdTimestamp)
 			}ms.
-			${client.ws.ping ? `The websocket heartbeat is ${Math.round(client.ws.ping)}ms.` : ""}
+			${message.client.ws.ping ? `The websocket heartbeat is ${Math.round(message.client.ws.ping)}ms.` : ""}
 		`),
 		);
 	},

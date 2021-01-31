@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { getCourseFromQuery, SHORTENED_SUBJECT_REGEXP_STRING } from "UMass/courses";
 import { Command } from "Discord/commands/types";
@@ -29,7 +29,7 @@ export default {
 			matchGroupIndex: 2,
 		},
 	],
-	func: async (client: Client, message: Message, result: { course: string }) => {
+	func: async (message: Message, result: { course: string }) => {
 		let queryResult;
 		try {
 			queryResult = await getCourseFromQuery(result.course);

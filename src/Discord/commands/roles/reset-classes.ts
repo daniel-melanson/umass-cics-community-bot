@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { Command } from "Discord/commands/types";
 import { isClass } from "Discord/roles";
@@ -11,7 +11,7 @@ export default {
 	description: "Removes a users class related roles.",
 	examples: ["!reset-classes"],
 	guildOnly: true,
-	func: async (client: Client, message: Message) => {
+	func: async (message: Message) => {
 		const member = message.member!;
 		for (const role of member.roles.cache.array()) {
 			if (isClass(role.name)) await member.roles.remove(role);

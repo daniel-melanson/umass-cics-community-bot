@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { Command } from "Discord/commands/types";
 
@@ -9,7 +9,7 @@ export default {
 	description: "Creates a simple poll for the students reaction of an assessment.",
 	examples: ["!wl"],
 	guildOnly: true,
-	func: async (client: Client, message: Message) => {
+	func: async (message: Message) => {
 		const reply = await message.channel.send(`Was that assessment a W or an L?`);
 
 		reply.react("🇼");

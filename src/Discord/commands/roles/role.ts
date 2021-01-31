@@ -1,4 +1,4 @@
-import { Client, Message, Role } from "discord.js";
+import { Message, Role } from "discord.js";
 import { isAssignable } from "Discord/roles";
 import { oneLine } from "Shared/stringUtil";
 
@@ -19,7 +19,7 @@ export default {
 			infinite: true,
 		},
 	],
-	func: async (client: Client, message: Message, result: { roles: Array<Role> }) => {
+	func: async (message: Message, result: { roles: Array<Role> }) => {
 		const roleList = result.roles;
 
 		const rolesAdded = [];

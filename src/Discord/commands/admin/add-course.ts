@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { Command, UserPermission } from "Discord/commands/types";
 import { oneLine } from "Shared/stringUtil";
@@ -26,7 +26,7 @@ export default {
 	],
 	userPermission: UserPermission.Moderator,
 	guildOnly: true,
-	func: async (client: Client, message: Message, result: { id: string; title: string }) => {
+	func: async (message: Message, result: { id: string; title: string }) => {
 		const guild = message.guild!;
 		const id = getCourseIdFromQuery(result.id);
 		if (!id) return message.reply("That does not seem to be a valid course id.");

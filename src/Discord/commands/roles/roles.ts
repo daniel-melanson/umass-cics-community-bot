@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { formatEmbed } from "Discord/formatting";
 import { Command } from "Discord/commands/types";
@@ -22,7 +22,7 @@ export default {
 	description: "Lists out roles that a user may assign themselves.",
 	examples: ["!roles"],
 	guildOnly: true,
-	func: async (client: Client, message: Message) => {
+	func: async (message: Message) => {
 		const manager = await message.guild!.roles.fetch();
 
 		const assignableNames = manager.cache.map(role => role.name).filter(name => isAssignable(name));

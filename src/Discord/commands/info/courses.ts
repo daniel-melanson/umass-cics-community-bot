@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { formatEmbed } from "Discord/formatting";
 import { Command } from "Discord/commands/types";
@@ -29,7 +29,7 @@ export default {
 			matchGroupIndex: 2,
 		},
 	],
-	func: async (client: Client, message: Message, result: { subject: string }) => {
+	func: async (message: Message, result: { subject: string }) => {
 		const exactSubject = getExactCourseSubject(result.subject);
 
 		if (!exactSubject) {

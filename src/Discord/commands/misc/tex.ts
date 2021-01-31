@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { Command } from "Discord/commands/types";
 import { oneLine } from "Shared/stringUtil";
@@ -24,7 +24,7 @@ export default {
 			matchGroupIndex: 1,
 		},
 	],
-	func: async (client: Client, message: Message, result: { expression: string }) => {
+	func: async (message: Message, result: { expression: string }) => {
 		const reply = await message.reply(`processing...`);
 
 		let image,

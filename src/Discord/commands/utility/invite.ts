@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 import { Command } from "Discord/commands/types";
 
@@ -9,7 +9,7 @@ export default {
 	description: "Responds with a permanent invite to the discord.",
 	examples: ["!invite"],
 	guildOnly: true,
-	func: async (client: Client, message: Message) => {
+	func: async (message: Message) => {
 		const guild = message.guild!;
 		const welcome = guild.channels.cache.find(c => c.name === "welcome");
 		if (!welcome) return message.reply("unable to find welcome channel. Make sure I can see that channel.");

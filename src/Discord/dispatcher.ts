@@ -340,7 +340,7 @@ async function attemptCommandRun(
 		if (command.identifier === "help") result["commandList"] = COMMAND_LIST;
 
 		try {
-			await command.func(client, message, result);
+			await command.func(message, result);
 		} catch (e) {
 			console.error(`[COMMAND ${command.identifier}] ${e}`);
 

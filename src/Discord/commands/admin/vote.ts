@@ -1,4 +1,4 @@
-import { Client, Message, TextChannel } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 
 import { Command, UserPermission } from "Discord/commands/types";
 import { formatEmbed } from "Discord/formatting";
@@ -21,7 +21,7 @@ export default {
 	],
 	guildOnly: true,
 	userPermission: UserPermission.Moderator,
-	func: async (client: Client, message: Message, result: { question: string; channel: TextChannel }) => {
+	func: async (message: Message, result: { question: string; channel: TextChannel }) => {
 		const emojis = message.guild!.emojis.cache;
 		const upvote = emojis.find(emoji => emoji.name === "upvote");
 		if (!upvote) return message.reply("unable to find upvote emoji. Make sure the guild has one.");

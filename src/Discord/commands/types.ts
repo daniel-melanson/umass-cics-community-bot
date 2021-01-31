@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 
 type Group = "Administrative" | "Information" | "Miscellaneous" | "Roles" | "Utility";
 export enum UserPermission {
@@ -30,7 +30,7 @@ export interface _Command {
 	guildOnly: boolean;
 	userPermission: UserPermission;
 	arguments?: Array<ArgumentInfo>;
-	func: (client: Client, message: Message, result: unknown) => Promise<Message | Array<Message>>;
+	func: (message: Message, result: unknown) => Promise<Message | Array<Message>>;
 }
 
 type RequiredFields = "identifier" | "description" | "func" | "group";
