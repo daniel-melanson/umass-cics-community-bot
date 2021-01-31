@@ -36,9 +36,9 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 			if (cmd.aliases && cmd.aliases.some(alias => !alias.match(/^[a-zA-Z]/)))
 				error(cmd, "aliases must start with a letter.");
 
-			if (cmd.arguments) {
-				if (cmd.arguments.length > 1) {
-					for (const arg of cmd.arguments.slice(0, cmd.arguments.length - 1)) {
+			if (cmd.parameters) {
+				if (cmd.parameters.length > 1) {
+					for (const arg of cmd.parameters.slice(0, cmd.parameters.length - 1)) {
 						if (arg.infinite) {
 							error(cmd, "Only the last argument may have the infinite attribute.");
 						}
@@ -49,7 +49,7 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 					}
 				}
 
-				const lastArg = cmd.arguments[cmd.arguments.length - 1];
+				const lastArg = cmd.parameters[cmd.parameters.length - 1];
 				if (lastArg.type === "string" && lastArg.infinite) {
 					error(cmd, "Strings are inherently infinite. Remove the infinite attribute.");
 				}
@@ -78,14 +78,14 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 				formalName: cmd.formalName || capitalize(cmd.identifier),
 				group: cmd.group,
 				aliases: cmd.aliases,
-				defaultPatterns: defaults.map(x => new RegExp(`^!${x}(\\s+(.+)|$)`, "im")),
+				defaultPatterns: defaults.map(x => new RegExp(`^!${x}( (.+)|$)`, "im")),
 				patterns: cmd.patterns,
 				description: cmd.description,
 				details: cmd.details,
 				examples: cmd.examples,
 				guildOnly: cmd.guildOnly || false,
 				userPermission: cmd.userPermission || UserPermission.Member,
-				arguments: cmd.arguments,
+				parameters: cmd.parameters,
 				func: cmd.func,
 			});
 		}

@@ -12,7 +12,7 @@ export default {
 	details: oneLine(`
 		This command is used to create a temporary group chat within the server for a list of users.
     `),
-	arguments: [
+	parameters: [
 		{
 			name: "id",
 			prompt: "what is the id of the course? (Example: CS 187)",

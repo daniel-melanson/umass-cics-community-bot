@@ -2,7 +2,7 @@ import { oneLine } from "Shared/stringUtil";
 import { GuildMember, Message, Collection, Client, GuildChannel, Role } from "discord.js";
 
 import { requireCommandList } from "Discord/commands";
-import { _Command, ArgumentInfo, UserPermission } from "Discord/commands/types";
+import { _Command, UserPermission, ParameterInfo } from "Discord/commands/types";
 import { hasPendingReply, nextUserReply } from "Discord/nextUserReply";
 
 const OWNER_ID = process.env["DISCORD_OWNER_ID"];
@@ -138,12 +138,12 @@ function nextEncasedString(tracker: ArgumentTracker) {
 	return encasedString;
 }
 
-function attemptArgumentParse(message: Message, argumentInfo: ArgumentInfo, tracker: ArgumentTracker) {
+function attemptArgumentParse(message: Message, parameterInfo: ParameterInfo, tracker: ArgumentTracker) {
 	if (tracker.value.length === 0) return undefined;
 
 	function parseNextValue() {
-		if (argumentInfo.type === "string") return undefined;
-		const parser = parserMap[argumentInfo.type];
+		if (parameterInfo.type === "string") return undefined;
+		const parser = parserMap[parameterInfo.type];
 
 		let value;
 		let rawString = getNextWord(tracker);
@@ -168,7 +168,7 @@ function attemptArgumentParse(message: Message, argumentInfo: ArgumentInfo, trac
 	}
 
 	let parsedValue;
-	if (argumentInfo.infinite) {
+	if (parameterInfo.infinite) {
 		parsedValue = [];
 
 		let parsed;
@@ -186,18 +186,18 @@ function attemptArgumentParse(message: Message, argumentInfo: ArgumentInfo, trac
 
 async function collectRemainingArguments(
 	message: Message,
-	argumentInformationArray: Array<ArgumentInfo>,
+	parameterInformationArray: Array<ParameterInfo>,
 	index: number,
 	result: Record<string, unknown> = {},
 ) {
-	for (let i = index; i < argumentInformationArray.length; i++) {
-		const argumentInfo = argumentInformationArray[i];
-		if (argumentInfo.optional) break;
+	for (let i = index; i < parameterInformationArray.length; i++) {
+		const parameterInfo = parameterInformationArray[i];
+		if (parameterInfo.optional) break;
 
-		const argumentType = argumentInfo.type;
-		const isInfinite = argumentInfo.infinite;
+		const argumentType = parameterInfo.type;
+		const isInfinite = parameterInfo.infinite;
 
-		let prompt = argumentInfo.prompt;
+		let prompt = parameterInfo.prompt;
 		if (isInfinite) {
 			prompt += " Type `finish` when you are done supplying arguments.";
 		}
@@ -232,7 +232,7 @@ async function collectRemainingArguments(
 				break;
 			}
 
-			parsedValue = attemptArgumentParse(userReplyMessage, argumentInfo, { value: content });
+			parsedValue = attemptArgumentParse(userReplyMessage, parameterInfo, { value: content });
 			if (!parsedValue) {
 				userReplyMessage.reply(`I was unable to parse that into a ${argumentType}. Try again.`);
 			} else if (parsedValue instanceof Array) {
@@ -240,17 +240,17 @@ async function collectRemainingArguments(
 			}
 		} while (isInfinite || !parsedValue);
 
-		result[argumentInfo.name] = isInfinite ? parsedList : parsedValue;
+		result[parameterInfo.name] = isInfinite ? parsedList : parsedValue;
 	}
 
 	return result;
 }
 
 async function attemptCommandParse(command: _Command, message: Message, suppliedRawArguments: string | undefined) {
-	const argumentInformationArray = command.arguments!;
+	const parameterInformationArray = command.parameters!;
 
 	if (!suppliedRawArguments || suppliedRawArguments.length === 0) {
-		return await collectRemainingArguments(message, argumentInformationArray, 0);
+		return await collectRemainingArguments(message, parameterInformationArray, 0);
 	}
 	const result: Record<string, unknown> = {};
 
@@ -258,16 +258,16 @@ async function attemptCommandParse(command: _Command, message: Message, supplied
 		value: suppliedRawArguments,
 	};
 
-	for (let i = 0; i < argumentInformationArray.length; i++) {
-		const argumentInfo = argumentInformationArray[i];
+	for (let i = 0; i < parameterInformationArray.length; i++) {
+		const parameterInfo = parameterInformationArray[i];
 
 		let parseResult;
 		if (remainingRawArguments.value.length > 0) {
-			if (argumentInfo.type === "string") {
+			if (parameterInfo.type === "string") {
 				const isEncased =
 					remainingRawArguments.value.startsWith(`'`) || remainingRawArguments.value.startsWith(`"`);
 
-				if (i === argumentInformationArray.length - 1 && !isEncased) {
+				if (i === parameterInformationArray.length - 1 && !isEncased) {
 					parseResult = remainingRawArguments.value;
 				} else if (isEncased) {
 					parseResult = nextEncasedString(remainingRawArguments);
@@ -279,22 +279,22 @@ async function attemptCommandParse(command: _Command, message: Message, supplied
 					return undefined;
 				}
 			} else {
-				parseResult = attemptArgumentParse(message, argumentInfo, remainingRawArguments);
+				parseResult = attemptArgumentParse(message, parameterInfo, remainingRawArguments);
 			}
 		}
 
 		if (!parseResult) {
 			message.channel.send(
-				oneLine(`I had some problems parsing the ${argumentInfo.name} argument.
+				oneLine(`I had some problems parsing the ${parameterInfo.name} argument.
 				I'm going to collect the remaining arguments.`),
 			);
 			try {
-				return await collectRemainingArguments(message, argumentInformationArray, i, result);
+				return await collectRemainingArguments(message, parameterInformationArray, i, result);
 			} catch (e) {
 				return undefined;
 			}
 		} else {
-			result[argumentInfo.name] = parseResult;
+			result[parameterInfo.name] = parseResult;
 		}
 	}
 
@@ -315,7 +315,7 @@ async function attemptCommandRun(
 		return message.reply("you do not have permissions to execute that command.");
 
 	let result: Record<string, unknown> | undefined = {};
-	if (command.arguments) {
+	if (command.parameters) {
 		if (fromDefault) {
 			try {
 				result = await attemptCommandParse(command, message, match[2]);
@@ -328,7 +328,7 @@ async function attemptCommandRun(
 				}
 			}
 		} else {
-			for (const arg of command.arguments) {
+			for (const arg of command.parameters) {
 				if (arg.matchGroupIndex) {
 					result[arg.name] = match[arg.matchGroupIndex];
 				}

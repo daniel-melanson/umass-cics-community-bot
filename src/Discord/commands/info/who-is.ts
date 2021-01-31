@@ -45,7 +45,7 @@ export default {
 		This command can be invoked using phrases such as \`Who's Joe?\`.
 	`),
 	examples: ["Who is Marius?", "Who's Tim Richards?"],
-	arguments: [
+	parameters: [
 		{
 			name: "person",
 			type: "string",

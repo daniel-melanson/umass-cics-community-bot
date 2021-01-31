@@ -21,7 +21,7 @@ export default {
 			"im",
 		),
 	],
-	arguments: [
+	parameters: [
 		{
 			name: "subject",
 			type: "string",

@@ -11,7 +11,7 @@ export default {
 	description: "Gives or removes a list of roles from a user.",
 	examples: ["!role CS 121, MATH 132"],
 	guildOnly: true,
-	arguments: [
+	parameters: [
 		{
 			name: "roles",
 			type: "Role",

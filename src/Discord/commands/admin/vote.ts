@@ -7,7 +7,7 @@ export default {
 	identifier: "vote",
 	group: "Administrative",
 	description: "Creates yes or no vote.",
-	arguments: [
+	parameters: [
 		{
 			name: "channel",
 			prompt: "where would you like to pose this question?",

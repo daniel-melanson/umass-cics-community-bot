@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { GuildMember, Message, Role, TextChannel } from "discord.js";
 
 type Group = "Administrative" | "Information" | "Miscellaneous" | "Roles" | "Utility";
 export enum UserPermission {
@@ -7,9 +7,22 @@ export enum UserPermission {
 	Moderator,
 	Owner,
 }
-export interface ArgumentInfo {
+
+export type ParameterTypeNames = "string" | "GuildMember" | "GuildTextChannel" | "Role";
+export type ParameterTypes = string | GuildMember | TextChannel | Role;
+
+export type ParameterTypeFromName<Name> = Name extends "string"
+	? string
+	: Name extends "GuildMember"
+	? GuildMember
+	: Name extends "GuildTextChannel"
+	? TextChannel
+	: Name extends "Role"
+	? Role
+	: never;
+export interface ParameterInfo {
 	name: string;
-	type: "string" | "number" | "GuildMember" | "GuildTextChannel" | "Role";
+	type: ParameterTypeNames;
 	prompt: string;
 	infinite?: boolean;
 	matchGroupIndex?: number;
@@ -29,7 +42,7 @@ export interface _Command {
 	examples?: Array<string>;
 	guildOnly: boolean;
 	userPermission: UserPermission;
-	arguments?: Array<ArgumentInfo>;
+	parameters?: Array<ParameterInfo>;
 	func: (message: Message, result: unknown) => Promise<Message | Array<Message>>;
 }
 

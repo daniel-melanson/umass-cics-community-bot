@@ -11,7 +11,7 @@ export default {
 	group: "Administrative",
 	description: "Creates multiple choice poll.",
 	examples: ["!option-vote #general 'Which type of bear is best?' 'Black / Polar / Brown'"],
-	arguments: [
+	parameters: [
 		{
 			name: "channel",
 			prompt: "where would you like to pose this question?",

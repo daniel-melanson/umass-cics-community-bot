@@ -16,7 +16,7 @@ export default {
 		Advanced LaTeX tags such as \`\\usepackage\` or \`\\align\` will not work.
 	`),
 	examples: ["!latex y = \\sum_{x=0}^{10} x^5", "$\\frac{n^2 + n}{n}$"],
-	arguments: [
+	parameters: [
 		{
 			name: "expression",
 			type: "string",

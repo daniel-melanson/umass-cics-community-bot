@@ -21,7 +21,7 @@ export default {
 		You invoke this command using phrases such as \`What's 187?\`.
 	`),
 	examples: ["What is CS 187?", "What's 220?"],
-	arguments: [
+	parameters: [
 		{
 			name: "course",
 			prompt: "which class should I search for?",

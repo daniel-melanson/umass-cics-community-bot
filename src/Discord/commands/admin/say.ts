@@ -9,7 +9,7 @@ export default {
 	examples: ["!say Hello"],
 	guildOnly: true,
 	userPermission: UserPermission.Moderator,
-	arguments: [
+	parameters: [
 		{
 			name: "msg",
 			type: "string",
