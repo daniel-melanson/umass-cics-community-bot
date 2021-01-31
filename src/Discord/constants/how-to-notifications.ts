@@ -20,7 +20,6 @@ export const NOTIFICATION_TUTORIALS = [
 				inline: true,
 			},
 		],
-		author: false,
 		timestamp: false,
 	}),
 	formatEmbed({
@@ -42,7 +41,6 @@ export const NOTIFICATION_TUTORIALS = [
 				inline: true,
 			},
 		],
-		author: false,
 		timestamp: false,
 	}),
 	formatEmbed({
@@ -65,7 +63,6 @@ export const NOTIFICATION_TUTORIALS = [
 				inline: true,
 			},
 		],
-		author: false,
 		timestamp: false,
 	}),
 	formatEmbed({
@@ -87,7 +84,6 @@ export const NOTIFICATION_TUTORIALS = [
 				inline: true,
 			},
 		],
-		author: false,
 		timestamp: false,
 	}),
 ];
