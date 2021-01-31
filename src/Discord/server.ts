@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed, TextChannel, VoiceChannel } from "discord.js";
+import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
 import { oneLine } from "Shared/stringUtil";
 
 import { NOTIFICATION_TUTORIALS } from "Discord/constants/how-to-notifications";
@@ -12,7 +12,7 @@ import { CONTACT_MESSAGE } from "Discord/constants";
 
 const DISCORD_GUILD_ID = process.env["DISCORD_GUILD_ID"]!;
 if (!DISCORD_GUILD_ID) {
-	console.error("DISCORD_GUILD_ID is not defined in env.")
+	console.error("DISCORD_GUILD_ID is not defined in env.");
 	process.exit(-1);
 }
 
@@ -75,9 +75,7 @@ export async function announce(
 	await (sendingChannel as TextChannel).send(message);
 }
 
-client.on("message", async (message: Message) => {
-	if (message.partial || message.author.bot) return;
-
+async function handleCarrotUpvote(message: Message) {
 	const content = message.content;
 	if (message.guild && message.deletable && content === "^") {
 		const previousMessage = (
@@ -97,9 +95,11 @@ client.on("message", async (message: Message) => {
 			}
 		}
 
-		return message.delete();
+		return true;
 	}
+}
 
+async function handleVerify(message: Message) {
 	const guild = message.guild;
 	if (guild && (message.channel as TextChannel).name === "welcome") {
 		const member = message.member!;
@@ -135,10 +135,12 @@ client.on("message", async (message: Message) => {
 
 				announce(
 					"bot-commands",
-					`<@${member.id}>, welcome to the server!` + "\n\n" +
-					oneLine(`If you are unfamiliar with the server,
-					make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")}`) + "\n\n" + 
-					oneLine(`You can assign yourself some roles using this website: https://discord.ltseng.me/
+					`<@${member.id}>, welcome to the server!` +
+						"\n\n" +
+						oneLine(`If you are unfamiliar with the server,
+					make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")}`) +
+						"\n\n" +
+						oneLine(`You can assign yourself some roles using this website: https://discord.ltseng.me/
 					or using the \`!role\` command. To view a list of all assignable roles,
 					you can use the \`!roles\` command.`),
 				);
@@ -147,7 +149,16 @@ client.on("message", async (message: Message) => {
 			}
 		}
 
-		return message.delete();
+		return true;
+	}
+}
+
+client.on("message", async (message: Message) => {
+	if (message.partial || message.author.bot) return;
+
+	if ((await handleCarrotUpvote(message)) || (await handleVerify(message))) {
+		if (message.deletable) message.delete();
+		return;
 	}
 
 	handleCommandMessage(client, message);

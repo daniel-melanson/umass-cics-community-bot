@@ -12,7 +12,7 @@ import {
 	MessageEmbed,
 } from "discord.js";
 
-import { UMASS_MAROON, ICON_URL } from "Discord/constants";
+import { UMASS_MAROON } from "Discord/constants";
 
 interface EmbedOptions {
 	title?: string;
@@ -22,7 +22,7 @@ interface EmbedOptions {
 	color?: ColorResolvable;
 	fields?: Array<EmbedFieldData>;
 	files?: Array<MessageAttachment | string | FileOptions>;
-	author?: User | MessageEmbedAuthor | boolean;
+	author?: User | MessageEmbedAuthor;
 	thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
 	image?: string;
 	video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
@@ -44,12 +44,7 @@ export function formatEmbed(opts: EmbedOptions): MessageEmbed {
 	};
 
 	const author = opts.author;
-	if (author === true) {
-		generated.author = {
-			name: "UMass CICS Community",
-			iconURL: ICON_URL,
-		};
-	} else if (author instanceof User) {
+	if (author instanceof User) {
 		generated.author = {
 			name: author.tag,
 			iconURL: author.avatarURL({ dynamic: true }) || undefined,
