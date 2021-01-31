@@ -1,5 +1,5 @@
 import { oneLine } from "Shared/stringUtil";
-import { GuildMember, Message, Collection, Client } from "discord.js";
+import { GuildMember, Message, Collection, Client, GuildChannel, Role } from "discord.js";
 
 import { requireCommandList } from "Discord/commands";
 import { _Command, ArgumentInfo, UserPermission } from "Discord/commands/types";
@@ -106,7 +106,7 @@ interface ArgumentTracker {
 	value: string;
 }
 
-function getNextWord(tracker: ArgumentTracker) {
+function getNextWord(tracker: ArgumentTracker, remove = true) {
 	const nextSpace = tracker.value.indexOf(" ");
 	if (nextSpace === -1) {
 		const value = tracker.value;
@@ -115,10 +115,14 @@ function getNextWord(tracker: ArgumentTracker) {
 		return value;
 	} else {
 		const word = tracker.value.substring(0, nextSpace);
-		tracker.value = tracker.value.substring(nextSpace + 1);
+		if (remove) tracker.value = tracker.value.substring(nextSpace + 1);
 
 		return word.endsWith(",") ? word.substring(0, word.length - 1) : word;
 	}
+}
+
+function peekNextWord(tracker: ArgumentTracker) {
+	return getNextWord(tracker, false);
 }
 
 function nextEncasedString(tracker: ArgumentTracker) {
@@ -145,6 +149,19 @@ function attemptArgumentParse(message: Message, argumentInfo: ArgumentInfo, trac
 		let rawString = getNextWord(tracker);
 		while (!(value = parser(message, rawString)) && tracker.value.length > 0) {
 			rawString += " " + getNextWord(tracker);
+		}
+
+		if (value && typeof value !== "number") {
+			let nextValue;
+			let nextWord;
+			while (
+				(nextWord = peekNextWord(tracker)) &&
+				nextWord.length > 0 &&
+				(nextValue = parser(message, rawString + " " + nextWord) as GuildMember | Role | GuildChannel) &&
+				value.id === nextValue.id
+			) {
+				rawString += " " + getNextWord(tracker);
+			}
 		}
 
 		return value;
@@ -269,7 +286,7 @@ async function attemptCommandParse(command: _Command, message: Message, supplied
 		if (!parseResult) {
 			message.channel.send(
 				oneLine(`I had some problems parsing the ${argumentInfo.name} argument.
-				I'm going to collect the remaining arguments.`)
+				I'm going to collect the remaining arguments.`),
 			);
 			try {
 				return await collectRemainingArguments(message, argumentInformationArray, i, result);

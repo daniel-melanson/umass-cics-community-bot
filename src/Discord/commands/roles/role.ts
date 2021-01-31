@@ -63,6 +63,6 @@ export default {
 		}
 
 		if (rolesAdded.length + rolesRemoved.length > 0) return message.reply(content);
-		else return message; 
+		else return message;
 	},
 } as Command;
