@@ -5,7 +5,7 @@
   "main": "./out/index.js",
   "type": "module",
   "scripts": {
-    "build": "npx ttsc -b",
+    "build": "npm run clean && npx ttsc -b",
     "build-watch": "npx ttsc -b -w",
     "clean": "rm -rf ./out",
     "lint": "eslint ./src/**/*.ts",
