@@ -34,9 +34,10 @@ export default {
 			| undefined;
 		if (!suggestionChannel) return message.reply("I can't seem to find the suggestion channel.");
 
+		const wasRejected = result.conclusion.match(/^r/i);
 		return suggestionChannel.send(
 			formatEmbed({
-				title: "Suggestion Rejected",
+				title: `Suggestion ${wasRejected ? "Rejected" : "Accepted"}`,
 				fields: [
 					{
 						name: "Suggestion",
@@ -47,7 +48,7 @@ export default {
 						value: result.note,
 					},
 				],
-				color: result.conclusion.match(/^r/i) ? "#e74c3c" : "#2ecc71",
+				color: wasRejected ? "#c0392b" : "#27ae60",
 			}),
 		);
 	},
