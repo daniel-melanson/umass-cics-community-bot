@@ -9,7 +9,7 @@ export default {
 	identifier: "TeX",
 	group: "Miscellaneous",
 	aliases: ["latex"],
-	patterns: [/\$?\$([^\$]+)\$\$?/],
+	patterns: [/\$\$([^\$]+)\$\$/],
 	description: "Renders a given TeX expression and posts the output.",
 	details: oneLine(`
 		This command will only render valid **TeX** expressions.
