@@ -161,5 +161,5 @@ client.on("message", async (message: Message) => {
 		return;
 	}
 
-	handleCommandMessage(client, message);
+	handleCommandMessage(message);
 });

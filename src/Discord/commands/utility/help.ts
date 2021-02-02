@@ -9,7 +9,7 @@ export default {
 	group: "Utility",
 	description: "Provides general information about the bot and available commands.",
 	examples: ["!help", "!help what-is"],
-	arguments: [
+	parameters: [
 		{
 			name: "command",
 			type: "string",
