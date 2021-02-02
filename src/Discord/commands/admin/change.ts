@@ -58,7 +58,7 @@ export default {
 		if (fields.length > 0) {
 			logChannel.send(
 				formatEmbed({
-					title: `Server Changes: ${new Date().toDateString()}`,
+					title: `Server Changes: ${new Date().toLocaleDateString()}`,
 					fields: fields,
 					timestamp: false,
 				}),
