@@ -138,7 +138,7 @@ async function handleVerify(message: Message) {
 					`<@${member.id}>, welcome to the server!` +
 						"\n\n" +
 						oneLine(`If you are unfamiliar with the server,
-					make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")}`) +
+					make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")})`) +
 						"\n\n" +
 						oneLine(`You can assign yourself some roles using this website: https://discord.ltseng.me/
 					or using the \`!role\` command. To view a list of all assignable roles,
