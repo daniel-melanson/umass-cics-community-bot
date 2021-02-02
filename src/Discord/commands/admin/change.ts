@@ -12,22 +12,22 @@ export default {
 	parameters: [
 		{
 			name: "added",
-			prompt: "what did you add (separate with /, none for empty)?",
+			prompt: "what did you add (separate with //, none for empty)?",
 			type: "string",
 		},
 		{
 			name: "changed",
-			prompt: "what did you change (separate with /, none for empty)?",
+			prompt: "what did you change (separate with //, none for empty)?",
 			type: "string",
 		},
 		{
 			name: "fixed",
-			prompt: "what did you fix (separate with /, none for empty)?",
+			prompt: "what did you fix (separate with //, none for empty)?",
 			type: "string",
 		},
 		{
 			name: "removed",
-			prompt: "what did you remove (separate with /, none for empty)?",
+			prompt: "what did you remove (separate with //, none for empty)?",
 			type: "string",
 		},
 	],
@@ -40,7 +40,7 @@ export default {
 
 		const format = (msg: string) => {
 			return msg
-				.split("/")
+				.split("//")
 				.map(s => "• " + s.trim().replaceAll(/\s/g, " ").replaceAll("  ", " "))
 				.join("\n");
 		};
