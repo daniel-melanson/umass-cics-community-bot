@@ -161,5 +161,20 @@ client.on("message", async (message: Message) => {
 		return;
 	}
 
+	if (message.guild && message.content.match(/\(?u(pvote)?\/d(ownvote)?\)?$/i)) {
+		const emojis = message.guild.emojis.cache;
+
+		const find = (name: string) => emojis.find(e => e.name === name);
+		let upvote, downvote;
+		if (!(upvote = find("upvote")) || !(downvote = find("downvote"))) {
+			console.warn("[DISCORD] Unable to find upvote and downvote emojis.");
+			return;
+		}
+
+		await message.react(upvote);
+		await message.react(downvote);
+		return;
+	}
+
 	handleCommandMessage(message);
 });
