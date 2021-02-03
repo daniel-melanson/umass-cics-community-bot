@@ -69,8 +69,9 @@ export async function announce(
 	message: string | MessageEmbed,
 ): Promise<void> {
 	const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
-	const sendingChannel = guild.channels.cache.find(x => x.type === "text" && x.name === channel);
-	if (!sendingChannel) throw new Error(`Unable to find channel ${sendingChannel}`);
+	const nameRegExp = new RegExp(`(^|\\W)${channel}(\\W|$)`);
+	const sendingChannel = guild.channels.cache.find(x => x.type === "text" && !!x.name.match(nameRegExp));
+	if (!sendingChannel) throw new Error(`Unable to find channel ${channel}`);
 
 	await (sendingChannel as TextChannel).send(message);
 }
