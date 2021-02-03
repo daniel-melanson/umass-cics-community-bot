@@ -5,7 +5,7 @@ function matcher(regExp: RegExp) {
 export const isClass = matcher(/^(cs|math|stat|cics|info)\s*\d{3}[a-z]*$/im);
 export const isResidential = matcher(/^(central|ohill|northeast|southwest|honors|sylvan|off-campus)$/im);
 export const isGraduationStatus = matcher(/^(alumni|graduate student|class of \d{4})$/im);
-export const isInterdisciplinary = matcher(/^(business|linguistics|physics)$/im);
+export const isInterdisciplinary = matcher(/^(business|linguistics|physics|psychology)$/im);
 export const isMisc = matcher(/^(snooper|daily coding problems|community events)$/im);
 export const isPronoun = matcher(/^(he\/him|she\/her|they\/them|ze\/hir)$/im);
 export const isHobby = matcher(
