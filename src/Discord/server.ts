@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
+import { Client, GuildMember, Message, MessageEmbed, TextChannel, User } from "discord.js";
 import { oneLine } from "Shared/stringUtil";
 
 import { NOTIFICATION_TUTORIALS } from "Discord/constants/how-to-notifications";
@@ -67,13 +67,25 @@ export function login(token: string): Promise<void> {
 export async function announce(
 	channel: "general" | "university" | "bot-log" | "bot-commands",
 	message: string | MessageEmbed,
+	mention?: GuildMember | User,
 ): Promise<void> {
 	const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
 	const nameRegExp = new RegExp(`(^|\\W)${channel}(\\W|$)`);
-	const sendingChannel = guild.channels.cache.find(x => x.type === "text" && !!x.name.match(nameRegExp));
+	const sendingChannel = guild.channels.cache.find(
+		x => x.type === "text" && !!x.name.match(nameRegExp),
+	) as TextChannel;
+
 	if (!sendingChannel) throw new Error(`Unable to find channel ${channel}`);
 
-	await (sendingChannel as TextChannel).send(message);
+	if (mention) {
+		if (typeof message === "string") {
+			message = `<@${mention.id}>, ${message}`;
+		} else {
+			await sendingChannel.send(`<@${mention.id}>`);
+		}
+	}
+
+	await sendingChannel.send(message);
 }
 
 async function handleCarrotUpvote(message: Message) {
@@ -136,14 +148,23 @@ async function handleVerify(message: Message) {
 
 				announce(
 					"bot-commands",
-					`<@${member.id}>, welcome to the server!` +
-						"\n\n" +
-						oneLine(`If you are unfamiliar with the server,
-					make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")})`) +
-						"\n\n" +
-						oneLine(`You can assign yourself some roles using this website: https://discord.ltseng.me/
-					or using the \`!role\` command. To view a list of all assignable roles,
-					you can use the \`!roles\` command.`),
+					formatEmbed({
+						title: `Welcome to the Server!`,
+						fields: [
+							{
+								name: "Getting Familiar With The Server",
+								value: oneLine(`If you are unfamiliar with the server,
+										make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")})`),
+							},
+							{
+								name: "Obtaining Roles to Gain Access to Channels",
+								value: oneLine(`You can assign yourself some roles using this [website](https://discord.ltseng.me/)
+										or using the \`!role\` command. To view a list of all assignable roles,
+										you can use the \`!roles\` command.`),
+							},
+						],
+					}),
+					member,
 				);
 			} else {
 				console.error("[DISCORD] Unable to find Verified role.");
