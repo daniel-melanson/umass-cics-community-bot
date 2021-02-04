@@ -1,4 +1,4 @@
-import { Client, GuildMember, Message, MessageEmbed, TextChannel, User } from "discord.js";
+import { Client, GuildMember, Message, MessageEmbed, MessageOptions, TextChannel, User } from "discord.js";
 import { oneLine } from "Shared/stringUtil";
 
 import { NOTIFICATION_TUTORIALS } from "Discord/constants/how-to-notifications";
@@ -66,24 +66,14 @@ export function login(token: string): Promise<void> {
 
 export async function announce(
 	channel: "general" | "university" | "bot-log" | "bot-commands",
-	message: string | MessageEmbed,
-	mention?: GuildMember | User,
+	message: string | MessageEmbed | (MessageOptions & { split?: false | undefined }),
 ): Promise<void> {
 	const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
 	const nameRegExp = new RegExp(`(^|\\W)${channel}(\\W|$)`);
 	const sendingChannel = guild.channels.cache.find(
 		x => x.type === "text" && !!x.name.match(nameRegExp),
 	) as TextChannel;
-
 	if (!sendingChannel) throw new Error(`Unable to find channel ${channel}`);
-
-	if (mention) {
-		if (typeof message === "string") {
-			message = `<@${mention.id}>, ${message}`;
-		} else {
-			await sendingChannel.send(`<@${mention.id}>`);
-		}
-	}
 
 	await sendingChannel.send(message);
 }
@@ -146,26 +136,25 @@ async function handleVerify(message: Message) {
 					return `<#${channel.id}>`;
 				};
 
-				announce(
-					"bot-commands",
-					formatEmbed({
+				announce("bot-commands", {
+					content: `Hey there, <@${member.id}>!`,
+					embed: formatEmbed({
 						title: `Welcome to the Server!`,
 						fields: [
 							{
 								name: "Getting Familiar With The Server",
 								value: oneLine(`If you are unfamiliar with the server,
-										make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")})`),
+											make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")})`),
 							},
 							{
 								name: "Obtaining Roles to Gain Access to Channels",
 								value: oneLine(`You can assign yourself some roles using this [website](https://discord.ltseng.me/)
-										or using the \`!role\` command. To view a list of all assignable roles,
-										you can use the \`!roles\` command.`),
+											or using the \`!role\` command. To view a list of all assignable roles,
+											you can use the \`!roles\` command.`),
 							},
 						],
 					}),
-					member,
-				);
+				});
 			} else {
 				console.error("[DISCORD] Unable to find Verified role.");
 			}
