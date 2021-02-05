@@ -42,7 +42,7 @@ export const WELCOME_MESSAGES = [
 			},
 			{
 				name: "**Next Steps**",
-				value: oneLine(`**Once you are done setting your nickname, please type \`verify\` in the welcome channel.**
+				value: oneLine(`**Once you are done setting your nickname, please press the check mark on this message.**
 					This tells the bot that you are ready to enter the server. Keep in mind that we track the users that verify.
 					If you have an unfavorable name, you are subject to moderation. Once you verify, the bot will be waiting for you in the #bot-commands channel for next steps. Enjoy!
 				`),
@@ -57,4 +57,5 @@ export const WELCOME_MESSAGES = [
 		],
 		timestamp: false,
 	}),
+	"TLDR: **READ THE RULES CHANNEL, CHANGE YOUR NICKNAME IF NEEDED, PRESS THE GREEN CHECK**",
 ];

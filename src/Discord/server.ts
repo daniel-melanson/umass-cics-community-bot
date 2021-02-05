@@ -1,4 +1,15 @@
-import { Client, GuildMember, Message, MessageEmbed, MessageOptions, TextChannel, User } from "discord.js";
+import {
+	Client,
+	Emoji,
+	Guild,
+	GuildMember,
+	Message,
+	MessageEmbed,
+	MessageOptions,
+	MessageReaction,
+	TextChannel,
+	User,
+} from "discord.js";
 import { oneLine } from "Shared/stringUtil";
 
 import { NOTIFICATION_TUTORIALS } from "Discord/constants/how-to-notifications";
@@ -20,6 +31,86 @@ const client = new Client({
 	disableMentions: "everyone",
 });
 
+function findChannel(guild: Guild, name: string) {
+	const nameRegExp = new RegExp(`(^|\\W)${name}(\\W|$)`);
+	return guild.channels.cache.find(x => x.type === "text" && !!x.name.match(nameRegExp)) as TextChannel | undefined;
+}
+
+export async function announce(
+	channel: "general" | "university" | "bot-log" | "bot-commands",
+	message: string | MessageEmbed | (MessageOptions & { split?: false | undefined }),
+): Promise<void> {
+	const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
+
+	let sendingChannel;
+	if (!(sendingChannel = findChannel(guild, channel))) throw new Error(`Unable to find channel ${channel}`);
+
+	await sendingChannel.send(message);
+}
+
+async function handleVerify(reaction: MessageReaction, user: User) {
+	const guild = reaction.message.guild!;
+	const member = await guild.members.fetch(user);
+	const roleManager = await guild.roles.fetch();
+	const verifiedRole = roleManager.cache.find(role => role.name === "Verified");
+
+	if (verifiedRole) {
+		try {
+			await member.roles.add(verifiedRole);
+		} catch (e) {
+			console.error("[SERVER-VERIFICATION] Unable to manage user permissions:", e);
+			return announce(
+				"bot-log",
+				formatEmbed({
+					title: "Error",
+					description: `I can't seem to manage your permissions. ${CONTACT_MESSAGE}`,
+					color: "#c0392b",
+				}),
+			);
+		}
+
+		announce(
+			"bot-log",
+			formatEmbed({
+				author: user,
+				description: oneLine(`<@${member.user.id}> has just been verified.
+						Their identifier is **${member.nickname || member.user.username}**.
+						Their account was created on ${user.createdAt.toLocaleDateString()}`),
+				color: "#2ecc71",
+			}),
+		);
+
+		const get = (name: string) => {
+			const channel = findChannel(guild, `how-to-${name}`);
+			if (!channel) return "";
+
+			return `<#${channel.id}>`;
+		};
+
+		announce("bot-commands", {
+			content: `Hey there, <@${member.id}>!`,
+			embed: formatEmbed({
+				title: `Welcome to the Server!`,
+				fields: [
+					{
+						name: "Getting Familiar With The Server",
+						value: oneLine(`If you are unfamiliar with the server,
+									make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")})`),
+					},
+					{
+						name: "Obtaining Roles to Gain Access to Channels",
+						value: oneLine(`You can assign yourself some roles using this [website](https://discord.ltseng.me/)
+									or using the \`!role\` command. To view a list of all assignable roles,
+									you can use the \`!roles\` command.`),
+					},
+				],
+			}),
+		});
+	} else {
+		console.error("[DISCORD] Unable to find Verified role.");
+	}
+}
+
 export function login(token: string): Promise<void> {
 	return new Promise<void>((res, rej) => {
 		client.on("ready", () => res());
@@ -40,12 +131,9 @@ export function login(token: string): Promise<void> {
 			process.exit(-1);
 		}
 
-		const sendChannel = async (name: string, embeds: MessageEmbed | Array<MessageEmbed>) => {
-			const channel = guild.channels.cache.find(x => x.type === "text" && x.name === name) as
-				| TextChannel
-				| undefined;
-
-			if (channel) {
+		const sendChannel = async (name: string, embeds: MessageEmbed | Array<MessageEmbed | string>) => {
+			let channel;
+			if ((channel = findChannel(guild, name))) {
 				await channel.bulkDelete(20);
 				if (embeds instanceof Array) {
 					for (const embed of embeds) await channel.send(embed);
@@ -60,22 +148,24 @@ export function login(token: string): Promise<void> {
 		await sendChannel("rules", DISCORD_RULES);
 		await sendChannel("how-to-roles", ROLES_TUTORIAL);
 		await sendChannel("how-to-notifications", NOTIFICATION_TUTORIALS);
-		await sendChannel("welcome", WELCOME_MESSAGES);
+
+		const welcome = findChannel(guild, "welcome");
+		if (!welcome) throw new Error("Unable to find welcome channel");
+		await welcome.bulkDelete(10);
+		for (let i = 0; i < WELCOME_MESSAGES.length; i++) {
+			const msg = await welcome.send(WELCOME_MESSAGES[i]);
+
+			if (i === WELCOME_MESSAGES.length - 2) {
+				await msg.react("✅");
+
+				const collector = msg.createReactionCollector(
+					(reaction: MessageReaction) => reaction.emoji.name === "✅",
+				);
+
+				collector.on("collect", handleVerify);
+			}
+		}
 	});
-}
-
-export async function announce(
-	channel: "general" | "university" | "bot-log" | "bot-commands",
-	message: string | MessageEmbed | (MessageOptions & { split?: false | undefined }),
-): Promise<void> {
-	const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
-	const nameRegExp = new RegExp(`(^|\\W)${channel}(\\W|$)`);
-	const sendingChannel = guild.channels.cache.find(
-		x => x.type === "text" && !!x.name.match(nameRegExp),
-	) as TextChannel;
-	if (!sendingChannel) throw new Error(`Unable to find channel ${channel}`);
-
-	await sendingChannel.send(message);
 }
 
 async function handleCarrotUpvote(message: Message) {
@@ -102,72 +192,10 @@ async function handleCarrotUpvote(message: Message) {
 	}
 }
 
-async function handleVerify(message: Message) {
-	const guild = message.guild;
-	if (guild && (message.channel as TextChannel).name === "welcome") {
-		const member = message.member!;
-		if (message.content === "verify") {
-			const roleManager = await guild.roles.fetch();
-			const verifiedRole = roleManager.cache.find(role => role.name === "Verified");
-
-			if (verifiedRole) {
-				try {
-					await member.roles.add(verifiedRole);
-				} catch (e) {
-					console.error("[SERVER-VERIFICATION] Unable to manage user permissions:", e);
-					return message.reply(`I can't seem to manage your permissions. ${CONTACT_MESSAGE}`);
-				}
-
-				announce(
-					"bot-log",
-					formatEmbed({
-						author: message.author,
-						description: oneLine(`<@${member.user.id}> has just been verified.
-								Their identifier is **${member.nickname || member.user.username}**.
-								Their account was created on ${message.author.createdAt.toLocaleDateString()}`),
-						color: "#2ecc71",
-					}),
-				);
-
-				const get = (name: string) => {
-					const channel = guild.channels.cache.find(c => c.name === `how-to-${name}`);
-					if (!channel) return "";
-
-					return `<#${channel.id}>`;
-				};
-
-				announce("bot-commands", {
-					content: `Hey there, <@${member.id}>!`,
-					embed: formatEmbed({
-						title: `Welcome to the Server!`,
-						fields: [
-							{
-								name: "Getting Familiar With The Server",
-								value: oneLine(`If you are unfamiliar with the server,
-											make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")})`),
-							},
-							{
-								name: "Obtaining Roles to Gain Access to Channels",
-								value: oneLine(`You can assign yourself some roles using this [website](https://discord.ltseng.me/)
-											or using the \`!role\` command. To view a list of all assignable roles,
-											you can use the \`!roles\` command.`),
-							},
-						],
-					}),
-				});
-			} else {
-				console.error("[DISCORD] Unable to find Verified role.");
-			}
-		}
-
-		return true;
-	}
-}
-
 client.on("message", async (message: Message) => {
 	if (message.partial || message.author.bot) return;
 
-	if ((await handleCarrotUpvote(message)) || (await handleVerify(message))) {
+	if (await handleCarrotUpvote(message)) {
 		if (message.deletable) message.delete();
 		return;
 	}

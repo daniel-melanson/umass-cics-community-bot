@@ -9,7 +9,7 @@ export const isInterdisciplinary = matcher(/^(business|linguistics|physics|psych
 export const isMisc = matcher(/^(snooper|daily coding problems|community events)$/im);
 export const isPronoun = matcher(/^(he\/him|she\/her|they\/them|ze\/hir)$/im);
 export const isHobby = matcher(
-	/^(music|video games|personal finance|food|travel and urbex|sports|personal projects|pet pics|anime|fitness|hardware|linux)$/im,
+	/^(music|video games|personal finance|food|travel and urbex|sports|personal projects|pet pics|anime|fitness|hardware|linux|international)$/im,
 );
 
 const csMatcher = matcher(/^(cs|info|cics)/im);
