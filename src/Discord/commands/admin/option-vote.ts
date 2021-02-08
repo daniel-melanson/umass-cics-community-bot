@@ -10,7 +10,7 @@ export default {
 	aliases: ["ov", "opt-vote"],
 	group: "Administrative",
 	description: "Creates multiple choice poll.",
-	examples: ["!option-vote #general 'Which type of bear is best?' 'Black / Polar / Brown'"],
+	examples: ["!option-vote #general 'Which type of bear is best?' 'Black // Polar // Brown'"],
 	parameters: [
 		{
 			name: "channel",
@@ -24,14 +24,14 @@ export default {
 		},
 		{
 			name: "options",
-			prompt: "what options are there (separate with /)?",
+			prompt: "what options are there (separate with //)?",
 			type: "string",
 		},
 	],
 	guildOnly: true,
 	userPermission: UserPermission.Moderator,
 	func: async (message: Message, result: { question: string; channel: TextChannel; options: string }) => {
-		const responses = result.options.split("/").map(s => s.trim());
+		const responses = result.options.split("//").map(s => s.trim().replaceAll(/\s\s/g, " "));
 
 		if (responses.length <= 1) {
 			return message.reply("Unable to determine responses. Make sure you supply more than one.");
