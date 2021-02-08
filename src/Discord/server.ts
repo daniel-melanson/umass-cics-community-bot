@@ -32,7 +32,7 @@ const client = new Client({
 });
 
 function findChannel(guild: Guild, name: string) {
-	const nameRegExp = new RegExp(`(^|\\W)${name}(\\W|$)`);
+	const nameRegExp = new RegExp(`^\\W{0,2}${name}\\W{0,2}$`);
 	return guild.channels.cache.find(x => x.type === "text" && !!x.name.match(nameRegExp)) as TextChannel | undefined;
 }
 
@@ -143,11 +143,11 @@ export function login(token: string): Promise<void> {
 			}
 		};
 
-		if (!process.env["SEND_MESSAGES"]) return;
-
-		await sendChannel("rules", DISCORD_RULES);
-		await sendChannel("how-to-roles", ROLES_TUTORIAL);
-		await sendChannel("how-to-notifications", NOTIFICATION_TUTORIALS);
+		if (process.env["SEND_MESSAGES"]) {
+			await sendChannel("rules", DISCORD_RULES);
+			await sendChannel("how-to-roles", ROLES_TUTORIAL);
+			await sendChannel("how-to-notifications", NOTIFICATION_TUTORIALS);
+		}
 
 		const welcome = findChannel(guild, "welcome");
 		if (!welcome) throw new Error("Unable to find welcome channel");
