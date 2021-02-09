@@ -48,7 +48,7 @@ export default {
 		try {
 			role = await roles.create({
 				data: {
-					name: id,
+					name: `${subject} ${number}`,
 					permissions: [],
 					position: separator.position,
 				},
