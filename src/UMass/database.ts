@@ -1,4 +1,4 @@
-import { exec, ExecException } from "child_process";
+import { spawnSync } from "child_process";
 
 import Mongo from "mongodb";
 
@@ -39,19 +39,6 @@ export async function connectToCollection<T extends UMassCollection>(
 	return db.collection(collection);
 }
 
-function cmd(cmdStr: string) {
-	return new Promise<string>((resolve, reject) => {
-		exec(cmdStr, (error, stdout) => {
-			if (error) {
-				reject(error);
-			}
-			resolve(stdout);
-		});
-	}).catch((error: ExecException) => {
-		throw new Error(`Command "${error.cmd}" exited with code ${error.code}\n\n${error.message}`);
-	});
-}
-
 async function updateDatabase(recursive?: boolean) {
 	const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
 
@@ -61,11 +48,17 @@ async function updateDatabase(recursive?: boolean) {
 		await client.connect();
 
 		await client.db(nextDatabase).dropDatabase();
-		await cmd(`${process.env["DATABASE_UPDATE_COMMAND"]} ${nextDatabase}`);
+		const childResult = spawnSync(`${process.env["DATABASE_UPDATE_COMMAND"]} ${nextDatabase}`, {
+			timeout: 2 * HOUR,
+		});
 
-		console.log("[DATABASE] Finished updated.");
-		currentDatabase = nextDatabase;
-		if (recursive) setTimeout(updateDatabase, UPDATE_TIME, true);
+		if (childResult.error) {
+			throw childResult.error;
+		} else {
+			console.log("[DATABASE] Finished updated.");
+			currentDatabase = nextDatabase;
+			if (recursive) setTimeout(updateDatabase, UPDATE_TIME, true);
+		}
 	} catch (e) {
 		console.warn("[DATABASE] Unable to update next database.\n", e);
 
