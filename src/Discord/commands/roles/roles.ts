@@ -5,6 +5,7 @@ import { Command } from "Discord/commands/types";
 import { oneLine } from "Shared/stringUtil";
 import {
 	isAssignable,
+	isConcentration,
 	isCSClass,
 	isGraduationStatus,
 	isHobby,
@@ -43,6 +44,10 @@ export default {
 					{
 						name: "Pronouns",
 						value: list(isPronoun),
+					},
+					{
+						name: "Concentration",
+						value: list(isConcentration),
 					},
 					{
 						name: "Graduating Class or Graduation Status",

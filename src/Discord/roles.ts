@@ -11,6 +11,9 @@ export const isPronoun = matcher(/^(he\/him|she\/her|they\/them|ze\/hir)$/im);
 export const isHobby = matcher(
 	/^(music|video games|personal finance|food|travel and urbex|sports|personal projects|pet pics|anime|fitness|hardware|linux|international)$/im,
 );
+export const isConcentration = matcher(
+	/^(computer science|informatics|mathematics \& statistics|computer engineering|non-cs \(other\))$/im,
+);
 
 const csMatcher = matcher(/^(cs|info|cics)/im);
 export function isCSClass(str: string): boolean {
@@ -30,6 +33,7 @@ export function isAssignable(str: string): boolean {
 		isResidential(str) ||
 		isPronoun(str) ||
 		isMisc(str) ||
-		isHobby(str)
+		isHobby(str) ||
+		isConcentration(str)
 	);
 }
