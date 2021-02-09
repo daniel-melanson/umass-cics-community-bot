@@ -47,7 +47,7 @@ export default {
 
 		const fields = [];
 		for (const [key, value] of Object.entries(result)) {
-			if (value.match(/none/i)) continue;
+			if (value.match(/^none$/i)) continue;
 
 			fields.push({
 				name: capitalize(key),
