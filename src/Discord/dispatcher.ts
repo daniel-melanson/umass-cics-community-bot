@@ -16,6 +16,8 @@ function sanitizeCommandMessage(message: Message) {
 		content = content.replaceAll(/,,/g, ",");
 	}
 
+	content = content.replaceAll(/\n/g, " ");
+
 	return content;
 }
 
@@ -246,7 +248,7 @@ async function collectRemainingArguments(
 
 			const stream = new ArgumentStream(content);
 			if (parameterType === "string") {
-				parsedValue = stream.isEncasedString() ? stream.popNextEncasedString : stream.remaining;
+				parsedValue = stream.isEncasedString() ? stream.popNextEncasedString() : stream.remaining;
 			} else if (!(parsedValue = parseSingleArgument(replyMessage, parameterInfo, stream))) {
 				replyMessage.reply(
 					oneLine(`I was unable to parse that into a ${parameterType}. 
