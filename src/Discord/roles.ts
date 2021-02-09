@@ -12,7 +12,7 @@ export const isHobby = matcher(
 	/^(music|video games|personal finance|food|travel and urbex|sports|personal projects|pet pics|anime|fitness|hardware|linux|international)$/im,
 );
 export const isConcentration = matcher(
-	/^(computer science|informatics|mathematics \& statistics|computer engineering|non-cs \(other\))$/im,
+	/^(computer science|informatics|mathematics and statistics|computer engineering|non-cs \(other\))$/im,
 );
 
 const csMatcher = matcher(/^(cs|info|cics)/im);
