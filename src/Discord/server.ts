@@ -179,12 +179,16 @@ async function handleCarrotUpvote(message: Message) {
 		).first();
 
 		if (previousMessage) {
-			const upvote = message.guild.emojis.cache.find(e => e.name === "upvote");
-
-			if (upvote) {
-				previousMessage.react(upvote);
+			if (previousMessage.author.id === message.author.id) {
+				message.reply("just tried to upvote their own message. Shame on them.");
 			} else {
-				console.error("[SERVER] Unable to find upvote emoji.");
+				const upvote = message.guild.emojis.cache.find(e => e.name === "upvote");
+
+				if (upvote) {
+					previousMessage.react(upvote);
+				} else {
+					console.error("[SERVER] Unable to find upvote emoji.");
+				}
 			}
 		}
 
