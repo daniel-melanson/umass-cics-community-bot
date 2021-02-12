@@ -11,10 +11,10 @@ export default {
 	guildOnly: true,
 	func: async (message: Message) => {
 		const guild = message.guild!;
-		const welcome = guild.channels.cache.find(c => c.name === "welcome");
-		if (!welcome) return message.reply("unable to find welcome channel. Make sure I can see that channel.");
+		const general = guild.channels.cache.find(c => c.name === "general");
+		if (!general) return message.reply("unable to find general channel. Make sure I can see that channel.");
 
-		const invite = await welcome.createInvite({
+		const invite = await general.createInvite({
 			maxAge: 0,
 		});
 
