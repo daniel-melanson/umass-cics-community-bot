@@ -157,10 +157,11 @@ async function guildMemberAdd(member: GuildMember) {
 				"bot-commands",
 				oneLine(`<@${member.id}> you still have not updated your nickname.
 						Here are some steps if you are lost: 
-						(**Desktop**) Here are some Please type Click on \`UMass CICS Community\`
+						(**Desktop**) Click on \`UMass CICS Community\`
 						in bold in the top left of your screen.
-						Press \`Change Nickname\`, enter your identifier, and \`Save\`.
-						(**Mobile**) Swipe to the right to display your sever list.
+						Press \`Change Nickname\`, enter your identifier, and \`Save\`.`) +
+					`\n\n` +
+					oneLine(`(**Mobile**) Swipe to the right to display your sever list.
 						Press the three vertically aligned dots next to \`UMass CICS Community\`.
 						Press \`Change Nickname\`, enter your identifier, and \`Save\`.`),
 			);
