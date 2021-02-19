@@ -16,7 +16,7 @@ export const ROLES_TUTORIAL = formatEmbed({
 		{
 			name: "Obtaining the Teacher Assistant Role",
 			value:
-				"Direct message an administrator. You will be asked to send an email using your cs.umass.edu account.",
+				"Direct message an administrator. Send a screenshot of your faculty schedule on spire.",
 		},
 		{
 			name: "Obtaining Undergraduate Course Assistant Role",
