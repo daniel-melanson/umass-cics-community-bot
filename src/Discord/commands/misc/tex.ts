@@ -36,7 +36,7 @@ export default {
 					auth: { user: "guest", password: "guest" },
 					latex: result.expression,
 					resolution: 600,
-					color: "FFFFFF",
+					color: "D53131",
 				}),
 			});
 			const json = await res.json();
