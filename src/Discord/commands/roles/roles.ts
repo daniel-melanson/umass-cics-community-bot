@@ -39,7 +39,7 @@ export default {
 				title: "Obtain and Remove Roles",
 				description: oneLine(`We have a [website](https://discord.ltseng.me) where you can obtain and remove roles to access different features on this server. 
                 Visit the link below to access the tool. You will need to sign in with your Discord account. If you want to quickly manage you roles you may use the 
-				\`!role <role-name>\` command.
+				\`!role <role-name>\` command. Example: \`!role CS 121\`
 				`),
 				fields: [
 					{
