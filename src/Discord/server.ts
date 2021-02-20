@@ -139,7 +139,7 @@ async function guildMemberAdd(member: GuildMember) {
 			}),
 		});
 		announce("bot-commands", createRoleEmbed(updated.guild));
-	}, 1000 * 60 * 2);
+	}, 1000 * 60);
 
 	setTimeout(async () => {
 		let updated;
