@@ -5,8 +5,9 @@ import { ROLES_TUTORIAL } from "Discord/constants/how-to-roles";
 import { DISCORD_RULES } from "Discord/constants/rules";
 
 import { handleCommandMessage } from "Discord/dispatcher";
+import { formatEmbed } from "Discord/formatting";
+import { createRoleEmbed } from "Discord/commands/roles/roles";
 import { oneLine } from "Shared/stringUtil";
-import { formatEmbed } from "./formatting";
 
 const DISCORD_GUILD_ID = process.env["DISCORD_GUILD_ID"]!;
 if (!DISCORD_GUILD_ID) {
@@ -123,7 +124,7 @@ async function guildMemberAdd(member: GuildMember) {
 			return `<#${channel.id}>`;
 		};
 
-		announce("bot-commands", {
+		await announce("bot-commands", {
 			content: `Hey there, <@${member.id}>! It seems like you don't have any roles. Make sure to update your nickname if you have not already`,
 			embed: formatEmbed({
 				title: `Welcome to the Server!`,
@@ -133,15 +134,11 @@ async function guildMemberAdd(member: GuildMember) {
 						value: oneLine(`If you are unfamiliar with the server,
 										make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")})`),
 					},
-					{
-						name: "Obtaining Roles to Gain Access to Channels",
-						value: oneLine(`You can assign yourself some roles using this [website](https://discord.ltseng.me/)
-										or using the \`!role\` command. To view a list of all assignable roles,
-										you can use the \`!roles\` command.`),
-					},
 				],
+				timestamp: false,
 			}),
 		});
+		announce("bot-commands", createRoleEmbed(updated.guild));
 	}, 1000 * 60 * 2);
 
 	setTimeout(async () => {
