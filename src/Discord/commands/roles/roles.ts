@@ -72,9 +72,9 @@ export function createRoleEmbed(guild: Guild): MessageEmbed {
 			},
 		],
 		timestamp: false,
-	}),
-);
+	});
 }
+
 export default {
 	identifier: "roles",
 	aliases: ["role-list"],
