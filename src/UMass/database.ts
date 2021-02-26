@@ -54,7 +54,7 @@ async function updateDatabase(recursive?: boolean) {
 
 		if (childResult.error) {
 			throw childResult.error;
-		} else if (childResult.output.some(x => x.length > 0)) {
+		} else if (childResult.output.some(x => x && x.length > 0)) {
 			throw new Error("Unexpected output: " + childResult.output.toString());
 		} else {
 			console.log("[DATABASE] Finished updated.");
