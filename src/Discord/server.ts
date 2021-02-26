@@ -189,7 +189,12 @@ export function login(token: string): Promise<void> {
 		const sendChannel = async (name: string, embeds: MessageEmbed | string | Array<MessageEmbed | string>) => {
 			let channel;
 			if ((channel = findChannel(guild, name))) {
-				await channel.bulkDelete(20);
+				try {
+					await channel.bulkDelete(20);
+				} catch (e) {
+					console.log("Unable to bulkDelete " + name);
+				}
+
 				if (embeds instanceof Array) {
 					for (const embed of embeds) await channel.send(embed);
 				} else {
