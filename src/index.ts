@@ -1,5 +1,6 @@
 import nodecron from "node-cron";
 import dotenv from "dotenv";
+import { formatEmbed } from "Discord/formatting";
 
 dotenv.config();
 
@@ -24,12 +25,20 @@ async function academicCalendarAnnouncement() {
 				if (sameDay(today, date)) {
 					await announce(
 						"university",
-						`${semester.season} ${semester.year} Academic Calendar Notice **(TODAY)**: ${event.description}`,
+						formatEmbed({
+							title: `${semester.season} ${semester.year} Academic Calendar Notice`,
+							description: event.description,
+							timestamp: false,
+						}),
 					);
 				} else if (sameDay(tomorrow, date)) {
 					await announce(
 						"general",
-						`${semester.season} ${semester.year} Academic Calendar Notice **(TOMORROW)**: ${event.description}`,
+						formatEmbed({
+							title: `${semester.season} ${semester.year} Academic Calendar Notice (TOMORROW)`,
+							description: event.description,
+							timestamp: false,
+						}),
 					);
 				}
 			}

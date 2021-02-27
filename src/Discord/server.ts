@@ -125,7 +125,7 @@ async function guildMemberAdd(member: GuildMember) {
 		};
 
 		await announce("bot-commands", {
-			content: `Hey there, <@${member.id}>! It seems like you don't have any roles. Make sure to update your nickname if you have not already`,
+			content: `Hey there, <@${member.id}>! It seems like you don't have any roles. Make sure to update your nickname if you have not already.`,
 			embed: formatEmbed({
 				title: `Welcome to the Server!`,
 				fields: [
