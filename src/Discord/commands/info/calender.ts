@@ -19,15 +19,15 @@ export default {
 		}
 
 		if (!semester) return message.reply("we are currently not in session.");
-			
+
 		return message.reply(
 			formatEmbed({
 				title: `Academic Calendar for ${capitalize(semester.season)} ${semester.year}`,
 				description: semester.events.reduce((prev, current) => {
-					return prev + `**${current.date.toLocaleDateString()}**: ${current.description}\n`
+					return prev + `**${current.date.toLocaleDateString()}**: ${current.description}\n`;
 				}, ""),
 				timestamp: false,
-			})
+			}),
 		);
 	},
 } as Command;

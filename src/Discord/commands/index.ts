@@ -59,8 +59,7 @@ export async function requireCommandList(ignore?: string): Promise<Array<Readonl
 			reservedIdentifiers.add(cmd.identifier);
 
 			if (cmd.formalName) {
-				if (reservedIdentifiers.has(cmd.formalName))
-					error(cmd, `formalName '${cmd.formalName}' is already taken.`);
+				if (reservedIdentifiers.has(cmd.formalName)) error(cmd, `formalName '${cmd.formalName}' is already taken.`);
 
 				reservedIdentifiers.add(cmd.formalName);
 			}

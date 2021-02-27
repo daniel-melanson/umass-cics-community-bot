@@ -30,16 +30,12 @@ function commonMatcher<T>(
 		matchBuilder((possible: string) => {
 			const normalizedPossible = possible.toLowerCase();
 
-			return (
-				normalizedPossible.includes(normalized) || normalizedPossible.replace(/\s/g, "").includes(normalized)
-			);
+			return normalizedPossible.includes(normalized) || normalizedPossible.replace(/\s/g, "").includes(normalized);
 		}),
 	);
 	if (inexactMembers.size < 2) return inexactMembers.first() || null;
 
-	const exactMembers = inexactMembers.filter(
-		matchBuilder((possible: string) => possible.toLowerCase() === normalized),
-	);
+	const exactMembers = inexactMembers.filter(matchBuilder((possible: string) => possible.toLowerCase() === normalized));
 	if (exactMembers.size === 1) return exactMembers.first()!;
 
 	return null;

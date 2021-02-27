@@ -81,16 +81,12 @@ export default {
 
 			if (nextMessage) {
 				const nextContent = nextMessage.content;
-				const found = queryResult.filter(staff =>
-					staff.names.some(name => name.match(new RegExp(nextContent, "i"))),
-				);
+				const found = queryResult.filter(staff => staff.names.some(name => name.match(new RegExp(nextContent, "i"))));
 
 				if (found.length === 1) {
 					return message.reply(createStaffEmbed(found[0]));
 				} else {
-					return message.reply(
-						"that did not narrow down the search to a single staff member. Cancelling command.",
-					);
+					return message.reply("that did not narrow down the search to a single staff member. Cancelling command.");
 				}
 			}
 		}

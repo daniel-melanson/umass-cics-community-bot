@@ -52,12 +52,12 @@ export async function getCourseFromQuery(query: string): Promise<Course | Array<
 		if (idMatch) return idMatch;
 
 		idMatch = await courseCollection.findOne({
-			id: { $regex: courseId }
+			id: { $regex: courseId },
 		});
 
 		if (idMatch) return idMatch;
-	} 
-	
+	}
+
 	return courseCollection
 		.aggregate([
 			{ $match: { $text: { $search: query } } },

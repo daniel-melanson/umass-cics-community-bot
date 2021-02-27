@@ -54,9 +54,7 @@ export default {
 				},
 			});
 		} catch (e) {
-			return message.reply(
-				"unable to create role. This might be because the bot role is too low on the role list.",
-			);
+			return message.reply("unable to create role. This might be because the bot role is too low on the role list.");
 		}
 
 		const channels = guild.channels;

@@ -13,8 +13,7 @@ export default {
 		return pingMsg.edit(
 			oneLine(`
 			🏓 Pong! The message round-trip took ${
-				(pingMsg.editedTimestamp || pingMsg.createdTimestamp) -
-				(message.editedTimestamp || message.createdTimestamp)
+				(pingMsg.editedTimestamp || pingMsg.createdTimestamp) - (message.editedTimestamp || message.createdTimestamp)
 			}ms.
 			${message.client.ws.ping ? `The websocket heartbeat is ${Math.round(message.client.ws.ping)}ms.` : ""}
 		`),

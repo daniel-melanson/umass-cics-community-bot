@@ -16,10 +16,7 @@ export default {
 	details: "This command can be invoked using phrases similar to `Which CS courses can I take?`.",
 	examples: ["!courses", "!courses stat", "Which math classes can I take?"],
 	patterns: [
-		new RegExp(
-			`(which|what) ${SHORTENED_SUBJECT_REGEXP_STRING} (courses|classes) (are there|can I take)\\??`,
-			"im",
-		),
+		new RegExp(`(which|what) ${SHORTENED_SUBJECT_REGEXP_STRING} (courses|classes) (are there|can I take)\\??`, "im"),
 	],
 	parameters: [
 		{

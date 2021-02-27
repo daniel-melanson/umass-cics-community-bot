@@ -26,7 +26,10 @@ interface EmbedOptions {
 	thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
 	image?: string;
 	video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
-	footer?: Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string };
+	footer?: Partial<MessageEmbedFooter> & {
+		icon_url?: string;
+		proxy_icon_url?: string;
+	};
 }
 
 export function formatEmbed(opts: EmbedOptions): MessageEmbed {

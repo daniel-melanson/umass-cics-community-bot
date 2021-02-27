@@ -15,8 +15,7 @@ export const ROLES_TUTORIAL = formatEmbed({
 		},
 		{
 			name: "Obtaining the Teacher Assistant Role",
-			value:
-				"Direct message an administrator. Send a screenshot of your faculty schedule on spire.",
+			value: "Direct message an administrator. Send a screenshot of your faculty schedule on spire.",
 		},
 		{
 			name: "Obtaining Undergraduate Course Assistant Role",

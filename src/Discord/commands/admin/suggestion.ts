@@ -29,9 +29,7 @@ export default {
 	guildOnly: true,
 	func: async (message: Message, result: { conclusion: string; suggestion: string; note: string }) => {
 		const guild = message.guild!;
-		const suggestionChannel = guild.channels.cache.find(ch => ch.name === "suggestion-log") as
-			| TextChannel
-			| undefined;
+		const suggestionChannel = guild.channels.cache.find(ch => ch.name === "suggestion-log") as TextChannel | undefined;
 		if (!suggestionChannel) return message.reply("I can't seem to find the suggestion channel.");
 
 		const wasRejected = result.conclusion.match(/^r/i);
