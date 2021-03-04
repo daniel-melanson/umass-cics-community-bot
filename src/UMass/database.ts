@@ -15,7 +15,7 @@ const UPDATE_TIME = DAY * 7;
 let currentDatabase = "umass_0";
 function connectToDatabase(): Promise<Mongo.Db> {
 	return new Promise((res, rej) => {
-		const client = new Mongo.MongoClient(CONNECTION_STRING, {
+		const client = new Mongo.MongoClient(CONNECTION_STRING.replace("DATABASE", currentDatabase), {
 			useUnifiedTopology: true,
 		});
 		client
@@ -71,5 +71,8 @@ async function updateDatabase(recursive?: boolean) {
 		if (recursive) setTimeout(updateDatabase, HOUR, true);
 	}
 }
-setTimeout(updateDatabase, 3 * HOUR);
-setTimeout(updateDatabase, UPDATE_TIME, true);
+
+if (process.env["UPDATE"]) {
+	setTimeout(updateDatabase, 3 * HOUR);
+	setTimeout(updateDatabase, UPDATE_TIME, true);
+}
