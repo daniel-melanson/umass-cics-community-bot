@@ -1,9 +1,9 @@
 import cron from "node-cron";
 import dotenv from "dotenv";
-import { formatEmbed } from "Discord/formatting";
 
 dotenv.config();
 
+const { formatEmbed } = await import("Discord/formatting");
 const { login, announce } = await import("Discord/server");
 const { getInSessionSemester, getCurrentSemesters } = await import("UMass/calendar");
 const { getCICSEvents } = await import("UMass/events");

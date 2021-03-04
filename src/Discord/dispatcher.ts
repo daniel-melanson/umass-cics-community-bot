@@ -316,7 +316,7 @@ function getMemberPermissionLevel(userId: string, member: GuildMember | null) {
 
 	const memberRoles = member.roles.cache;
 	const hasRole = (name: string) => memberRoles.find(role => role.name === name);
-	if (hasRole("Moderator")) return UserPermission.Moderator;
+	if (hasRole("Moderator") || hasRole("Admin")) return UserPermission.Moderator;
 	if (hasRole("Club Officer")) return UserPermission.ClubOfficer;
 
 	return UserPermission.Member;
