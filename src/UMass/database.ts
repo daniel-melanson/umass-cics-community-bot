@@ -10,9 +10,9 @@ const SECOND = 1000;
 const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
-const UPDATE_TIME = DAY * 3;
+const UPDATE_TIME = DAY * 7;
 
-let currentDatabase = "umass_1";
+let currentDatabase = "umass_0";
 function connectToDatabase(): Promise<Mongo.Db> {
 	return new Promise((res, rej) => {
 		const client = new Mongo.MongoClient(CONNECTION_STRING, {
