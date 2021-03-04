@@ -1,4 +1,4 @@
-import nodecron from "node-cron";
+import cron from "node-cron";
 import dotenv from "dotenv";
 import { formatEmbed } from "Discord/formatting";
 
@@ -6,6 +6,7 @@ dotenv.config();
 
 const { login, announce } = await import("Discord/server");
 const { getInSessionSemester, getCurrentSemesters } = await import("UMass/calendar");
+const { getCICSEvents } = await import("UMass/events");
 
 dotenv.config();
 const sameDay = (d0: Date, d1: Date) =>
@@ -69,16 +70,52 @@ async function semesterPercentAnnouncement() {
 	}
 }
 
+async function cicsEventAnnouncement() {
+	try {
+		const events = await getCICSEvents();
+
+		for (const event of events) {
+			const fields = [];
+
+			if (event.speaker)
+				fields.push({
+					name: "Speaker(s)",
+					value: event.speaker,
+				});
+
+			if (event.time)
+				fields.push({
+					name: "Time",
+					value: `Today (${new Date().toLocaleDateString()}) at ` + event.time,
+				});
+
+			await announce(
+				"cics-events",
+				formatEmbed({
+					title: event.title,
+					url: event.link,
+					description: event.body,
+					fields: fields,
+					timestamp: false,
+				}),
+			);
+		}
+	} catch (e) {
+		console.warn("[CICS-EVENTS] Unable to get events: " + e);
+	}
+}
+
 console.log("Logging in...");
 login(process.env["DISCORD_TOKEN"]!)
 	.then(() => {
 		const localSchedule = (exp: string, func: () => void) =>
-			nodecron.schedule(exp, func, {
+			cron.schedule(exp, func, {
 				timezone: "America/New_York",
 			});
 
 		localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
 		localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
+		localSchedule("0 0 7 * * *", cicsEventAnnouncement);
 	})
 	.catch(error => {
 		console.error("[DISCORD] Unable to login: ", error);

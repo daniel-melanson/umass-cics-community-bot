@@ -25,7 +25,7 @@ function findChannel(guild: Guild, name: string) {
 }
 
 export async function announce(
-	channel: "general" | "university" | "bot-log" | "bot-commands",
+	channel: "general" | "university" | "bot-log" | "bot-commands" | "cics-events",
 	message: string | MessageEmbed | (MessageOptions & { split?: false | undefined }),
 ): Promise<void> {
 	const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
