@@ -79,9 +79,9 @@ export async function getCICSEvents(): Promise<Array<CICSEvent>> {
 		for (const paragraph of summary) {
 			if (paragraph.length < 20) continue;
 
-			if (shortenedBody.length + paragraph.length < 2000) {
-				shortenedBody += "\n\n" + paragraph;
-			} else {
+			shortenedBody += "\n\n" + paragraph;
+			if (shortenedBody.length < 250) {
+				shortenedBody = shortenedBody.substring(0, 250) + "...";
 				break;
 			}
 		}
