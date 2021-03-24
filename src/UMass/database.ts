@@ -1,4 +1,4 @@
-import { spawnSync } from "child_process";
+import { exec } from "child_process";
 
 import Mongo from "mongodb";
 
@@ -41,35 +41,42 @@ export async function connectToCollection<T extends UMassCollection>(
 	return db.collection(collection);
 }
 
-async function updateDatabase(recursive?: boolean) {
+function updateDatabase(_recursive = false): void {
 	const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
+	const client = new Mongo.MongoClient(CONNECTION_STRING, {
+		useUnifiedTopology: true,
+	});
 
-	console.log("[DATABASE] Updating...");
-	try {
-		const client = new Mongo.MongoClient(CONNECTION_STRING, {
-			useUnifiedTopology: true,
-		});
-		await client.connect();
+	console.log("[DATABASE] Setting up update...");
+	client
+		.connect()
+		.then(client =>
+			client
+				.db(nextDatabase)
+				.dropDatabase()
+				.then(() => {
+					console.log("[DATABASE] Scraping...");
+					exec(
+						`/usr/bin/python3.8 ${process.env["DATABASE_UPDATER_PATH"]} ${nextDatabase}`,
+						{
+							timeout: 2 * HOUR,
+						},
+						(error, stdout, stderr) => {
+							if (error) {
+								console.log(`[DATABASE - ${new Date().toLocaleString()}] Unable to update: ${error}\n\n`);
+								console.log(stdout, stderr);
+							} else {
+								console.log(`[DATABASE - ${new Date().toLocaleString()}] Successfully updated.`);
+								currentDatabase = nextDatabase;
+							}
+						},
+					);
+				})
+				.catch(e => console.log("[DATABASE] Failed to dropDatabase: " + e)),
+		)
+		.catch(e => console.log("[DATABASE] Failed to connect while updating: " + e));
 
-		await client.db(nextDatabase).dropDatabase();
-		const childResult = spawnSync("/usr/bin/python3.8", [process.env["DATABASE_UPDATER_PATH"]!, nextDatabase], {
-			timeout: 2 * HOUR,
-		});
-
-		if (childResult.error) {
-			throw childResult.error;
-		} else if (childResult.output.some(x => x && x.length > 0)) {
-			throw new Error("Unexpected output: " + childResult.output.toString());
-		} else {
-			console.log("[DATABASE] Finished updated.");
-			currentDatabase = nextDatabase;
-			if (recursive) setTimeout(updateDatabase, UPDATE_TIME, true);
-		}
-	} catch (e) {
-		console.warn("[DATABASE] Unable to update next database.\n", e);
-
-		if (recursive) setTimeout(updateDatabase, HOUR, true);
-	}
+	if (_recursive) setTimeout(updateDatabase, UPDATE_TIME, true);
 }
 
 if (process.env["UPDATE"]) {
