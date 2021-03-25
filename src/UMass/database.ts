@@ -13,16 +13,16 @@ const DAY = HOUR * 24;
 const UPDATE_TIME = DAY * 7;
 
 let currentDatabase = "umass_0";
-function connectToDatabase(): Promise<Mongo.Db> {
-	return new Promise((res, rej) => {
-		const client = new Mongo.MongoClient(CONNECTION_STRING.replace("DATABASE", currentDatabase), {
-			useUnifiedTopology: true,
-		});
-		client
-			.connect()
-			.then(() => res(client.db(currentDatabase)))
-			.catch(error => rej(error));
-	});
+async function connectToDatabase<T>(callback: (db: Mongo.Db) => Promise<T>): Promise<T> {
+	const client = await new Mongo.MongoClient(CONNECTION_STRING.replace("DATABASE", currentDatabase), {
+		useUnifiedTopology: true,
+	}).connect();
+
+	const r = await callback(client.db(currentDatabase));
+
+	client.close();
+
+	return r;
 }
 
 type UMassCollection = "staff" | "courses" | "semesters";
@@ -33,12 +33,13 @@ type UMassCollectionData<T> = T extends "staff"
 	: T extends "semesters"
 	? Semester
 	: never;
-export async function connectToCollection<T extends UMassCollection>(
+export async function connectToCollection<T extends UMassCollection, U>(
 	collection: T,
-): Promise<Mongo.Collection<UMassCollectionData<T>>> {
-	const db = await connectToDatabase();
-
-	return db.collection(collection);
+	callback: (collection: Mongo.Collection<UMassCollectionData<T>>) => Promise<U>,
+): Promise<U> {
+	return connectToDatabase(db => {
+		return callback(db.collection(collection))
+	});
 }
 
 function updateDatabase(_recursive = false): void {

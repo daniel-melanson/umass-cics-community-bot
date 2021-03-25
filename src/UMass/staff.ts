@@ -9,17 +9,20 @@ interface ScoredStaff extends Staff {
 export async function getStaffListFromQuery(query: string): Promise<Array<ScoredStaff>> {
 	query = sanitize(query);
 
-	const staffCollection = await connectToCollection("staff");
-	return staffCollection
-		.aggregate([
-			{ $match: { $text: { $search: query } } },
-			{
-				$addFields: {
-					_score: { $divide: [{ $meta: "textScore" }, { $size: "$names" }] },
-				},
-			},
-			{ $sort: { _score: -1 } },
-			{ $match: { _score: { $gt: 0.45 } } },
-		])
-		.toArray() as Promise<Array<ScoredStaff>>;
+	return connectToCollection(
+		"staff",
+		staffCollection =>
+			staffCollection
+				.aggregate([
+					{ $match: { $text: { $search: query } } },
+					{
+						$addFields: {
+							_score: { $divide: [{ $meta: "textScore" }, { $size: "$names" }] },
+						},
+					},
+					{ $sort: { _score: -1 } },
+					{ $match: { _score: { $gt: 0.45 } } },
+				])
+				.toArray() as Promise<Array<ScoredStaff>>,
+	);
 }

@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 
-import { getCourseFromQuery, SHORTENED_SUBJECT_REGEXP_STRING } from "UMass/courses";
+import { searchCourses, COURSE_REGEXP_STRING } from "UMass/courses";
 import { Command } from "Discord/commands/types";
 
 import { formatEmbed } from "Discord/formatting";
@@ -12,7 +12,7 @@ export default {
 	identifier: "what-is",
 	formalName: "What Is",
 	group: "Information",
-	patterns: [new RegExp(`^(what is|what'?s)\\s*(${SHORTENED_SUBJECT_REGEXP_STRING}?\\s*h?\\d{3}\\w*)\\??$`, "im")],
+	patterns: [new RegExp(`^(what is|what'?s)\\s*(${COURSE_REGEXP_STRING})\\??$`, "im")],
 	description: "Responds with information about a UMass CICS related course.",
 	details: oneLine(`
 		Attempts to retrieve course information given a search query.
@@ -30,20 +30,18 @@ export default {
 		},
 	],
 	func: async (message: Message, result: { course: string }) => {
-		let queryResult;
+		let search;
 		try {
-			queryResult = await getCourseFromQuery(result.course);
+			search = await searchCourses(result.course);
 		} catch (e) {
 			console.log("[DATABASE]", e);
 			return message.reply("I encountered an error while attempting this query. Try again later.");
 		}
 
-		if (!queryResult || (queryResult instanceof Array && queryResult.length === 0)) {
-			return message.reply("I cannot seem to find a course with an identifier like that.");
-		} else if (queryResult instanceof Array && queryResult.length > 5) {
-			return message.reply("I found multiple courses that matched that. Please be more specific.");
-		} else if (!(queryResult instanceof Array) || queryResult.length === 1) {
-			const course = queryResult instanceof Array ? queryResult[0] : queryResult;
+		if (search.error) {
+			return message.reply(search.error);
+		} else if (search.result.length === 1) {
+			const course = search.result[0];
 			const fields = [];
 
 			for (const [key, value] of Object.entries(course)) {
@@ -67,7 +65,7 @@ export default {
 		} else {
 			return message.reply(
 				oneLine(`I was unable to narrow down your search to a single course.
-					Which one of the following did you mean: ${queryResult.map(x => x.id).join(", ")}?`),
+					Which one of the following did you mean: ${search.result.map(x => x.id).join(", ")}?`),
 			);
 		}
 	},
