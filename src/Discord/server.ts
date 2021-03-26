@@ -85,8 +85,12 @@ async function message(message: Message) {
 			return;
 		}
 
-		await message.react(upvote);
-		await message.react(downvote);
+		try {
+			await message.react(upvote);
+			await message.react(downvote);
+		} catch (e) {
+			message.reply("unable to react with emotes.");
+		}
 
 		return;
 	}
