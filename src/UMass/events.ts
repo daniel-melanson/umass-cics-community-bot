@@ -73,20 +73,10 @@ export async function getCICSEvents(): Promise<Array<CICSEvent>> {
 
 		const summary = $("div.field-type-text-with-summary > :first-child > :first-child > p")
 			.toArray()
-			.map(elem => $(elem).text().trim().replaceAll(/\s\s/g, " "));
+			.map(elem => $(elem).text().trim().replaceAll(/\s\s/g, " "))
+			.join("\n");
 
-		let shortenedBody = "";
-		for (const paragraph of summary) {
-			if (paragraph.length < 20) continue;
-
-			shortenedBody += "\n\n" + paragraph;
-			if (shortenedBody.length < 250) {
-				shortenedBody = shortenedBody.substring(0, 250) + "...";
-				break;
-			}
-		}
-
-		event.body = shortenedBody;
+		event.body = summary.substring(0, 250);
 	}
 
 	return events;
