@@ -53,7 +53,10 @@ async function handleCarrotUpvote(message: Message) {
 				const upvote = message.guild.emojis.cache.find(e => e.name === "upvote");
 
 				if (upvote) {
-					previousMessage.react(upvote);
+					try {
+						previousMessage.react(upvote);
+					} catch(e) {	
+					}
 				} else {
 					console.error("[SERVER] Unable to find upvote emoji.");
 				}
@@ -82,8 +85,12 @@ async function message(message: Message) {
 			return;
 		}
 
-		await message.react(upvote);
-		await message.react(downvote);
+		try {
+			await message.react(upvote);
+			await message.react(downvote);
+		} catch (e) {
+			message.reply("unable to react with emotes.");
+		}
 
 		return;
 	}
