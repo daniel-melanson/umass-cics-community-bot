@@ -78,15 +78,10 @@ export async function searchCourses(query: string): Promise<SearchResult> {
 			.toArray(),
 	);
 
-	if (aggregateResult) {
+	if (aggregateResult && aggregateResult.length > 0) {
 		if (aggregateResult.length > 5) {
 			return {
 				error: "too many courses found; try narrowing down your search.",
-				result: [],
-			};
-		} else if (aggregateResult.length === 0) {
-			return {
-				error: "I was unable to find a course with an name like that. Perhaps you have the wrong subject?",
 				result: [],
 			};
 		}
