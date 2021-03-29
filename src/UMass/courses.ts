@@ -73,7 +73,7 @@ export async function searchCourses(query: string): Promise<SearchResult> {
 				{ $match: { $text: { $search: query } } },
 				{ $addFields: { _score: { $meta: "textScore" } } },
 				{ $sort: { _score: -1 } },
-				{ $match: { _score: { $gt: 0.7 } } },
+				{ $match: { _score: { $gt: 0.75 } } },
 			])
 			.toArray(),
 	);
@@ -82,6 +82,11 @@ export async function searchCourses(query: string): Promise<SearchResult> {
 		if (aggregateResult.length > 5) {
 			return {
 				error: "too many courses found; try narrowing down your search.",
+				result: [],
+			};
+		} else if (aggregateResult.length === 0) {
+			return {
+				error: "I was unable to find a course with an name like that. Perhaps you have the wrong subject?",
 				result: [],
 			};
 		}
