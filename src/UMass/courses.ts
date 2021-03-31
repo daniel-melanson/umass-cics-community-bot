@@ -73,7 +73,7 @@ export async function searchCourses(query: string): Promise<SearchResult> {
 				{ $match: { $text: { $search: query } } },
 				{ $addFields: { _score: { $meta: "textScore" } } },
 				{ $sort: { _score: -1 } },
-				{ $match: { _score: { $gt: 0.75 } } },
+				{ $match: { _score: { $gt: 0.7 } } },
 			])
 			.toArray(),
 	);
