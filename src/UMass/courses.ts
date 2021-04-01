@@ -1,6 +1,7 @@
 import { connectToCollection } from "UMass/database";
 import { Course, CourseSubject } from "UMass/types";
 import { sanitize } from "Shared/stringUtil";
+import { FilterQuery } from "mongodb";
 
 export const SHORTENED_SUBJECT_REGEXP_STRING =
 	"(CS|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS|COMP SCI)";
@@ -97,18 +98,22 @@ export async function searchCourses(query: string): Promise<SearchResult> {
 	};
 }
 
-export async function getCoursesFromSubject(subject: CourseSubject): Promise<Array<Course>> {
-	return connectToCollection("courses", async courseCollection =>
-		courseCollection
-			.find({
-				subject: subject,
-			})
-			.toArray(),
-	);
+export function getCoursesFromSubject(subject: CourseSubject, level?: string): Promise<Array<Course>> {
+	const query: FilterQuery<Course> = {
+		subject: subject,
+	};
+
+	if (level) {
+		query.number = {
+			$regex: new RegExp(`^h?${level}`, "i"),
+		};
+	}
+
+	return connectToCollection("courses", courseCollection => courseCollection.find(query).toArray());
 }
 
-export async function getCoursePostRequisites(course: Course): Promise<Array<Course>> {
-	return connectToCollection("courses", async courseCollection =>
+export function getCoursePostRequisites(course: Course): Promise<Array<Course>> {
+	return connectToCollection("courses", courseCollection =>
 		courseCollection
 			.find({
 				enrollmentRequirement: { $regex: course.id },
