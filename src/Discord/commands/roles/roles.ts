@@ -71,7 +71,6 @@ export function createRoleEmbed(guild: Guild): MessageEmbed {
 				value: list(isMisc),
 			},
 		],
-		timestamp: false,
 	});
 }
 

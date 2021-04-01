@@ -60,7 +60,6 @@ export default {
 				formatEmbed({
 					title: `Server Changes: ${new Date().toLocaleDateString()}`,
 					fields: fields,
-					timestamp: false,
 				}),
 			);
 		}

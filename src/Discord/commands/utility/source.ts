@@ -30,7 +30,6 @@ export default {
 						value: `If you find a bug, you can report it to an admin, or make a ticket [here](https://github.com/daniel-melanson/UMass-CICS-Discord-Bot/issues).`,
 					},
 				],
-				timestamp: false,
 			}),
 		);
 	},

@@ -27,5 +27,4 @@ export const ROLES_TUTORIAL = formatEmbed({
 				The person of reference should be another verified club officer.`),
 		},
 	],
-	timestamp: false,
 });

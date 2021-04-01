@@ -37,7 +37,7 @@ export function formatEmbed(opts: EmbedOptions): MessageEmbed {
 		title: opts.title,
 		url: opts.url,
 		description: opts.description,
-		timestamp: opts.timestamp !== false ? new Date() : undefined,
+		timestamp: opts.timestamp ? new Date() : undefined,
 		color: opts.color || UMASS_MAROON,
 		image: {
 			url: opts.image,

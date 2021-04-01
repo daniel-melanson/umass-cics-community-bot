@@ -29,7 +29,6 @@ function createStaffEmbed(staff: Staff) {
 						},
 				  ]
 				: undefined,
-		timestamp: false,
 	});
 }
 

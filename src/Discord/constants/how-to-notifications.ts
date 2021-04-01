@@ -20,7 +20,6 @@ export const NOTIFICATION_TUTORIALS = [
 				inline: true,
 			},
 		],
-		timestamp: false,
 	}),
 	formatEmbed({
 		title: "There Is An Unread Badge Next To A Channel I Do Not Read",
@@ -41,7 +40,6 @@ export const NOTIFICATION_TUTORIALS = [
 				inline: true,
 			},
 		],
-		timestamp: false,
 	}),
 	formatEmbed({
 		title: "There Are Channels I Do Not Want To See",
@@ -63,7 +61,6 @@ export const NOTIFICATION_TUTORIALS = [
 				inline: true,
 			},
 		],
-		timestamp: false,
 	}),
 	formatEmbed({
 		title: "There Is An Unread Badge Next To The Server Icon",
@@ -84,6 +81,5 @@ export const NOTIFICATION_TUTORIALS = [
 				inline: true,
 			},
 		],
-		timestamp: false,
 	}),
 ];

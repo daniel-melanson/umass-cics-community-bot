@@ -59,7 +59,6 @@ export default {
 					url: course.website,
 					description: course.description,
 					fields: fields,
-					timestamp: false,
 				}),
 			);
 		} else {
