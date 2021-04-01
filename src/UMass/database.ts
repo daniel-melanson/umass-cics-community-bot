@@ -33,7 +33,8 @@ type UMassCollectionData<T> = T extends "staff"
 	: T extends "semesters"
 	? Semester
 	: never;
-export async function connectToCollection<T extends UMassCollection, U>(
+
+export function connectToCollection<T extends UMassCollection, U>(
 	collection: T,
 	callback: (collection: Mongo.Collection<UMassCollectionData<T>>) => Promise<U>,
 ): Promise<U> {
