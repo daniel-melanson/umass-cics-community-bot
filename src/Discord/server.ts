@@ -55,8 +55,7 @@ async function handleCarrotUpvote(message: Message) {
 				if (upvote) {
 					try {
 						previousMessage.react(upvote);
-					} catch(e) {	
-					}
+					} catch (e) {}
 				} else {
 					console.error("[SERVER] Unable to find upvote emoji.");
 				}
@@ -142,7 +141,6 @@ async function guildMemberAdd(member: GuildMember) {
 										make sure to read the how-to channels (${get("roles")}, ${get("commands")}, ${get("notifications")})`),
 					},
 				],
-				timestamp: false,
 			}),
 		});
 		announce("bot-commands", createRoleEmbed(updated.guild));

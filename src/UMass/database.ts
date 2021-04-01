@@ -38,9 +38,7 @@ export function connectToCollection<T extends UMassCollection, U>(
 	collection: T,
 	callback: (collection: Mongo.Collection<UMassCollectionData<T>>) => Promise<U>,
 ): Promise<U> {
-	return connectToDatabase(db => {
-		return callback(db.collection(collection))
-	});
+	return connectToDatabase(db => callback(db.collection(collection)));
 }
 
 function updateDatabase(_recursive = false): void {
