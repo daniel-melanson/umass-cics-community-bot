@@ -77,6 +77,10 @@ export async function getCICSEvents(): Promise<Array<CICSEvent>> {
 			.join("\n");
 
 		event.body = summary.substring(0, 250);
+
+		if (event.body.length === 250) {
+			event.body += "...";
+		}
 	}
 
 	return events;
