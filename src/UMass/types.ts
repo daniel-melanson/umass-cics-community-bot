@@ -17,6 +17,7 @@ export interface Course {
 	subject: CourseSubject;
 	id: string;
 	title: string;
+	number: string;
 	description: string;
 	staff?: Array<string>;
 	website?: string;

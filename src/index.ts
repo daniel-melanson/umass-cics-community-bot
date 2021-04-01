@@ -29,7 +29,6 @@ async function academicCalendarAnnouncement() {
 						formatEmbed({
 							title: `${semester.season} ${semester.year} Academic Calendar Notice`,
 							description: event.description,
-							timestamp: false,
 						}),
 					);
 				} else if (sameDay(tomorrow, date)) {
@@ -38,7 +37,6 @@ async function academicCalendarAnnouncement() {
 						formatEmbed({
 							title: `${semester.season} ${semester.year} Academic Calendar Notice (TOMORROW)`,
 							description: event.description,
-							timestamp: false,
 						}),
 					);
 				}
@@ -96,7 +94,6 @@ async function cicsEventAnnouncement() {
 					url: event.link,
 					description: event.body,
 					fields: fields,
-					timestamp: false,
 				}),
 			);
 		}

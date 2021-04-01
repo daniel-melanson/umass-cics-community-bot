@@ -6,13 +6,13 @@ import { Command } from "Discord/commands/types";
 import { formatEmbed } from "Discord/formatting";
 import { splitCamelCase, oneLine } from "Shared/stringUtil";
 
-const ignoredKeys = new Set(["id", "title", "website", "description", "subject"]);
+const ignoredKeys = new Set(["id", "title", "website", "description", "subject", "number"]);
 
 export default {
 	identifier: "what-is",
 	formalName: "What Is",
 	group: "Information",
-	patterns: [new RegExp(`^(what is|what'?s)\\s*(${COURSE_REGEXP_STRING})\\??$`, "im")],
+	patterns: [new RegExp(`^(what is|what'?s)\\s*(${COURSE_REGEXP_STRING})\\??$`, "i")],
 	description: "Responds with information about a UMass CICS related course.",
 	details: oneLine(`
 		Attempts to retrieve course information given a search query.
@@ -59,7 +59,6 @@ export default {
 					url: course.website,
 					description: course.description,
 					fields: fields,
-					timestamp: false,
 				}),
 			);
 		} else {

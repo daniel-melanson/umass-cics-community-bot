@@ -17,7 +17,9 @@ export async function getStaffListFromQuery(query: string): Promise<Array<Scored
 					{ $match: { $text: { $search: query } } },
 					{
 						$addFields: {
-							_score: { $divide: [{ $meta: "textScore" }, { $size: "$names" }] },
+							_score: {
+								$divide: [{ $meta: "textScore" }, { $size: "$names" }],
+							},
 						},
 					},
 					{ $sort: { _score: -1 } },

@@ -26,7 +26,6 @@ export default {
 				description: semester.events.reduce((prev, current) => {
 					return prev + `**${current.date.toLocaleDateString()}**: ${current.description}\n`;
 				}, ""),
-				timestamp: false,
 			}),
 		);
 	},

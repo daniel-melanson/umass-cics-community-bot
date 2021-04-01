@@ -43,10 +43,14 @@ export default {
 			if (!postReqs || postReqs.length === 0) {
 				return message.reply("no courses seem to have this course as an enrollment requirement.");
 			} else {
-				return message.reply(
-					`The following courses have ${course.id} listed in their enrollment requirements: ${postReqs
-						.map(c => c.id)
-						.join(", ")}`,
+				return message.channel.send(
+					`The following courses have ${course.id} listed in their enrollment requirements: \n${postReqs
+						.sort((a, b) => a.id.localeCompare(b.id))
+						.map(c => `**${c.id}**: ${c.title}`)
+						.join("\n")}`,
+					{
+						split: true,
+					},
 				);
 			}
 		} else {
