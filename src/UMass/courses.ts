@@ -116,7 +116,7 @@ export function getCoursePostRequisites(course: Course): Promise<Array<Course>> 
 	return connectToCollection("courses", courseCollection =>
 		courseCollection
 			.find({
-				enrollmentRequirement: { $regex: course.id },
+				enrollmentRequirement: { $regex: new RegExp(course.id, "i") },
 			})
 			.toArray(),
 	);
