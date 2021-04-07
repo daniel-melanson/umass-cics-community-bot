@@ -3,5 +3,7 @@ out
 .env
 geckodriver.log
 
+src/Discord/constants/*.ts
+
 *.js
 *.json
