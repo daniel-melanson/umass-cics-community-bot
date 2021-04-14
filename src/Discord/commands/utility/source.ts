@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import { oneLine } from "Shared/stringUtil";
 
-import { Command } from "Discord/commands/types";
+import { Command, UserPermission } from "Discord/commands/types";
 import { formatEmbed } from "Discord/formatting";
 
 export default {
@@ -10,6 +10,7 @@ export default {
 	group: "Utility",
 	description: "Responds with information about the bot.",
 	examples: ["!source"],
+	userPermission: UserPermission.Owner,
 	func: async (message: Message) => {
 		return message.reply(
 			formatEmbed({
