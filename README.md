@@ -20,8 +20,8 @@ Once [#4879](https://github.com/discordjs/discord.js/pull/4879) and [#5106](http
 6. Submit a pull request
 
 ### Local Testing
-1. Create a new discord server with the given [template](https://discord.new/C8kqqG6RZDrD).
-2. [Create and invite a bot to the template server](https://github.com/jagrosh/MusicBot/wiki/Adding-Your-Bot-To-Your-Server).
+1. Create a new discord server with.
+2. [Create and invite a bot to the server](https://github.com/jagrosh/MusicBot/wiki/Adding-Your-Bot-To-Your-Server).
 3. Create a `.env` file in the following format: 
 ```
 DISCORD_OWNER_ID=your-discord-id
