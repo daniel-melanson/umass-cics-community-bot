@@ -1,9 +1,5 @@
 import { Client, Guild, GuildMember, Message, MessageEmbed, MessageOptions, TextChannel } from "discord.js";
 
-import { NOTIFICATION_TUTORIALS } from "Discord/constants/how-to-notifications";
-import { ROLES_TUTORIAL } from "Discord/constants/how-to-roles";
-import { DISCORD_RULES } from "Discord/constants/rules";
-
 import { handleCommandMessage } from "Discord/dispatcher";
 import { formatEmbed } from "Discord/formatting";
 import { createRoleEmbed } from "Discord/commands/roles/roles";
@@ -189,29 +185,6 @@ export function login(token: string): Promise<void> {
 		if (!botMember.permissions.has("ADMINISTRATOR")) {
 			console.error("[SERVER] Insignificant permissions in guild.");
 			process.exit(-1);
-		}
-
-		const sendChannel = async (name: string, embeds: MessageEmbed | string | Array<MessageEmbed | string>) => {
-			let channel;
-			if ((channel = findChannel(guild, name))) {
-				try {
-					await channel.bulkDelete(20);
-				} catch (e) {
-					console.log("Unable to bulkDelete " + name);
-				}
-
-				if (embeds instanceof Array) {
-					for (const embed of embeds) await channel.send(embed);
-				} else {
-					await channel.send(embeds);
-				}
-			}
-		};
-
-		if (process.env["SEND_MESSAGES"]) {
-			await sendChannel("rules", DISCORD_RULES);
-			await sendChannel("how-to-roles", ROLES_TUTORIAL);
-			await sendChannel("how-to-notifications", NOTIFICATION_TUTORIALS);
 		}
 
 		client.on("message", message);
