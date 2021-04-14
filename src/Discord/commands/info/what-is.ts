@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 
 import { searchCourses, COURSE_REGEXP_STRING } from "UMass/courses";
 import { Command } from "Discord/commands/types";
@@ -53,14 +53,20 @@ export default {
 				}
 			}
 
-			return message.channel.send(
-				formatEmbed({
-					title: `${course.id}: ${course.title}`,
-					url: course.website,
-					description: course.description,
-					fields: fields,
-				}),
-			);
+			const messagePromise = message.channel.send(
+					formatEmbed({
+						title: `${course.id}: ${course.title}`,
+						url: course.website,
+						description: course.description,
+						fields: fields,
+					}),
+				);
+
+			if (message.channel.type === "text" && !(message.channel as TextChannel).name.match(/bot-commands/)) {
+				return messagePromise.then(msg => msg.delete({ timeout: 30000 }));
+			} else {
+				return messagePromise;
+			}
 		} else {
 			return message.reply(
 				oneLine(`I was unable to narrow down your search to a single course.
