@@ -98,7 +98,7 @@ async function guildMemberAdd(member: GuildMember) {
 
 	const id = member.id;
 
-	await member.setNickname("real name please");
+	await member.setNickname("~ real name please");
 	await announce(
 		"bot-log",
 		formatEmbed({
@@ -150,7 +150,7 @@ async function guildMemberAdd(member: GuildMember) {
 			return;
 		}
 
-		if (updated.nickname === "real name please") {
+		if (updated.nickname === "~ real name please") {
 			announce(
 				"bot-commands",
 				oneLine(`<@${member.id}> you still have not updated your nickname.
