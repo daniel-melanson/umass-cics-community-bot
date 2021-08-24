@@ -1,4 +1,4 @@
-# UMass CICS Discord Bot
+# UMass CICS Community Bot
 
 Simple discord bot for the UMass CICS Community server written in TypeScript.
 
@@ -9,7 +9,7 @@ Simple discord bot for the UMass CICS Community server written in TypeScript.
 ## Contributing
 
 ### Where do I start?
-1. [Fork the repository](https://github.com/daniel-melanson/UMass-CICS-Discord-Bot/fork)
+1. [Fork the repository](hhttps://github.com/daniel-melanson/umass-cics-community-bot/fork)
 2. Clone your fork: `git clone https://github.com/your-username/UMass-CICS-Discord-Bot.git`
 3. Create a branch with your edits: `git checkout -b feature-name`
 4. Commit your changes: `git commit -am 'My features description'`
