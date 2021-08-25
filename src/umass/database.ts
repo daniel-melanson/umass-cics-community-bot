@@ -17,10 +17,7 @@ async function connectToDatabase<T>(
   callback: (db: Mongo.Db) => Promise<T>
 ): Promise<T> {
   const client = await new Mongo.MongoClient(
-    CONNECTION_STRING.replace("DATABASE", currentDatabase),
-    {
-      useUnifiedTopology: true,
-    }
+    CONNECTION_STRING.replace("DATABASE", currentDatabase)
   ).connect();
 
   const r = await callback(client.db(currentDatabase));
@@ -48,9 +45,7 @@ export function connectToCollection<T extends UMassCollection, U>(
 
 function updateDatabase(_recursive = false): void {
   const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
-  const client = new Mongo.MongoClient(CONNECTION_STRING, {
-    useUnifiedTopology: true,
-  });
+  const client = new Mongo.MongoClient(CONNECTION_STRING);
 
   console.log("[DATABASE] Setting up update...");
   client
