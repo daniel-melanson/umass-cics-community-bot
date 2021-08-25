@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.7.1",
+    "@types/node-fetch": "^2.5.12",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
     "eslint": "^7.32.0",
@@ -33,5 +34,10 @@
     "lint": "eslint ./src/**/*.ts",
     "start": "ts-node -r tsconfig-paths/register ./src/index.ts",
     "test": "ts-node-dev --respawn -r tsconfig-paths/register ./src/index.ts"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "mongodb": "^4.1.1",
+    "node-fetch": "^2.6.1"
   }
 }
