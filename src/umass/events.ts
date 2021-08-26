@@ -27,9 +27,7 @@ export async function getCICSEvents(): Promise<Array<CICSEvent>> {
         .toArray()
         .reduce((event, attributeElement) => {
           const classAttrib = attributeElement.attribs["class"];
-          const attribMatch = classAttrib.match(
-            /views-field(-field)?-([\w-]+)/
-          );
+          const attribMatch = classAttrib.match(/views-field(-field)?-([\w-]+)/);
           if (!attribMatch) {
             console.warn("[UMASS-EVENTS] Unknown class: " + classAttrib);
           } else {
@@ -46,10 +44,7 @@ export async function getCICSEvents(): Promise<Array<CICSEvent>> {
               }
             }
 
-            const text = $(attributeElement)
-              .text()
-              .trim()
-              .replaceAll(/\s\s/g, " ");
+            const text = $(attributeElement).text().trim().replaceAll(/\s\s/g, " ");
             if (attribType === "title") {
               event[attribType] = text;
             } else if (attribType === "speaker-link") {
@@ -76,11 +71,9 @@ export async function getCICSEvents(): Promise<Array<CICSEvent>> {
   for (const event of events) {
     $ = await fetchAndLoad(event.link);
 
-    const summary = $(
-      "div.field-type-text-with-summary > :first-child > :first-child > p"
-    )
+    const summary = $("div.field-type-text-with-summary > :first-child > :first-child > p")
       .toArray()
-      .map((elem) => $(elem).text().trim().replaceAll(/\s\s/g, " "))
+      .map(elem => $(elem).text().trim().replaceAll(/\s\s/g, " "))
       .join("\n");
 
     event.body = summary.substring(0, 250);

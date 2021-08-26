@@ -6,14 +6,12 @@ interface ScoredStaff extends Staff {
   _score: number;
 }
 
-export async function getStaffListFromQuery(
-  query: string
-): Promise<Array<ScoredStaff>> {
+export async function getStaffListFromQuery(query: string): Promise<Array<ScoredStaff>> {
   query = sanitize(query);
 
   return connectToCollection(
     "staff",
-    (staffCollection) =>
+    staffCollection =>
       staffCollection
         .aggregate([
           { $match: { $text: { $search: query } } },
@@ -27,6 +25,6 @@ export async function getStaffListFromQuery(
           { $sort: { _score: -1 } },
           { $match: { _score: { $gt: 0.45 } } },
         ])
-        .toArray() as Promise<Array<ScoredStaff>>
+        .toArray() as Promise<Array<ScoredStaff>>,
   );
 }

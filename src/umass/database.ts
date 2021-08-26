@@ -13,12 +13,8 @@ const DAY = HOUR * 24;
 const UPDATE_TIME = DAY * 7;
 
 let currentDatabase = "umass_0";
-async function connectToDatabase<T>(
-  callback: (db: Mongo.Db) => Promise<T>
-): Promise<T> {
-  const client = await new Mongo.MongoClient(
-    CONNECTION_STRING.replace("DATABASE", currentDatabase)
-  ).connect();
+async function connectToDatabase<T>(callback: (db: Mongo.Db) => Promise<T>): Promise<T> {
+  const client = await new Mongo.MongoClient(CONNECTION_STRING.replace("DATABASE", currentDatabase)).connect();
 
   const r = await callback(client.db(currentDatabase));
 
@@ -38,9 +34,9 @@ type UMassCollectionData<T> = T extends "staff"
 
 export function connectToCollection<T extends UMassCollection, U>(
   collection: T,
-  callback: (collection: Mongo.Collection<UMassCollectionData<T>>) => Promise<U>
+  callback: (collection: Mongo.Collection<UMassCollectionData<T>>) => Promise<U>,
 ): Promise<U> {
-  return connectToDatabase((db) => callback(db.collection(collection)));
+  return connectToDatabase(db => callback(db.collection(collection)));
 }
 
 function updateDatabase(_recursive = false): void {
@@ -50,7 +46,7 @@ function updateDatabase(_recursive = false): void {
   console.log("[DATABASE] Setting up update...");
   client
     .connect()
-    .then((client) =>
+    .then(client =>
       client
         .db(nextDatabase)
         .dropDatabase()
@@ -63,24 +59,18 @@ function updateDatabase(_recursive = false): void {
             },
             (error, stdout, stderr) => {
               if (error) {
-                console.log(
-                  `[DATABASE - ${new Date().toLocaleString()}] Unable to update: ${error}\n\n`
-                );
+                console.log(`[DATABASE - ${new Date().toLocaleString()}] Unable to update: ${error}\n\n`);
                 console.log(stdout, stderr);
               } else {
-                console.log(
-                  `[DATABASE - ${new Date().toLocaleString()}] Successfully updated.`
-                );
+                console.log(`[DATABASE - ${new Date().toLocaleString()}] Successfully updated.`);
                 currentDatabase = nextDatabase;
               }
-            }
+            },
           );
         })
-        .catch((e) => console.log("[DATABASE] Failed to dropDatabase: " + e))
+        .catch(e => console.log("[DATABASE] Failed to dropDatabase: " + e)),
     )
-    .catch((e) =>
-      console.log("[DATABASE] Failed to connect while updating: " + e)
-    );
+    .catch(e => console.log("[DATABASE] Failed to connect while updating: " + e));
 
   if (_recursive) setTimeout(updateDatabase, UPDATE_TIME, true);
 }
