@@ -1,6 +1,6 @@
-import { connectToCollection } from "@umass/database";
-import { Staff } from "@umass/types";
-import { sanitize } from "@shared/stringUtil";
+import { connectToCollection } from "#umass/database";
+import { Staff } from "#umass/types";
+import { sanitize } from "#shared/stringUtil";
 
 interface ScoredStaff extends Staff {
   _score: number;

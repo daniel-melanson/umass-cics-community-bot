@@ -9,8 +9,9 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "paths": {
-      "@umass/*": ["umass/*"],
-      "@shared/*": ["shared/*"]
+      "#discord/*": ["discord/*"],
+      "#umass/*": ["umass/*"],
+      "#shared/*": ["shared/*"]
     },
     "esModuleInterop": true,
     "skipLibCheck": true,

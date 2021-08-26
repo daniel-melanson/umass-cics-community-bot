@@ -1,20 +1,17 @@
-import { FilterQuery } from "mongodb";
+import { FilterOperations } from "mongodb";
 
-import { connectToCollection } from "@umass/database";
-import { Course, CourseSubject } from "@umass/types";
-import { sanitize } from "Shared/stringUtil";
+import { connectToCollection } from "#umass/database";
+import { Course, CourseSubject } from "#umass/types";
+import { sanitize } from "#shared/stringUtil";
 
 export const SHORTENED_SUBJECT_REGEXP_STRING =
   "(CS|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS|COMP SCI)";
 
 export const COURSE_REGEXP_STRING = `${SHORTENED_SUBJECT_REGEXP_STRING}?\\s*h?\\d{3}\\w*`;
 
-export function getExactCourseSubject(
-  subject: string
-): CourseSubject | undefined {
+export function getExactCourseSubject(subject: string): CourseSubject | undefined {
   subject = subject.toUpperCase();
-  if (!subject.match(new RegExp(SHORTENED_SUBJECT_REGEXP_STRING)))
-    return undefined;
+  if (!subject.match(new RegExp(SHORTENED_SUBJECT_REGEXP_STRING))) return undefined;
 
   switch (subject) {
     case "C":
@@ -39,11 +36,7 @@ export function getExactCourseSubject(
 }
 
 export function getCourseIdFromQuery(query: string): string | undefined {
-  const match = query
-    .trim()
-    .match(
-      new RegExp(`^${SHORTENED_SUBJECT_REGEXP_STRING}\\s*(h?\\d{3}\\w*)$`, "im")
-    );
+  const match = query.trim().match(new RegExp(`^${SHORTENED_SUBJECT_REGEXP_STRING}\\s*(h?\\d{3}\\w*)$`, "im"));
 
   if (match === null) return undefined;
   return `${getExactCourseSubject(match[1])} ${match[2].toUpperCase()}`;
@@ -59,37 +52,32 @@ export async function searchCourses(query: string): Promise<SearchResult> {
 
   const courseId = getCourseIdFromQuery(query);
   if (courseId) {
-    const idMatch = await connectToCollection(
-      "courses",
-      async (courseCollection) => {
-        let match = await courseCollection.findOne({
-          id: courseId,
+    const idMatch = await connectToCollection("courses", async courseCollection => {
+      let match = await courseCollection.findOne({
+        id: courseId,
+      });
+
+      if (!match) {
+        match = await courseCollection.findOne({
+          id: { $regex: courseId },
         });
-
-        if (!match) {
-          match = await courseCollection.findOne({
-            id: { $regex: courseId },
-          });
-        }
-
-        return match;
       }
-    );
+
+      return match;
+    });
 
     if (idMatch) return { result: [idMatch] };
   }
 
-  const aggregateResult = await connectToCollection(
-    "courses",
-    async (courseCollection) =>
-      courseCollection
-        .aggregate([
-          { $match: { $text: { $search: query } } },
-          { $addFields: { _score: { $meta: "textScore" } } },
-          { $sort: { _score: -1 } },
-          { $match: { _score: { $gt: 0.7 } } },
-        ])
-        .toArray()
+  const aggregateResult = await connectToCollection("courses", async courseCollection =>
+    courseCollection
+      .aggregate([
+        { $match: { $text: { $search: query } } },
+        { $addFields: { _score: { $meta: "textScore" } } },
+        { $sort: { _score: -1 } },
+        { $match: { _score: { $gt: 0.7 } } },
+      ])
+      .toArray(),
   );
 
   if (aggregateResult && aggregateResult.length > 0) {
@@ -111,12 +99,11 @@ export async function searchCourses(query: string): Promise<SearchResult> {
   };
 }
 
-export function getCoursesFromSubject(
-  subject: CourseSubject,
-  level?: string
-): Promise<Array<Course>> {
-  const query: FilterQuery<Course> = {
-    subject: subject,
+export function getCoursesFromSubject(subject: CourseSubject, level?: string): Promise<Array<Course>> {
+  const query: FilterOperations<Course> = {
+    subject: {
+      $eq: subject,
+    },
   };
 
   if (level) {
@@ -125,15 +112,11 @@ export function getCoursesFromSubject(
     };
   }
 
-  return connectToCollection("courses", (courseCollection) =>
-    courseCollection.find(query).toArray()
-  );
+  return connectToCollection("courses", courseCollection => courseCollection.find(query).toArray());
 }
 
-export function getCoursePostRequisites(
-  course: Course
-): Promise<Array<Course>> {
-  return connectToCollection("courses", (courseCollection) => {
+export function getCoursePostRequisites(course: Course): Promise<Array<Course>> {
+  return connectToCollection("courses", courseCollection => {
     return courseCollection
       .find({
         enrollmentRequirement: { $regex: new RegExp(course.id, "i") },

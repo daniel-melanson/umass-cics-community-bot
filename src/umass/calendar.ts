@@ -1,5 +1,5 @@
-import { connectToCollection } from "@umass/database";
-import { Semester } from "@umass/types";
+import { connectToCollection } from "#umass/database";
+import { Semester } from "#umass/types";
 
 /**
  * Returns the current in session semester based off of today's date.
@@ -9,11 +9,11 @@ import { Semester } from "@umass/types";
  */
 export async function getInSessionSemester(): Promise<Semester | null> {
   const today = new Date();
-  return connectToCollection("semesters", (semesterCollection) =>
+  return connectToCollection("semesters", semesterCollection =>
     semesterCollection.findOne({
       startDate: { $lte: today },
       endDate: { $gte: today },
-    })
+    }),
   );
 }
 
@@ -26,10 +26,10 @@ export async function getInSessionSemester(): Promise<Semester | null> {
 export async function getCurrentSemesters(): Promise<Array<Semester>> {
   const haveEvents: Array<Semester> = [];
 
-  await connectToCollection("semesters", async (semesterCollection) => {
+  await connectToCollection("semesters", async semesterCollection => {
     const semesterCursor = await semesterCollection.find().toArray();
     const today = new Date();
-    semesterCursor.forEach((semester) => {
+    semesterCursor.forEach(semester => {
       const events = semester.events;
       if (events[0].date <= today && events[events.length - 1].date >= today) {
         haveEvents.push(semester);
@@ -37,7 +37,5 @@ export async function getCurrentSemesters(): Promise<Array<Semester>> {
     });
   });
 
-  return haveEvents.sort(
-    (a, b) => a.startDate.getTime() - b.startDate.getTime()
-  );
+  return haveEvents.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 }
