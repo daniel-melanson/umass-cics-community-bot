@@ -1,6 +1,7 @@
+import { SlashCommand } from "#discord/commands/types";
 import { ApplicationCommandOptionType } from "discord-api-types";
 
-export const RoleCommand = {
+export const RoleCommand: SlashCommand = {
   name: "role",
   description: "Add or remove an assignable role.",
   options: [
@@ -15,4 +16,7 @@ export const RoleCommand = {
       type: ApplicationCommandOptionType.Subcommand,
     },
   ],
+  fn: (interaction) => {
+    interaction.reply("this will handle some role things.");
+  }
 };
