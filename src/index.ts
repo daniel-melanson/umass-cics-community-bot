@@ -5,6 +5,7 @@ import { initialize, announce } from "#discord/server";
 import { formatEmbed } from "#discord/formatting";
 import { getInSessionSemester, getCurrentSemesters } from "#umass/calendar";
 import { getCICSEvents } from "#umass/events";
+import { error, log } from "#shared/logger";
 
 config();
 
@@ -101,13 +102,16 @@ async function cicsEventAnnouncement() {
   }
 }
 
-initialize().then(() => {
-  const localSchedule = (exp: string, func: () => void) =>
-    cron.schedule(exp, func, {
-      timezone: "America/New_York",
-    });
+initialize()
+  .then(client => {
+    log("MAIN", "Logged in as " + client.user.tag);
+    const localSchedule = (exp: string, func: () => void) =>
+      cron.schedule(exp, func, {
+        timezone: "America/New_York",
+      });
 
-  localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
-  localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
-  localSchedule("0 0 7 * * *", cicsEventAnnouncement);
-});
+    localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
+    localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
+    localSchedule("0 0 7 * * *", cicsEventAnnouncement);
+  })
+  .catch(rej => error("MAIN", "Failed to login", rej));
