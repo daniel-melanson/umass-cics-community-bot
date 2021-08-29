@@ -2,7 +2,7 @@ import { exec } from "child_process";
 
 import Mongo from "mongodb";
 
-import { Staff, Semester, Course } from "#umass/types";
+import { Staff, Semester, Course } from "./types";
 
 const CONNECTION_STRING = process.env["MONGO_CONNECTION_STRING"] || "";
 

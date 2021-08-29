@@ -1,5 +1,5 @@
-import { connectToCollection } from "#umass/database";
-import { Staff } from "#umass/types";
+import { connectToCollection } from "./database";
+import { Staff } from "./types";
 import { sanitize } from "#shared/stringUtil";
 
 interface ScoredStaff extends Staff {
