@@ -15,7 +15,7 @@ export type SlashCommandCallback = (interaction: CommandInteraction) => Promise<
 
 export enum CommandPermissionLevel {
   Owner = "Owner",
-  Administrator = "Administrator",
+  Administrator = "Admin",
   Moderator = "Moderator",
   Member = "Member",
 }
