@@ -5,7 +5,7 @@ export default new SlashCommandBuilder()
   .setDescription("Generates a list of courses given a subject.")
   .setGroup("Information")
   .setDetails("")
-  .addExamples(["/courses Statistics 100 Level"])
+  .addExamples(["/courses subject: Statistics level: 100 Level"])
   .addStringOption(option =>
     option
       .setName("subject")

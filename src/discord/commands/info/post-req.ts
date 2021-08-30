@@ -5,7 +5,7 @@ export default new SlashCommandBuilder()
   .setDescription("Searches for courses that a given course leads into.")
   .setGroup("Information")
   .setDetails("")
-  .addExamples(["/post-req CS 187"])
+  .addExamples(["/post-req course: CS 187"])
   .addStringOption(option =>
     option.setName("course").setDescription("The root class to find dependents of.").setRequired(true),
   )

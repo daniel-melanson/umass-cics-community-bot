@@ -5,10 +5,25 @@ export default new SlashCommandBuilder()
   .setDescription("Add or removed assignable roles")
   .setGroup("Roles")
   .setDetails("")
-  .addExamples(["/reset-classes"])
-  .addSubcommand(subcommand => subcommand.setName("get").setDescription("Add an assignable role."))
-  .addSubcommand(subcommand => subcommand.setName("remove").setDescription("Remove an assignable role."))
-  .addSubcommand(subcommand => subcommand.setName("try").setDescription("Temporarily gain a role (one day)."))
+  .addExamples(["/role get "])
+  .addSubcommand(subcommand =>
+    subcommand
+      .setName("get")
+      .setDescription("Add an assignable role.")
+      .addRoleOption(option => option.setName("role").setDescription("The role to assign yourself.").setRequired(true)),
+  )
+  .addSubcommand(subcommand =>
+    subcommand
+      .setName("remove")
+      .setDescription("Remove an assignable role.")
+      .addRoleOption(option => option.setName("role").setDescription("The role to assign yourself.").setRequired(true)),
+  )
+  .addSubcommand(subcommand =>
+    subcommand
+      .setName("try")
+      .setDescription("Temporarily (one day) assign yourself a role.")
+      .addRoleOption(option => option.setName("role").setDescription("The role to try.").setRequired(true)),
+  )
   .setCallback(interaction => {
     return interaction.reply("Not implemented.");
   });

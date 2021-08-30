@@ -6,7 +6,7 @@ export default new SlashCommandBuilder()
   .setGroup("Administrative")
   .setPermissionLevel(CommandPermissionLevel.Administrator)
   .setDetails("")
-  .addExamples(["/add-course CS 187 Programming With Data Scructures"])
+  .addExamples(["/add-course id: CS 187 title: Programming With Data Structures"])
   .addStringOption(option => option.setName("id").setDescription("The course id (Ex. CS 187).").setRequired(true))
   .addStringOption(option =>
     option

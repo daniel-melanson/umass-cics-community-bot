@@ -5,7 +5,7 @@ export default new SlashCommandBuilder()
   .setDescription("Displays information about a UMass CICS teaching staff member.")
   .setGroup("Information")
   .setDetails("")
-  .addExamples(["/who-is Mark Corner"])
+  .addExamples(["/who-is person: Mark Corner"])
   .addStringOption(option =>
     option.setName("person").setDescription("The staff member to search for.").setRequired(true),
   )
