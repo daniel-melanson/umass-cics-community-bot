@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
+import { SlashCommandBuilder } from "#discord/builders/SlashCommandBuilder";
 
 export default new SlashCommandBuilder()
   .setName("what-is")

@@ -111,7 +111,7 @@ export function initialize(): Promise<Client<true>> {
                   permissionArray.push(adminPermission);
               }
 
-              appCmd.permissions.add({
+              await appCmd.permissions.add({
                 permissions: permissionArray,
               });
             }
