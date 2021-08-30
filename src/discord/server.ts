@@ -1,5 +1,6 @@
 import {
   ApplicationCommandData,
+  ApplicationCommandPermissions,
   Client,
   Guild,
   Intents,
@@ -10,8 +11,8 @@ import {
 } from "discord.js";
 
 import { importCommands } from "#discord/commands/index";
-import { CONTACT_MESSAGE } from "#discord/constants";
-import { BuiltCommand } from "./commands/types";
+import { CONTACT_MESSAGE, OWNER_ID } from "#discord/constants";
+import { BuiltCommand, CommandPermissionLevel } from "./commands/types";
 import { formatEmbed } from "./formatting";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
@@ -59,6 +60,11 @@ export function initialize(): Promise<Client<true>> {
     return Promise.reject("Environment variable 'DISCORD_GUILD_ID' was not defined.");
   }
 
+  const OWNER_ID = process.env["OWNER_ID"];
+  if (!OWNER_ID) {
+    return Promise.reject("Environment variable 'OWNER_ID' was not defined.");
+  }
+
   return new Promise((res, rej) => {
     client
       .on("ready", async client => {
@@ -70,8 +76,45 @@ export function initialize(): Promise<Client<true>> {
           );
 
           const commandBuilders = await importCommands();
+
+          const ownerPermission: ApplicationCommandPermissions = {
+            id: OWNER_ID,
+            type: "USER",
+            permission: true,
+          };
+
+          const roles = await guild.roles.fetch();
+          const createRolePermission = (name: string) => {
+            const role = roles.find(r => r.name === name);
+            if (!role) throw new Error("Unable to find role " + name);
+
+            return {
+              id: role.id,
+              type: "ROLE",
+              permission: true,
+            } as ApplicationCommandPermissions;
+          };
+
+          const adminPermission = createRolePermission(CommandPermissionLevel.Administrator);
+          const moderatorPermission = createRolePermission(CommandPermissionLevel.Moderator);
           for (const builder of commandBuilders) {
             const appCmd = await guild.commands.create(builder.toJSON() as unknown as ApplicationCommandData);
+
+            if (builder.permissionLevel !== CommandPermissionLevel.Member) {
+              const permissionArray = [ownerPermission];
+
+              switch (builder.permissionLevel) {
+                case CommandPermissionLevel.Moderator:
+                  permissionArray.push(moderatorPermission);
+                // eslint-disable-next-line no-fallthrough
+                case CommandPermissionLevel.Administrator:
+                  permissionArray.push(adminPermission);
+              }
+
+              appCmd.permissions.add({
+                permissions: permissionArray,
+              });
+            }
 
             guildCommands.set(appCmd.id, {
               embed: formatEmbed({}),
@@ -80,6 +123,7 @@ export function initialize(): Promise<Client<true>> {
           }
 
           client.on("interactionCreate", interactionCreate);
+          res(client);
         } catch (e) {
           rej(e);
         }
