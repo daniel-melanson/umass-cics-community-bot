@@ -117,7 +117,16 @@ export function initialize(): Promise<Client<true>> {
             }
 
             guildCommands.set(appCmd.id, {
-              embed: formatEmbed({}),
+              embed: formatEmbed({
+                title: `The ${builder.name} command`,
+                description: builder.details,
+                fields: [
+                  {
+                    name: "Examples",
+                    value: builder.examples.map(e => "`" + e + "`").join(", "),
+                  },
+                ],
+              }),
               fn: builder.callback,
             });
           }
@@ -127,37 +136,6 @@ export function initialize(): Promise<Client<true>> {
         } catch (e) {
           rej(e);
         }
-
-        /*
-        client.guilds
-          .fetch(GUILD_ID)
-          .then(guild => guild.commands.fetch())
-          .then(commands => Promise.all(commands.map(command => command.delete())))
-          .then(() => importCommands())
-          .then(commands => {
-            const rest = new REST({ version: APIVersion }).setToken(DISCORD_TOKEN);
-
-            return Promise.all([rest.put(Routes.applicationGuildCommands(client.user.id, GUILD_ID), {
-              body: commands.map(cmd => cmd.toJSON()) as RESTPutAPIApplicationGuildCommandsJSONBody,
-            }), new Promise(res => res(commands))]);
-          })
-          .then(result => {
-            const [restResult, commands] = result;
-            const guildCommandsResult = result as RESTPutAPIApplicationGuildCommandsResult;
-            for (const i in guildCommandsResult) {
-              const builtCommand = commands[i];
-
-              guildCommands.set(guildCommandsResult[i].id, {
-                info: {},
-                fn: builtCommand.fn,
-                patternListener: builtCommand.patternListener,
-              });
-            }
-
-            client.on("interactionCreate", interactionCreate);
-            res(client);
-          });
-          .catch(rej);*/
       })
       .login(DISCORD_TOKEN);
   });
