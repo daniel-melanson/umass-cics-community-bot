@@ -11,7 +11,7 @@ import { SharedSlashCommandOptions } from "./mixins/CommandOptions";
 import { SharedNameAndDescription } from "./mixins/NameAndDescription";
 import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "./SlashCommandSubcommands";
 
-export type SlashCommandCallback = (interaction: CommandInteraction) => Promise<void>;
+export type SlashCommandCallback = (interaction: CommandInteraction) => Promise<unknown>;
 
 export enum CommandPermissionLevel {
   Owner = "Owner",
@@ -24,7 +24,7 @@ export type CommandGroup = "Administrative" | "Information" | "Roles" | "Utility
 
 export interface BuiltCommand {
   embed: MessageEmbed;
-  fn: (interaction: CommandInteraction) => Promise<void>;
+  fn: SlashCommandCallback;
 }
 @mix(SharedSlashCommandOptions, SharedNameAndDescription)
 export class SlashCommandBuilder {
