@@ -14,6 +14,7 @@ import { importCommands } from "./commands/index";
 import { CONTACT_MESSAGE } from "./constants";
 import { BuiltCommand, CommandPermissionLevel } from "./builders/SlashCommandBuilder";
 import { formatEmbed } from "./formatting";
+import { log } from "../shared/logger";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -68,15 +69,20 @@ export function initialize(): Promise<Client<true>> {
   return new Promise((res, rej) => {
     client
       .on("ready", async client => {
+        log("MAIN", "Logged in as " + client.user.tag);
+        log("MAIN", "Initalizing application commands...");
+
         try {
           const guild = await client.guilds.fetch(GUILD_ID);
           const globalGuildCommands = await guild.commands.fetch();
+
+          log("MAIN", "Deleting leftover commands...");
           await Promise.all(
             globalGuildCommands.filter(cmd => cmd.applicationId === client.application.id).map(cmd => cmd.delete()),
           );
+          log("MAIN", "Deleted leftover commands.");
 
           const commandBuilders = await importCommands();
-
           const ownerPermission: ApplicationCommandPermissions = {
             id: DISCORD_OWNER_ID,
             type: "USER",
@@ -97,6 +103,8 @@ export function initialize(): Promise<Client<true>> {
 
           const adminPermission = createRolePermission(CommandPermissionLevel.Administrator);
           const moderatorPermission = createRolePermission(CommandPermissionLevel.Moderator);
+
+          log("MAIN", "Building commands...");
           for (const builder of commandBuilders) {
             const appCmd = await guild.commands.create(builder.toJSON() as unknown as ApplicationCommandData);
 
@@ -132,9 +140,13 @@ export function initialize(): Promise<Client<true>> {
               }),
               fn: builder.callback,
             });
+
+            log("MAIN", "Built command " + builder.name);
           }
 
           client.on("interactionCreate", interactionCreate);
+
+          log("MAIN", "Application commands initalized. Ready for interaction.");
           res(client);
         } catch (e) {
           rej(e);

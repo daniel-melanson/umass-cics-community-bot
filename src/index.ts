@@ -102,9 +102,10 @@ async function cicsEventAnnouncement() {
   }
 }
 
+log("MAIN", "Logging in...");
 initialize()
   .then(client => {
-    log("MAIN", "Logged in as " + client.user.tag);
+    
     const localSchedule = (exp: string, func: () => void) =>
       cron.schedule(exp, func, {
         timezone: "America/New_York",
