@@ -1,8 +1,10 @@
 import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
 
 export default new SlashCommandBuilder()
-  .setName("help")
-  .setDescription("Provides general information about the bot and available commands.")
+  .setName("calendar")
+  .setDescription("Lists out academic events for the current in-session semester.")
+  .setGroup("Information")
+  .setDetails("")
   .setCallback(interaction => {
     return interaction.reply("Not implemented.");
   });

@@ -1,8 +1,9 @@
 import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
 
 export default new SlashCommandBuilder()
-  .setName("help")
-  .setDescription("Provides general information about the bot and available commands.")
+  .setName("tex")
+  .setDescription("Render a TeX expression into an image.")
+  .addStringOption(option => option.setName("tex").setDescription("The TeX expression to render.").setRequired(true))
   .setCallback(interaction => {
     return interaction.reply("Not implemented.");
   });

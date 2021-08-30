@@ -1,24 +1,28 @@
-import { Client, Guild, Intents, Interaction, Message, MessageEmbed, TextChannel } from "discord.js";
 import {
-  Routes,
-  APIVersion,
-  RESTPutAPIApplicationGuildCommandsJSONBody,
-  RESTPutAPIApplicationGuildCommandsResult,
-} from "discord-api-types/rest";
-import { REST } from "@discordjs/rest";
+  ApplicationCommandData,
+  Client,
+  Guild,
+  Intents,
+  Interaction,
+  Message,
+  MessageEmbed,
+  TextChannel,
+} from "discord.js";
 
-import { SLASH_COMMANDS } from "#discord/commands/slash/index";
-import { SlashCommand } from "#discord/commands/types";
+import { importCommands } from "#discord/commands/index";
+import { CONTACT_MESSAGE } from "#discord/constants";
+import { BuiltCommand } from "./commands/types";
+import { formatEmbed } from "./formatting";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-const guildCommands = new Map<string, SlashCommand>();
+const guildCommands = new Map<string, BuiltCommand>();
 async function interactionCreate(interaction: Interaction) {
   if (!interaction.isCommand()) return;
 
   const command = guildCommands.get(interaction.commandId);
   if (!command) {
-    interaction.reply("unexpected error occurred.");
+    interaction.reply("unexpected error occurred. " + CONTACT_MESSAGE);
   } else {
     command.fn(interaction);
   }
@@ -57,28 +61,59 @@ export function initialize(): Promise<Client<true>> {
 
   return new Promise((res, rej) => {
     client
-      .on("ready", client => {
+      .on("ready", async client => {
+        try {
+          const guild = await client.guilds.fetch(GUILD_ID);
+          const globalGuildCommands = await guild.commands.fetch();
+          await Promise.all(
+            globalGuildCommands.filter(cmd => cmd.applicationId === client.application.id).map(cmd => cmd.delete()),
+          );
+
+          const commandBuilders = await importCommands();
+          for (const builder of commandBuilders) {
+            const appCmd = await guild.commands.create(builder.toJSON() as unknown as ApplicationCommandData);
+
+            guildCommands.set(appCmd.id, {
+              embed: formatEmbed({}),
+              fn: builder.callback,
+            });
+          }
+
+          client.on("interactionCreate", interactionCreate);
+        } catch (e) {
+          rej(e);
+        }
+
+        /*
         client.guilds
           .fetch(GUILD_ID)
           .then(guild => guild.commands.fetch())
           .then(commands => Promise.all(commands.map(command => command.delete())))
-          .then(() => {
+          .then(() => importCommands())
+          .then(commands => {
             const rest = new REST({ version: APIVersion }).setToken(DISCORD_TOKEN);
 
-            return rest.put(Routes.applicationGuildCommands(client.user.id, GUILD_ID), {
-              body: SLASH_COMMANDS as RESTPutAPIApplicationGuildCommandsJSONBody,
-            });
+            return Promise.all([rest.put(Routes.applicationGuildCommands(client.user.id, GUILD_ID), {
+              body: commands.map(cmd => cmd.toJSON()) as RESTPutAPIApplicationGuildCommandsJSONBody,
+            }), new Promise(res => res(commands))]);
           })
           .then(result => {
-            const commandResult = result as RESTPutAPIApplicationGuildCommandsResult;
-            for (const i in commandResult) {
-              guildCommands.set(commandResult[i].id, SLASH_COMMANDS[i]);
+            const [restResult, commands] = result;
+            const guildCommandsResult = result as RESTPutAPIApplicationGuildCommandsResult;
+            for (const i in guildCommandsResult) {
+              const builtCommand = commands[i];
+
+              guildCommands.set(guildCommandsResult[i].id, {
+                info: {},
+                fn: builtCommand.fn,
+                patternListener: builtCommand.patternListener,
+              });
             }
 
             client.on("interactionCreate", interactionCreate);
             res(client);
-          })
-          .catch(rej);
+          });
+          .catch(rej);*/
       })
       .login(DISCORD_TOKEN);
   });

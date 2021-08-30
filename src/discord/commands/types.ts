@@ -1,10 +1,15 @@
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, MessageEmbed } from "discord.js";
 
-export interface SlashCommand extends RESTPostAPIApplicationCommandsJSONBody {
-  fn: (interaction: CommandInteraction) => void;
+export enum CommandPermissionLevel {
+  Owner = "Owner",
+  Administrator = "Administrator",
+  Moderator = "Moderator",
+  Member = "Member",
 }
 
-export interface PatternCommand {
-  
+export type CommandGroup = "Administrative" | "Information" | "Roles" | "Utility";
+
+export interface BuiltCommand {
+  embed: MessageEmbed;
+  fn: (interaction: CommandInteraction) => Promise<void>;
 }

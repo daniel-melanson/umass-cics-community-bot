@@ -1,22 +1,14 @@
-import { SlashCommand } from "#discord/commands/types";
-import { ApplicationCommandOptionType } from "discord-api-types";
+import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
 
-export const RoleCommand: SlashCommand = {
-  name: "role",
-  description: "Add or remove an assignable role.",
-  options: [
-    {
-      name: "add",
-      description: "Add a role to your role list.",
-      type: ApplicationCommandOptionType.Subcommand,
-    },
-    {
-      name: "remove",
-      description: "Remove a role from your role list.",
-      type: ApplicationCommandOptionType.Subcommand,
-    },
-  ],
-  fn: (interaction) => {
-    interaction.reply("this will handle some role things.");
-  }
-};
+export default new SlashCommandBuilder()
+  .setName("role")
+  .setDescription("Add or removed assignable roles")
+  .setGroup("Roles")
+  .setDetails("")
+  .addExamples(["/reset-classes"])
+  .addSubcommand(subcommand => subcommand.setName("get").setDescription("Add an assignable role."))
+  .addSubcommand(subcommand => subcommand.setName("remove").setDescription("Remove an assignable role."))
+  .addSubcommand(subcommand => subcommand.setName("try").setDescription("Temporarily gain a role (one day)."))
+  .setCallback(interaction => {
+    return interaction.reply("Not implemented.");
+  });
