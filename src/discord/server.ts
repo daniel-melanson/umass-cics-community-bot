@@ -76,11 +76,13 @@ export function initialize(): Promise<Client<true>> {
           const guild = await client.guilds.fetch(GUILD_ID);
           const globalGuildCommands = await guild.commands.fetch();
 
-          log("MAIN", "Deleting leftover commands...");
-          await Promise.all(
-            globalGuildCommands.filter(cmd => cmd.applicationId === client.application.id).map(cmd => cmd.delete()),
-          );
-          log("MAIN", "Deleted leftover commands.");
+          if (process.env["DISCORD_DELETE"]) {
+            log("MAIN", "Deleting leftover commands...");
+            await Promise.all(
+              globalGuildCommands.filter(cmd => cmd.applicationId === client.application.id).map(cmd => cmd.delete()),
+            );
+            log("MAIN", "Deleted leftover commands.");
+          }
 
           const commandBuilders = await importCommands();
           const ownerPermission: ApplicationCommandPermissions = {
@@ -146,7 +148,7 @@ export function initialize(): Promise<Client<true>> {
 
           client.on("interactionCreate", interactionCreate);
 
-          log("MAIN", "Application commands initalized. Ready for interaction.");
+          log("MAIN", "Application commands initialized. Ready for interaction.");
           res(client);
         } catch (e) {
           rej(e);
