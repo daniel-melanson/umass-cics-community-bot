@@ -11,9 +11,9 @@ import {
 } from "discord.js";
 
 import { importCommands } from "#discord/commands/index";
-import { CONTACT_MESSAGE, OWNER_ID } from "#discord/constants";
-import { BuiltCommand, CommandPermissionLevel } from "./commands/types";
-import { formatEmbed } from "./formatting";
+import { CONTACT_MESSAGE } from "#discord/constants";
+import { BuiltCommand, CommandPermissionLevel } from "#discord/commands/types";
+import { formatEmbed } from "#discord/formatting";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -60,9 +60,9 @@ export function initialize(): Promise<Client<true>> {
     return Promise.reject("Environment variable 'DISCORD_GUILD_ID' was not defined.");
   }
 
-  const OWNER_ID = process.env["OWNER_ID"];
-  if (!OWNER_ID) {
-    return Promise.reject("Environment variable 'OWNER_ID' was not defined.");
+  const DISCORD_OWNER_ID = process.env["DISCORD_OWNER_ID"];
+  if (!DISCORD_OWNER_ID) {
+    return Promise.reject("Environment variable 'DISCORD_OWNER_ID' was not defined.");
   }
 
   return new Promise((res, rej) => {
@@ -78,7 +78,7 @@ export function initialize(): Promise<Client<true>> {
           const commandBuilders = await importCommands();
 
           const ownerPermission: ApplicationCommandPermissions = {
-            id: OWNER_ID,
+            id: DISCORD_OWNER_ID,
             type: "USER",
             permission: true,
           };
