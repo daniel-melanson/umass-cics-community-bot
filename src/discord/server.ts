@@ -120,12 +120,15 @@ export function initialize(): Promise<Client<true>> {
               embed: formatEmbed({
                 title: `The ${builder.name} command`,
                 description: builder.details,
-                fields: [
-                  {
-                    name: "Examples",
-                    value: builder.examples.map(e => "`" + e + "`").join(", "),
-                  },
-                ],
+                fields:
+                  builder.examples.length > 0
+                    ? [
+                        {
+                          name: "Examples",
+                          value: builder.examples.map(e => "`" + e + "`").join(", "),
+                        },
+                      ]
+                    : undefined,
               }),
               fn: builder.callback,
             });
