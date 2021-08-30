@@ -1,4 +1,5 @@
 import {
+  ApplicationCommand,
   ApplicationCommandData,
   ApplicationCommandPermissions,
   Client,
@@ -12,7 +13,7 @@ import {
 
 import { importCommands } from "./commands/index";
 import { CONTACT_MESSAGE } from "./constants";
-import { BuiltCommand, CommandPermissionLevel } from "./builders/SlashCommandBuilder";
+import { BuiltCommand, CommandPermissionLevel, SlashCommandBuilder } from "./builders/SlashCommandBuilder";
 import { formatEmbed } from "./formatting";
 import { log } from "../shared/logger";
 
@@ -73,18 +74,22 @@ export function initialize(): Promise<Client<true>> {
         log("MAIN", "Initalizing application commands...");
 
         try {
+          log("MAIN", "Building commands...");
           const guild = await client.guilds.fetch(GUILD_ID);
-          const globalGuildCommands = await guild.commands.fetch();
+          const commandBuilderMap = await importCommands();
 
-          if (process.env["DISCORD_DELETE"]) {
-            log("MAIN", "Deleting leftover commands...");
-            await Promise.all(
-              globalGuildCommands.filter(cmd => cmd.applicationId === client.application.id).map(cmd => cmd.delete()),
-            );
-            log("MAIN", "Deleted leftover commands.");
+          const commandBuilderArray = Array.from(commandBuilderMap.values());
+          const applicationCommandCollection = await guild.commands.set(
+            commandBuilderArray.map(builder => builder.toJSON() as unknown as ApplicationCommandData),
+          );
+          log("MAIN", `Built ${applicationCommandCollection.size} commands.`);
+
+          log("MAIN", `Setting up permissions...`);
+          const applicationCommandMap = new Map<string, ApplicationCommand>();
+          for (const appCmd of applicationCommandCollection.values()) {
+            applicationCommandMap.set(appCmd.name, appCmd);
           }
 
-          const commandBuilders = await importCommands();
           const ownerPermission: ApplicationCommandPermissions = {
             id: DISCORD_OWNER_ID,
             type: "USER",
@@ -106,9 +111,8 @@ export function initialize(): Promise<Client<true>> {
           const adminPermission = createRolePermission(CommandPermissionLevel.Administrator);
           const moderatorPermission = createRolePermission(CommandPermissionLevel.Moderator);
 
-          log("MAIN", "Building commands...");
-          for (const builder of commandBuilders) {
-            const appCmd = await guild.commands.create(builder.toJSON() as unknown as ApplicationCommandData);
+          for (const builder of commandBuilderMap.values()) {
+            const appCmd = applicationCommandMap.get(builder.name)!;
 
             if (builder.permissionLevel !== CommandPermissionLevel.Member) {
               const permissionArray = [ownerPermission];
@@ -142,9 +146,8 @@ export function initialize(): Promise<Client<true>> {
               }),
               fn: builder.callback,
             });
-
-            log("MAIN", "Built command " + builder.name);
           }
+          log("MAIN", `Permissions set up`);
 
           client.on("interactionCreate", interactionCreate);
 

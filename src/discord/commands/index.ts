@@ -3,7 +3,7 @@ import fs from "fs";
 
 import { SlashCommandBuilder } from "../builders/SlashCommandBuilder";
 
-export async function importCommands(): Promise<Array<SlashCommandBuilder>> {
+export async function importCommands(): Promise<Map<string, SlashCommandBuilder>> {
   const builders = new Map<string, SlashCommandBuilder>();
 
   for (const folder of ["admin", "info", "roles", "util"]) {
@@ -49,5 +49,5 @@ export async function importCommands(): Promise<Array<SlashCommandBuilder>> {
     throw new Error("Help command not found.");
   }
 
-  return builderArray;
+  return builders;
 }
