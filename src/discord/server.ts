@@ -12,7 +12,7 @@ import {
 
 import { importCommands } from "#discord/commands/index";
 import { CONTACT_MESSAGE } from "#discord/constants";
-import { BuiltCommand, CommandPermissionLevel } from "#discord/commands/types";
+import { BuiltCommand, CommandPermissionLevel } from "#discord/builders/SlashCommandBuilder";
 import { formatEmbed } from "#discord/formatting";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });

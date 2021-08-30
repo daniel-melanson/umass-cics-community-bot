@@ -1,6 +1,5 @@
-import { CommandGroup, CommandPermissionLevel } from "../commands/types";
 import type { APIApplicationCommandOption, RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v9";
-import { CommandInteraction, Message } from "discord.js";
+import { CommandInteraction, MessageEmbed } from "discord.js";
 import { mix } from "ts-mixer";
 import {
   assertReturnOfBuilder,
@@ -14,6 +13,19 @@ import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } fro
 
 export type SlashCommandCallback = (interaction: CommandInteraction) => Promise<void>;
 
+export enum CommandPermissionLevel {
+  Owner = "Owner",
+  Administrator = "Administrator",
+  Moderator = "Moderator",
+  Member = "Member",
+}
+
+export type CommandGroup = "Administrative" | "Information" | "Roles" | "Utility";
+
+export interface BuiltCommand {
+  embed: MessageEmbed;
+  fn: (interaction: CommandInteraction) => Promise<void>;
+}
 @mix(SharedSlashCommandOptions, SharedNameAndDescription)
 export class SlashCommandBuilder {
   /**
