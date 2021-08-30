@@ -3,9 +3,6 @@ import fs from "fs";
 
 import { SlashCommandBuilder } from "../builders/SlashCommandBuilder";
 
-const __filename = import.meta.url.replace("file:/", "/");
-const __dirname = __filename.substring(0, __filename.lastIndexOf("/") + 1);
-
 export async function importCommands(): Promise<Array<SlashCommandBuilder>> {
   const builders = new Map<string, SlashCommandBuilder>();
 
@@ -19,7 +16,7 @@ export async function importCommands(): Promise<Array<SlashCommandBuilder>> {
 
       let commandModule;
       try {
-        commandModule = await import(fullPath);
+        commandModule = require(fullPath);
       } catch (e) {
         throw new Error(`Failed to import command: ${fullPath}\n\n${e}`);
       }
