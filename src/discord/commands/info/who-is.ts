@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "#discord/builders/SlashCommandBuilder";
+import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
 
 export default new SlashCommandBuilder()
   .setName("who-is")

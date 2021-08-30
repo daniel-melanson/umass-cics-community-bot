@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, CommandPermissionLevel } from "#discord/builders/SlashCommandBuilder";
+import { SlashCommandBuilder, CommandPermissionLevel } from "../../builders/SlashCommandBuilder";
 
 export default new SlashCommandBuilder()
   .setName("add-course")

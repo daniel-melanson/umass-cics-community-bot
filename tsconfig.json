@@ -9,11 +9,6 @@
     "strict": true,
     "moduleResolution": "node",
     "baseUrl": "./src",
-    "paths": {
-      "#discord/*": ["discord/*"],
-      "#umass/*": ["umass/*"],
-      "#shared/*": ["shared/*"]
-    },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true        

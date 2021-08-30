@@ -2,7 +2,7 @@ import { FilterOperations } from "mongodb";
 
 import { connectToCollection } from "./database";
 import { Course, CourseSubject } from "./types";
-import { sanitize } from "#shared/stringUtil";
+import { sanitize } from "../shared/stringUtil";
 
 export const SHORTENED_SUBJECT_REGEXP_STRING =
   "(CS|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS|COMP SCI)";

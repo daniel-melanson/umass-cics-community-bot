@@ -1,5 +1,5 @@
-import { connectToCollection } from "#umass/database";
-import { Semester } from "#umass/types";
+import { connectToCollection } from "./database";
+import { Semester } from "./types";
 
 /**
  * Returns the current in session semester based off of today's date.

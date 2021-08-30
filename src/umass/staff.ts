@@ -1,6 +1,6 @@
 import { connectToCollection } from "./database";
 import { Staff } from "./types";
-import { sanitize } from "#shared/stringUtil";
+import { sanitize } from "../shared/stringUtil";
 
 interface ScoredStaff extends Staff {
   _score: number;

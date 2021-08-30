@@ -12,7 +12,7 @@ import {
   MessageEmbed,
 } from "discord.js";
 
-import { UMASS_MAROON } from "#discord/constants";
+import { UMASS_MAROON } from "./constants";
 
 interface EmbedOptions {
   title?: string;

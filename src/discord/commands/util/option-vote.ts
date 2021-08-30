@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "#discord/builders/SlashCommandBuilder";
+import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
 
 let optionVoteBuilder = new SlashCommandBuilder()
   .setName("option-vote")

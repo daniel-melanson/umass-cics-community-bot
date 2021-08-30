@@ -10,10 +10,10 @@ import {
   TextChannel,
 } from "discord.js";
 
-import { importCommands } from "#discord/commands/index";
-import { CONTACT_MESSAGE } from "#discord/constants";
-import { BuiltCommand, CommandPermissionLevel } from "#discord/builders/SlashCommandBuilder";
-import { formatEmbed } from "#discord/formatting";
+import { importCommands } from "./commands/index";
+import { CONTACT_MESSAGE } from "./constants";
+import { BuiltCommand, CommandPermissionLevel } from "./builders/SlashCommandBuilder";
+import { formatEmbed } from "./formatting";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 

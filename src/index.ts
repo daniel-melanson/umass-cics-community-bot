@@ -1,11 +1,11 @@
 import { config } from "dotenv";
 import cron from "node-cron";
 
-import { initialize, announce } from "#discord/server";
-import { formatEmbed } from "#discord/formatting";
-import { getInSessionSemester, getCurrentSemesters } from "#umass/calendar";
-import { getCICSEvents } from "#umass/events";
-import { error, log } from "#shared/logger";
+import { initialize, announce } from "./discord/server";
+import { formatEmbed } from "./discord/formatting";
+import { getInSessionSemester, getCurrentSemesters } from "./umass/calendar";
+import { getCICSEvents } from "./umass/events";
+import { error, log } from "./shared/logger";
 
 config();
 
