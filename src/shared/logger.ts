@@ -1,10 +1,18 @@
 type Scope = "MAIN" | "UMASS" | "COMMAND" | "DISCORD";
 
+function now() {
+  return new Date().toLocaleString() + " - ";
+}
+
 export function error(scope: Scope, msg: string, ...dump: Array<unknown>): void {
-  console.error(`ERROR[${scope}] ${msg}.\n${dump.join("-".repeat(process.stdout.columns))}`);
+  console.error(now() + `ERROR[${scope}] ${msg}.\n${dump.join("-".repeat(process.stdout.columns) + "\n")}`);
   process.exit(-1);
 }
 
 export function log(scope: Scope, msg: string): void {
-  console.log(`LOG[${scope}] ` + msg);
+  console.log(now() + `LOG[${scope}] ` + msg);
+}
+
+export function warn(scope: Scope, msg: string, ...dump: Array<unknown>): void {
+  console.warn(now() + `WARN[${scope}] ${msg}.\n${dump.join("-".repeat(process.stdout.columns) + "\n")}`);
 }
