@@ -72,7 +72,7 @@ export function initialize(): Promise<Client<true>> {
   return new Promise((res, rej) => {
     client
       .on("ready", async client => {
-        log("MAIN", "Logged in as " + client.user.tag);
+        log("MAIN", `Logged in as ${client.user.tag}.`);
         log("MAIN", "Initalizing application commands...");
 
         try {
@@ -159,7 +159,7 @@ export function initialize(): Promise<Client<true>> {
               fn: builder.callback,
             });
           }
-          log("MAIN", `Permissions set up`);
+          log("MAIN", `Permissions set up.`);
 
           client.on("interactionCreate", interactionCreate);
 
