@@ -14,7 +14,7 @@ function splitFilter<T>(array: Array<T>, test: (t: T) => boolean) {
 
 const courseNumberRegExp = /\d{3}[a-z]*/i;
 const channelSorter = (a: GuildChannel, b: GuildChannel) => a.name.localeCompare(b.name);
-export async function sortCategory(category: CategoryChannel) {
+async function sortCategory(category: CategoryChannel) {
   const [generalChannels, courseChannels] = splitFilter(
     Array.from(category.children.values()),
     child => !courseNumberRegExp.test(child.name),
