@@ -2,6 +2,7 @@ import {
   ApplicationCommand,
   ApplicationCommandData,
   ApplicationCommandPermissions,
+  BitField,
   Client,
   Guild,
   Intents,
@@ -13,9 +14,10 @@ import {
 
 import { importCommands } from "./commands/index";
 import { CONTACT_MESSAGE } from "./constants";
-import { BuiltCommand, CommandPermissionLevel, SlashCommandBuilder } from "./builders/SlashCommandBuilder";
+import { BuiltCommand, CommandPermissionLevel } from "./builders/SlashCommandBuilder";
 import { formatEmbed } from "./formatting";
 import { log } from "../shared/logger";
+import { isAssignable } from "./roles";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -76,6 +78,16 @@ export function initialize(): Promise<Client<true>> {
         try {
           log("MAIN", "Building commands...");
           const guild = await client.guilds.fetch(GUILD_ID);
+
+          if (process.env["DISCORD_CLEAR_PERMISSIONS"]) {
+            const guildRoleCollection = await guild.roles.fetch();
+            for (const role of guildRoleCollection.values()) {
+              if (isAssignable(role.name)) {
+                await role.setPermissions(0n);
+              }
+            }
+          }
+
           const commandBuilderMap = await importCommands();
 
           const commandBuilderArray = Array.from(commandBuilderMap.values());
