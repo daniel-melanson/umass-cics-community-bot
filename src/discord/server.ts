@@ -16,8 +16,9 @@ import { importCommands } from "./commands/index";
 import { CONTACT_MESSAGE } from "./constants";
 import { BuiltCommand, CommandPermissionLevel } from "./builders/SlashCommandBuilder";
 import { formatEmbed } from "./formatting";
-import { log } from "../shared/logger";
+import { log, warn } from "../shared/logger";
 import { isAssignable } from "./roles";
+import { CommandError } from "./commands/CommandError";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -27,9 +28,18 @@ async function interactionCreate(interaction: Interaction) {
 
   const command = guildCommands.get(interaction.commandId);
   if (!command) {
-    interaction.reply("unexpected error occurred. " + CONTACT_MESSAGE);
+    interaction.reply("unexpected error occurred. No command found." + CONTACT_MESSAGE);
   } else {
-    command.fn(interaction);
+    try {
+      await command.fn(interaction);
+    } catch (e) {
+      if (e instanceof CommandError) {
+        interaction.reply(e.message);
+      } else {
+        warn("COMMAND", "Uncaught error.", e);
+        interaction.reply("I encountered an unexpected error. You should never see this message." + CONTACT_MESSAGE);
+      }
+    }
   }
 }
 

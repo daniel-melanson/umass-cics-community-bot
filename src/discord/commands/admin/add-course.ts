@@ -1,3 +1,4 @@
+import { getCourseIdFromQuery } from "../../../umass/courses";
 import { SlashCommandBuilder, CommandPermissionLevel } from "../../builders/SlashCommandBuilder";
 
 export default new SlashCommandBuilder()
@@ -14,6 +15,9 @@ export default new SlashCommandBuilder()
       .setDescription("The course title (Ex. Programming with Data Structures).")
       .setRequired(true),
   )
-  .setCallback(interaction => {
-    return interaction.reply("Not implemented.");
+  .setCallback(async interaction => {
+    const id = getCourseIdFromQuery(interaction.options.getString("id", true));
+    if (!id) return interaction.followUp("That does not seem to be a valid course id.");
+
+    const guild = interaction.guild!;
   });
