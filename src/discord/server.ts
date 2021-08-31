@@ -36,7 +36,6 @@ async function interactionCreate(interaction: Interaction) {
         interaction.reply(e.message);
       } else {
         warn("COMMAND", "Uncaught error.", e);
-        interaction.reply("I encountered an unexpected error. You should never see this message." + CONTACT_MESSAGE);
       }
     }
   }
