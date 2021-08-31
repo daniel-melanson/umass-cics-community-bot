@@ -2,7 +2,6 @@ import {
   ApplicationCommand,
   ApplicationCommandData,
   ApplicationCommandPermissions,
-  BitField,
   Client,
   Guild,
   Intents,
