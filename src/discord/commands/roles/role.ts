@@ -21,7 +21,7 @@ function buildRoleSubcommand(name: string, description: string) {
 
 export default new SlashCommandBuilder()
   .setName("role")
-  .setDescription("Add or remove roles.")
+  .setDescription("Add or remove roles to your role list.")
   .setGroup("Roles")
   .setDetails("")
   .addExamples(["/role get role: @CS 187"])
