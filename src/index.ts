@@ -2,10 +2,10 @@ import { config } from "dotenv";
 import cron from "node-cron";
 
 import { initialize, announce } from "./discord/server";
-import { formatEmbed } from "./discord/formatting";
 import { getInSessionSemester, getCurrentSemesters } from "./umass/calendar";
 import { getCICSEvents } from "./umass/events";
 import { error, log } from "./shared/logger";
+import { MessageEmbedBuilder } from "./discord/builders/MessageEmbedBuilder";
 
 config();
 
@@ -26,7 +26,7 @@ async function academicCalendarAnnouncement() {
         if (sameDay(today, date)) {
           await announce(
             "university",
-            formatEmbed({
+            new MessageEmbedBuilder({
               title: `${semester.season} ${semester.year} Academic Calendar Notice`,
               description: event.description,
             }),
@@ -34,7 +34,7 @@ async function academicCalendarAnnouncement() {
         } else if (sameDay(tomorrow, date)) {
           await announce(
             "general",
-            formatEmbed({
+            new MessageEmbedBuilder({
               title: `${semester.season} ${semester.year} Academic Calendar Notice (TOMORROW)`,
               description: event.description,
             }),
@@ -89,7 +89,7 @@ async function cicsEventAnnouncement() {
 
       await announce(
         "cics-events",
-        formatEmbed({
+        new MessageEmbedBuilder({
           title: event.title,
           url: event.link,
           description: event.body,

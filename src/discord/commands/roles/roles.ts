@@ -1,4 +1,3 @@
-import { formatEmbed } from "../../formatting";
 import {
   isAssignable,
   isConcentration,
@@ -13,6 +12,7 @@ import {
 } from "../../roles";
 import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
 import { oneLine } from "../../../shared/stringUtil";
+import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
 
 export default new SlashCommandBuilder()
   .setName("roles")
@@ -31,14 +31,16 @@ export default new SlashCommandBuilder()
 
     return interaction.reply({
       embeds: [
-        formatEmbed({
-          title: "Obtain and Remove Roles",
-          description:
+        new MessageEmbedBuilder()
+          .setTitle("Obtain and Remove Roles")
+          .setDescription(
             oneLine(`We have a [website](https://discord.ltseng.me) where you can obtain and remove roles to access different features on this server. 
       You will need to sign in with your Discord account. If you want to quickly manage you roles you may use \`/role\` slash command:
       \`/role (add|remove|try) role:<role-name>\` command. Example: \`/role get role: @CS 121\`
       `),
-          fields: [
+          )
+          .setUser(interaction.client.user!)
+          .setFields([
             {
               name: "Pronouns",
               value: list(isPronoun),
@@ -75,8 +77,7 @@ export default new SlashCommandBuilder()
               name: "Miscellaneous",
               value: list(isMisc),
             },
-          ],
-        }),
+          ]),
       ],
     });
   });

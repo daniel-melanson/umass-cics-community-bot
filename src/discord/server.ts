@@ -14,10 +14,10 @@ import {
 import { importCommands } from "./commands/index";
 import { CONTACT_MESSAGE } from "./constants";
 import { BuiltCommand, CommandPermissionLevel } from "./builders/SlashCommandBuilder";
-import { formatEmbed } from "./formatting";
 import { log, warn } from "../shared/logger";
 import { isAssignable } from "./roles";
 import { CommandError } from "./commands/CommandError";
+import { MessageEmbedBuilder } from "./builders/MessageEmbedBuilder";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -89,7 +89,7 @@ export function initialize(): Promise<Client<true>> {
 
           if (process.env["DISCORD_CLEAR_PERMISSIONS"]) {
             const guildRoleCollection = await guild.roles.fetch();
-            for (const role of guildRoleCollection.values()) {
+            for (const [, role] of guildRoleCollection) {
               if (isAssignable(role.name)) {
                 await role.setPermissions(0n);
               }
@@ -106,7 +106,7 @@ export function initialize(): Promise<Client<true>> {
 
           log("MAIN", `Setting up permissions...`);
           const applicationCommandMap = new Map<string, ApplicationCommand>();
-          for (const appCmd of applicationCommandCollection.values()) {
+          for (const [, appCmd] of applicationCommandCollection) {
             applicationCommandMap.set(appCmd.name, appCmd);
           }
 
@@ -131,7 +131,7 @@ export function initialize(): Promise<Client<true>> {
           const adminPermission = createRolePermission(CommandPermissionLevel.Administrator);
           const moderatorPermission = createRolePermission(CommandPermissionLevel.Moderator);
 
-          for (const builder of commandBuilderMap.values()) {
+          for (const [, builder] of commandBuilderMap) {
             const appCmd = applicationCommandMap.get(builder.name)!;
 
             if (builder.permissionLevel !== CommandPermissionLevel.Member) {
@@ -151,7 +151,7 @@ export function initialize(): Promise<Client<true>> {
             }
 
             guildCommands.set(appCmd.id, {
-              embed: formatEmbed({
+              embed: new MessageEmbedBuilder({
                 title: `The ${builder.name} command`,
                 description: builder.details,
                 fields:
