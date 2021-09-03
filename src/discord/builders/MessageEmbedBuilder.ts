@@ -12,7 +12,7 @@ export class MessageEmbedBuilder extends MessageEmbed {
 
   setUser(userOrMember: User | GuildMember) {
     const user = "nickname" in userOrMember ? userOrMember.user : userOrMember;
-    const avatar = user.avatar || user.defaultAvatarURL;
+    const avatar = user.avatarURL() || user.defaultAvatarURL;
 
     let name = user.username;
     if ("nickname" in userOrMember && userOrMember.nickname) {
