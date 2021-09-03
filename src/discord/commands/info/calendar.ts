@@ -1,4 +1,4 @@
-import { MessageEmbedBuilder } from "discord/builders/MessageEmbedBuilder";
+import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
 import { getInSessionSemester } from "../../../umass/calendar";
 import { capitalize } from "../../../shared/stringUtil";
 import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
