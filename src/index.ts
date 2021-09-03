@@ -1,13 +1,13 @@
 import { config } from "dotenv";
 import cron from "node-cron";
 
+config();
+
 import { initialize, announce } from "./discord/server";
 import { getInSessionSemester, getCurrentSemesters } from "./umass/calendar";
 import { getCICSEvents } from "./umass/events";
 import { error, log } from "./shared/logger";
 import { MessageEmbedBuilder } from "./discord/builders/MessageEmbedBuilder";
-
-config();
 
 const sameDay = (d0: Date, d1: Date) =>
   d0.getUTCDate() === d1.getUTCDate() &&

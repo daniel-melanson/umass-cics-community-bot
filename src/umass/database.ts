@@ -1,6 +1,6 @@
 import { exec } from "child_process";
 
-import Mongo from "mongodb";
+import { Collection, Db, MongoClient } from "mongodb";
 
 import { Staff, Semester, Course } from "./types";
 
@@ -13,8 +13,8 @@ const DAY = HOUR * 24;
 const UPDATE_TIME = DAY * 7;
 
 let currentDatabase = "umass_0";
-async function connectToDatabase<T>(callback: (db: Mongo.Db) => Promise<T>): Promise<T> {
-  const client = await new Mongo.MongoClient(CONNECTION_STRING.replace("DATABASE", currentDatabase)).connect();
+async function connectToDatabase<T>(callback: (db: Db) => Promise<T>): Promise<T> {
+  const client = await new MongoClient(CONNECTION_STRING.replace("DATABASE", currentDatabase)).connect();
 
   const r = await callback(client.db(currentDatabase));
 
@@ -34,14 +34,14 @@ type UMassCollectionData<T> = T extends "staff"
 
 export function connectToCollection<T extends UMassCollection, U>(
   collection: T,
-  callback: (collection: Mongo.Collection<UMassCollectionData<T>>) => Promise<U>,
+  callback: (collection: Collection<UMassCollectionData<T>>) => Promise<U>,
 ): Promise<U> {
   return connectToDatabase(db => callback(db.collection(collection)));
 }
 
 function updateDatabase(_recursive = false): void {
   const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
-  const client = new Mongo.MongoClient(CONNECTION_STRING);
+  const client = new MongoClient(CONNECTION_STRING);
 
   console.log("[DATABASE] Setting up update...");
   client

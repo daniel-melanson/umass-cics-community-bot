@@ -1,4 +1,24 @@
+import { CourseSubject } from "../../../umass/types";
+import { getCoursesFromSubject } from "../../../umass/courses";
 import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
+import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
+
+function divideLines(lines: Array<string>) {
+  const groups = [];
+
+  let curr = "";
+  for (const line of lines) {
+    const join = curr + line + "\n";
+    if (join.length < 2000) {
+      curr = join;
+    } else {
+      groups.push(join);
+      curr = "";
+    }
+  }
+
+  return groups;
+}
 
 export default new SlashCommandBuilder()
   .setName("courses")
@@ -11,10 +31,10 @@ export default new SlashCommandBuilder()
       .setName("subject")
       .setDescription("The subject of the course.")
       .addChoices([
-        ["Computer Science", "CS"],
+        ["Computer Science", "COMPSCI"],
         ["College of Information and Computer Science", "CICS"],
         ["Mathematics", "MATH"],
-        ["Statistics", "STAT"],
+        ["Statistics", "STATISTIC"],
       ])
       .setRequired(true),
   )
@@ -23,16 +43,74 @@ export default new SlashCommandBuilder()
       .setName("level")
       .setDescription("The level of the course.")
       .addChoices([
-        ["100 Level", "100"],
-        ["200 Level", "200"],
-        ["300 Level", "300"],
-        ["400 Level", "400"],
-        ["500 Level", "500"],
-        ["600 Level", "600"],
-        ["700 Level", "700"],
-        ["800 Level", "800"],
+        ["100 Level", "1"],
+        ["200 Level", "2"],
+        ["300 Level", "3"],
+        ["400 Level", "4"],
+        ["500 Level", "5"],
+        ["600 Level", "6"],
+        ["700 Level", "7"],
+        ["800 Level", "8"],
       ]),
   )
-  .setCallback(interaction => {
-    return interaction.reply("Not implemented.");
+  .setCallback(async interaction => {
+    const options = interaction.options;
+    const subject = options.getString("subject", true);
+    const level = options.getString("level") || undefined;
+
+    let courses;
+    try {
+      courses = await getCoursesFromSubject(subject as CourseSubject, level);
+    } catch (e) {
+      console.log("[DATABASE]", e);
+      return interaction.reply("I encountered an error while connecting to the database. Try again later.");
+    }
+
+    if (level) {
+      const messages = divideLines(
+        [`UMass ${subject} ${level}00 Level Courses\n\n`].concat(
+          courses.sort((a, b) => a.id.localeCompare(b.id)).map(course => `**${course.id}**: ${course.title}`),
+        ),
+      );
+
+      const channel = interaction.channel!;
+      for (const message in messages) {
+        await channel.send(message);
+      }
+    } else {
+      const fields = [];
+      const idList = courses.map(course => course.id.substring(subject.length + 1)).sort((a, b) => b.localeCompare(a));
+
+      const groupRegexList = ["1", "2", "3", "4", "5", "[6-9]"];
+      for (const regexStr of groupRegexList) {
+        const filtered = [];
+        const groupExp = new RegExp(regexStr);
+        while (idList.length > 0 && idList[idList.length - 1].match(groupExp)) {
+          filtered.push(idList.pop()!);
+        }
+
+        if (filtered.length > 0) {
+          fields.push({
+            name: regexStr.length === 1 ? regexStr + "00 Level" : "600+ Level",
+            value: filtered.join(", "),
+          });
+        }
+      }
+
+      if (idList.length > 0) {
+        fields.push({
+          name: "Honors Colloquium",
+          value: idList.join(", "),
+        });
+      }
+
+      return interaction.reply({
+        embeds: [
+          new MessageEmbedBuilder({
+            title: `UMass ${subject} Courses`,
+            fields: fields,
+          }),
+        ],
+      });
+    }
   });
