@@ -20,7 +20,7 @@ async function doReply(interaction: CommandInteraction | MessageComponentInterac
     }
   }
 
-  let reply = await interaction.reply({
+  await interaction.reply({
     embeds: [
       new MessageEmbedBuilder({
         title: `${course.id}: ${course.title}`,
@@ -31,14 +31,6 @@ async function doReply(interaction: CommandInteraction | MessageComponentInterac
     ],
     fetchReply: true,
   });
-
-  if (!(interaction.channel as TextChannel).name.match(/bot-commands/)) {
-    if (!("delete" in reply)) {
-      reply = await interaction.channel!.messages.fetch(reply.id);
-    }
-
-    setTimeout(() => (reply as Message).delete(), 30000);
-  }
 }
 
 export default new SlashCommandBuilder()
