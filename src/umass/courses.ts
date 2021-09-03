@@ -42,7 +42,7 @@ export function getCourseIdFromQuery(query: string): string | undefined {
   return `${getExactCourseSubject(match[1])} ${match[2].toUpperCase()}`;
 }
 
-interface SearchResult {
+export interface SearchResult {
   error?: string;
   result: Array<Course>;
 }
@@ -81,7 +81,7 @@ export async function searchCourses(query: string): Promise<SearchResult> {
   );
 
   if (aggregateResult && aggregateResult.length > 0) {
-    if (aggregateResult.length > 5) {
+    if (aggregateResult.length > 10) {
       return {
         error: "too many courses found; try narrowing down your search.",
         result: [],
