@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
+import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
 
 let optionVoteBuilder = new SlashCommandBuilder()
   .setName("option-vote")
@@ -8,15 +9,49 @@ let optionVoteBuilder = new SlashCommandBuilder()
   );
 
 const REACTION_EMOJIS = ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫"];
-const REACTION_EMOJI_LETTERS = ["A", "B", "C", "D", "E", "F"];
 
-for (const [i, letter] of REACTION_EMOJI_LETTERS.entries()) {
+for (let i = 0; i < REACTION_EMOJIS.length; i++) {
   optionVoteBuilder = optionVoteBuilder.addStringOption(option =>
     option
-      .setName("choice-" + letter.toLowerCase())
-      .setDescription(`The ${letter} choice.`)
-      .setRequired(i < 3),
+      .setName("choice-" + i)
+      .setDescription(`A response to the answer.`)
+      .setRequired(i < 2),
   );
 }
 
-export default optionVoteBuilder.setCallback(interaction => interaction.reply("Not implemented"));
+export default optionVoteBuilder.setCallback(async interaction => {
+  const options = interaction.options;
+
+  const choices = [];
+  for (let i = 0; i < REACTION_EMOJIS.length; i++) {
+    const choice = options.getString("choice-" + i);
+
+    if (choice) {
+      choices.push(choice);
+    }
+  }
+
+  const fields = [];
+  for (let i = 0; i < choices.length; i++) {
+    fields.push({
+      name: `${REACTION_EMOJIS[i]} **${choices[i].trim()}**`,
+      value: "‎‎",
+    });
+  }
+
+  await interaction.reply({
+    embeds: [
+      new MessageEmbedBuilder()
+        .setTitle(options.getString("question", true))
+        .setUser(interaction.user)
+        .setDescription("Please react to this message with your response.")
+        .setFields(fields),
+    ],
+  });
+
+  const replyish = await interaction.fetchReply();
+  const reply = await interaction.channel!.messages.fetch(replyish.id);
+  for (let i = 0; i < choices.length; i++) {
+    await reply.react(REACTION_EMOJIS[i]);
+  }
+});
