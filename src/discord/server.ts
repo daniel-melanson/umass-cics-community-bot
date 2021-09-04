@@ -4,10 +4,12 @@ import {
   ApplicationCommandPermissions,
   Client,
   Guild,
+  GuildMember,
   Intents,
   Interaction,
   Message,
   MessageEmbed,
+  MessageOptions,
   TextChannel,
 } from "discord.js";
 
@@ -18,8 +20,14 @@ import { log, warn } from "../shared/logger";
 import { isAssignable } from "./roles";
 import { CommandError } from "./commands/CommandError";
 import { MessageEmbedBuilder } from "./builders/MessageEmbedBuilder";
+import { oneLine } from "../shared/stringUtil";
+import { createRoleEmbed } from "./commands/roles/roles";
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
+const DISCORD_GUILD_ID = process.env["DISCORD_GUILD_ID"];
+const DISCORD_OWNER_ID = process.env["DISCORD_GUILD_ID"];
+
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS] });
 
 const guildCommands = new Map<string, BuiltCommand>();
 async function interactionCreate(interaction: Interaction) {
@@ -27,7 +35,7 @@ async function interactionCreate(interaction: Interaction) {
 
   const command = guildCommands.get(interaction.commandId);
   if (!command) {
-    interaction.reply("unexpected error occurred. No command found." + CONTACT_MESSAGE);
+    interaction.reply("Unexpected error occurred. No command found." + CONTACT_MESSAGE);
   } else {
     try {
       await command.fn(interaction);
@@ -46,9 +54,83 @@ function findChannel(guild: Guild, name: string) {
   return guild.channels.cache.find(x => x.type === "GUILD_TEXT" && !!x.name.match(nameRegExp)) as TextChannel;
 }
 
+async function guildMemberAdd(member: GuildMember) {
+  if (member.guild.id !== DISCORD_GUILD_ID) return;
+
+  const id = member.id;
+
+  await member.setNickname("~ real name please");
+  await announce(
+    "bot-log",
+    new MessageEmbedBuilder({
+      description: oneLine(`<@${member.user.id}> has joined.
+						Their account was created on ${member.user.createdAt.toLocaleDateString()}`),
+    }).setUser(member.user),
+  );
+
+  setTimeout(async () => {
+    let updated;
+    try {
+      updated = await member.guild.members.fetch({ user: id, force: true });
+    } catch (e) {
+      return;
+    }
+
+    if (updated.nickname !== "real name please" && updated.roles.cache.size > 1) return;
+
+    const get = (name: string) => {
+      const channel = findChannel(member.guild, `how-to-${name}`);
+      if (!channel) return "";
+
+      return `<#${channel.id}>`;
+    };
+
+    await announce("bot-commands", {
+      content: `Hey there, <@${member.id}>! It seems like you don't have any roles. Make sure to update your nickname if you have not already.`,
+      embeds: [
+        new MessageEmbedBuilder({
+          title: `Welcome to the Server!`,
+          fields: [
+            {
+              name: "Getting Familiar With The Server",
+              value: oneLine(`If you are unfamiliar with the server,
+										make sure to read the how-to channels (${get("roles")}, ${get("notifications")})`),
+            },
+          ],
+        }),
+      ],
+    });
+    announce("bot-commands", createRoleEmbed(updated.guild));
+  }, 1000 * 60);
+
+  setTimeout(async () => {
+    let updated;
+    try {
+      updated = await member.guild.members.fetch({ user: id, force: true });
+    } catch (e) {
+      return;
+    }
+
+    if (updated.nickname === "~ real name please") {
+      announce(
+        "bot-commands",
+        oneLine(`<@${member.id}> you still have not updated your nickname.
+						Here are some steps if you are lost: 
+						(**Desktop**) Click on \`UMass CICS Community\`
+						in bold in the top left of your screen.
+						Press \`Change Nickname\`, enter your identifier, and \`Save\`.`) +
+          `\n\n` +
+          oneLine(`(**Mobile**) Swipe to the right to display your sever list.
+						Press the three vertically aligned dots next to \`UMass CICS Community\`.
+						Press \`Change Nickname\`, enter your identifier, and \`Save\`.`),
+      );
+    }
+  }, 1000 * 60 * 5);
+}
+
 export async function announce(
   name: "general" | "university" | "bot-log" | "bot-commands" | "cics-events",
-  message: string | MessageEmbed,
+  message: string | MessageEmbed | MessageOptions,
 ): Promise<Message> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const guild = await client.guilds.fetch(process.env["DISCORD_GUILD_ID"]!);
@@ -62,17 +144,14 @@ export async function announce(
 }
 
 export function initialize(): Promise<Client<true>> {
-  const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
   if (!DISCORD_TOKEN) {
     return Promise.reject("Environment variable 'DISCORD_TOKEN' was not defined.");
   }
 
-  const GUILD_ID = process.env["DISCORD_GUILD_ID"];
-  if (!GUILD_ID) {
+  if (!DISCORD_GUILD_ID) {
     return Promise.reject("Environment variable 'DISCORD_GUILD_ID' was not defined.");
   }
 
-  const DISCORD_OWNER_ID = process.env["DISCORD_OWNER_ID"];
   if (!DISCORD_OWNER_ID) {
     return Promise.reject("Environment variable 'DISCORD_OWNER_ID' was not defined.");
   }
@@ -85,7 +164,7 @@ export function initialize(): Promise<Client<true>> {
 
         try {
           log("MAIN", "Building commands...");
-          const guild = await client.guilds.fetch(GUILD_ID);
+          const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
 
           if (process.env["DISCORD_CLEAR_PERMISSIONS"]) {
             const guildRoleCollection = await guild.roles.fetch();
@@ -170,6 +249,7 @@ export function initialize(): Promise<Client<true>> {
           log("MAIN", `Permissions set up.`);
 
           client.on("interactionCreate", interactionCreate);
+          client.on("guildMemberAdd", guildMemberAdd);
 
           log("MAIN", "Application commands initialized. Ready for interaction.");
           res(client);
