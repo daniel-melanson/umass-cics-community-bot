@@ -2,6 +2,7 @@ import { CourseSubject } from "../../../umass/types";
 import { getCoursesFromSubject } from "../../../umass/courses";
 import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
+import { warn } from "../../../shared/logger";
 
 function divideLines(lines: Array<string>) {
   const groups = [];
@@ -62,7 +63,7 @@ export default new SlashCommandBuilder()
     try {
       courses = await getCoursesFromSubject(subject as CourseSubject, level);
     } catch (e) {
-      console.log("[DATABASE]", e);
+      warn("COMMAND", "Failed to get courses from subject.", e);
       return interaction.reply("I encountered an error while connecting to the database. Try again later.");
     }
 
