@@ -87,7 +87,7 @@ export default new SlashCommandBuilder()
           {
             id: guildRoleManager.everyone.id,
             type: "role",
-            allow: "VIEW_CHANNEL",
+            deny: "VIEW_CHANNEL",
           },
           {
             id: role.id,
