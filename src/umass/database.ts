@@ -1,6 +1,7 @@
 import { exec } from "child_process";
 
 import { Collection, Db, MongoClient } from "mongodb";
+import { log, warn } from "../shared/logger";
 
 import { Staff, Semester, Course } from "./types";
 
@@ -43,7 +44,7 @@ function updateDatabase(_recursive = false): void {
   const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
   const client = new MongoClient(CONNECTION_STRING);
 
-  console.log("[DATABASE] Setting up update...");
+  log("UMASS", "Initializing update...");
   client
     .connect()
     .then(client =>
@@ -51,7 +52,7 @@ function updateDatabase(_recursive = false): void {
         .db(nextDatabase)
         .dropDatabase()
         .then(() => {
-          console.log("[DATABASE] Scraping...");
+          log("UMASS", "Scraping...");
           exec(
             `/usr/bin/python3.8 ${process.env["DATABASE_UPDATER_PATH"]} ${nextDatabase}`,
             {
@@ -59,18 +60,17 @@ function updateDatabase(_recursive = false): void {
             },
             (error, stdout, stderr) => {
               if (error) {
-                console.log(`[DATABASE - ${new Date().toLocaleString()}] Unable to update: ${error}\n\n`);
-                console.log(stdout, stderr);
+                warn("UMASS", "Scraping process failed.", error, stdout, stderr);
               } else {
-                console.log(`[DATABASE - ${new Date().toLocaleString()}] Successfully updated.`);
+                log("UMASS", "Scraping process succeeded. Update finished.");
                 currentDatabase = nextDatabase;
               }
             },
           );
         })
-        .catch(e => console.log("[DATABASE] Failed to dropDatabase: " + e)),
+        .catch(e => warn("UMASS", "Failed to drop database.", e)),
     )
-    .catch(e => console.log("[DATABASE] Failed to connect while updating: " + e));
+    .catch(e => warn("UMASS", "Failed to connect while updating.", e));
 
   if (_recursive) setTimeout(updateDatabase, UPDATE_TIME, true);
 }
