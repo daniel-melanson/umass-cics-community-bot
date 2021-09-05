@@ -3,7 +3,7 @@ import { oneLine } from "../../../shared/stringUtil";
 import { getStaffListFromQuery, ScoredStaff } from "../../../umass/staff";
 import { Staff } from "../../../umass/types";
 import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
-import { replyAndListenForButtonInteraction } from "../actions";
+import { createChoiceListener } from "../createChoiceListener";
 
 function createStaffEmbed(staff: Staff) {
   const otherNames = staff.names.slice(1);
@@ -57,16 +57,16 @@ export default new SlashCommandBuilder()
         embeds: [createStaffEmbed(queryResult[0])],
       });
     } else if (queryResult.length > 1) {
-      replyAndListenForButtonInteraction(
+      createChoiceListener(
         interaction,
         oneLine(`I was unable to narrow down your search to a single person.
-				Which one of the following did you mean?`),
-        queryResult.map(x => x.names[0]),
-        int => {
-          int.reply({
-            embeds: [createStaffEmbed(queryResult!.find(x => x.names[0] === int.customId)!)],
-          });
-        },
+					Which one of the following did you mean?`),
+        queryResult.map(x => {
+          return {
+            name: x.names[0],
+            onChoose: () => createStaffEmbed(x),
+          };
+        }),
       );
     }
   });

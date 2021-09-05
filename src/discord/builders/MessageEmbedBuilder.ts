@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed, MessageEmbedOptions, User } from "discord.js";
+import { GuildMember, MessageEmbed, MessageEmbedOptions, MessageOptions, User } from "discord.js";
 import { UMASS_MAROON } from "../constants";
 
 export class MessageEmbedBuilder extends MessageEmbed {

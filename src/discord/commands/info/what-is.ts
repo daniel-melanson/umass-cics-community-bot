@@ -1,14 +1,14 @@
-import { CommandInteraction, Message, MessageComponentInteraction, TextChannel } from "discord.js";
 import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
 import { Course } from "../../../umass/types";
 import { oneLine, splitCamelCase } from "../../../shared/stringUtil";
 import { searchCourses, SearchResult } from "../../../umass/courses";
 import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
-import { replyAndListenForButtonInteraction } from "../actions";
+import { toMessageOptions } from "../toMessageOptions";
+import { createChoiceListener } from "../createChoiceListener";
 
 const ignoredKeys = new Set(["id", "title", "website", "description", "subject", "number"]);
 
-async function doReply(interaction: CommandInteraction | MessageComponentInteraction, course: Course) {
+function makeReply(course: Course) {
   const fields = [];
 
   for (const [key, value] of Object.entries(course)) {
@@ -20,16 +20,11 @@ async function doReply(interaction: CommandInteraction | MessageComponentInterac
     }
   }
 
-  await interaction.reply({
-    embeds: [
-      new MessageEmbedBuilder({
-        title: `${course.id}: ${course.title}`,
-        url: course.website,
-        description: course.description,
-        fields,
-      }),
-    ],
-    fetchReply: true,
+  return new MessageEmbedBuilder({
+    title: `${course.id}: ${course.title}`,
+    url: course.website,
+    description: course.description,
+    fields,
   });
 }
 
@@ -53,15 +48,19 @@ export default new SlashCommandBuilder()
 
     if (search.error) {
       return interaction.reply(search.error);
-    } else if (search.result.length === 1) {  
-      doReply(interaction, search.result[0]);
+    } else if (search.result.length === 1) {
+      return interaction.reply(toMessageOptions(makeReply(search.result[0])));
     } else {
-      replyAndListenForButtonInteraction(
+      createChoiceListener(
         interaction,
         oneLine(`I was unable to narrow down your search to a single course.
 					Which one of the following did you mean?`),
-        search.result.map(x => x.id),
-        int => doReply(int, search.result.find(c => c.id === int.customId)!),
+        search.result.map(x => {
+          return {
+            name: x.id,
+            onChoose: () => makeReply(x),
+          };
+        }),
       );
     }
   });
