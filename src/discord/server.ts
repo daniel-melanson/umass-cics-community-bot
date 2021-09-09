@@ -66,7 +66,9 @@ async function interactionCreate(interaction: Interaction) {
 
 function findChannel(guild: Guild, name: string) {
   const nameRegExp = new RegExp(`^\\W{0,2}${name}\\W{0,2}$`);
-  return guild.channels.cache.find(x => x.type === "GUILD_TEXT" && !!x.name.match(nameRegExp)) as TextChannel;
+  return guild.channels.cache.find(
+    x => x.type.startsWith("GUILD") && !!x.name.match(nameRegExp),
+  ) as BaseGuildTextChannel;
 }
 
 async function guildMemberAdd(member: GuildMember) {
