@@ -1,5 +1,5 @@
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
-import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
+import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 
 let optionVoteBuilder = new SlashCommandBuilder()
   .setName("option-vote")

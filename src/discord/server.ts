@@ -13,19 +13,17 @@ import {
   TextChannel,
 } from "discord.js";
 
+import { error, log, warn } from "#shared/logger";
+import { oneLine } from "#shared/stringUtil";
+
 import { importCommands } from "./commands/index";
-import { CONTACT_MESSAGE } from "./constants";
-import { BuiltCommand, CommandPermissionLevel } from "./builders/SlashCommandBuilder";
-import { log, warn } from "../shared/logger";
-import { isAssignable } from "./roles";
-import { CommandError } from "./commands/CommandError";
-import { MessageEmbedBuilder } from "./builders/MessageEmbedBuilder";
-import { oneLine } from "../shared/stringUtil";
 import { createRoleEmbed } from "./commands/roles/roles";
 
-const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
-const DISCORD_GUILD_ID = process.env["DISCORD_GUILD_ID"];
-const DISCORD_OWNER_ID = process.env["DISCORD_GUILD_ID"];
+import { CONTACT_MESSAGE } from "./constants";
+import { isAssignable } from "./roles";
+
+import { CommandPermissionLevel } from "./classes/SlashCommandBuilder";
+import { MessageEmbedBuilder } from "./classes/MessageEmbedBuilder";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS] });
 

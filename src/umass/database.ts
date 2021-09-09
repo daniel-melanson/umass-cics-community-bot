@@ -1,7 +1,8 @@
 import { exec } from "child_process";
 
 import { Collection, Db, MongoClient } from "mongodb";
-import { log, warn } from "../shared/logger";
+
+import { log, warn } from "#shared/logger";
 
 import { Staff, Semester, Course } from "./types";
 

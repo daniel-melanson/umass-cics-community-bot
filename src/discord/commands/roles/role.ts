@@ -1,10 +1,10 @@
 import { Role } from "discord.js";
 
-import { SlashCommandSubcommandBuilder } from "../../builders/SlashCommandSubcommands";
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
+import { SlashCommandSubcommandBuilder } from "#discord/classes/SlashCommandSubcommands";
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { isAssignable } from "../../roles";
-import { oneLine } from "../../../shared/stringUtil";
-import { warn } from "../../../shared/logger";
+import { oneLine } from "#shared/stringUtil";
+import { warn } from "#shared/logger";
 import { CommandError } from "../CommandError";
 
 function buildRoleSubcommand(name: string, description: string) {

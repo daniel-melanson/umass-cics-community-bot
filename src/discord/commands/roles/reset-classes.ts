@@ -1,6 +1,7 @@
-import { warn } from "../../../shared/logger";
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
-import { isClass } from "../../roles";
+import { warn } from "#shared/logger";
+
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
+import { isClass } from "#discord/roles";
 import { CommandError } from "../CommandError";
 
 export default new SlashCommandBuilder()

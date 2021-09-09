@@ -1,8 +1,10 @@
-import { CourseSubject } from "../../../umass/types";
-import { getCoursesFromSubject } from "../../../umass/courses";
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
-import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
-import { warn } from "../../../shared/logger";
+import { warn } from "#shared/logger";
+
+import { CourseSubject } from "#umass/types";
+import { getCoursesFromSubject } from "#umass/courses";
+
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
+import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 
 function divideLines(lines: Array<string>) {
   const groups = [];

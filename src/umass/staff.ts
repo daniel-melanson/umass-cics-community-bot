@@ -1,6 +1,7 @@
+import { sanitize } from "#shared/stringUtil";
+
 import { connectToCollection } from "./database";
 import { Staff } from "./types";
-import { sanitize } from "../shared/stringUtil";
 
 export interface ScoredStaff extends Staff {
   _score: number;

@@ -1,8 +1,10 @@
-import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
-import { oneLine } from "../../../shared/stringUtil";
-import { getStaffListFromQuery, ScoredStaff } from "../../../umass/staff";
-import { Staff } from "../../../umass/types";
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
+import { oneLine } from "#shared/stringUtil";
+
+import { Staff } from "#umass/types";
+import { getStaffListFromQuery, ScoredStaff } from "#umass/staff";
+
+import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { createChoiceListener } from "../createChoiceListener";
 
 function createStaffEmbed(staff: Staff) {

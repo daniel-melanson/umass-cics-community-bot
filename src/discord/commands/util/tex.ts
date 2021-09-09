@@ -1,5 +1,6 @@
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
 import fetch from "node-fetch";
+
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 
 export default new SlashCommandBuilder()
   .setName("tex")

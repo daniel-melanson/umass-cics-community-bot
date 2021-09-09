@@ -1,5 +1,5 @@
 import type { APIApplicationCommandOption, RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v9";
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ApplicationCommandData, CommandInteraction } from "discord.js";
 import { mix } from "ts-mixer";
 import {
   assertReturnOfBuilder,
@@ -9,6 +9,7 @@ import {
 } from "./Assertions";
 import { SharedSlashCommandOptions } from "./mixins/CommandOptions";
 import { SharedNameAndDescription } from "./mixins/NameAndDescription";
+import { RegExpInteraction } from "./RegExpInteraction";
 import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "./SlashCommandSubcommands";
 
 export type SlashCommandCallback = (interaction: CommandInteraction) => Promise<unknown>;
@@ -22,12 +23,20 @@ export enum CommandPermissionLevel {
 
 export type CommandGroup = "Administrative" | "Information" | "Roles" | "Utility";
 
-export interface BuiltCommand {
-  embed: MessageEmbed;
+export interface StoredCommand {
+  pattern: RegExp;
+  matchGroups: 
   fn: SlashCommandCallback;
 }
+
+export interface BuiltCommand {
+  apiData: ApplicationCommandData;
+  permissionLevel: CommandPermissionLevel;
+  runtimeData: StoredCommand;
+}
+
 @mix(SharedSlashCommandOptions, SharedNameAndDescription)
-export class SlashCommandBuilder {
+export class SlashCommandBuilder<T extends boolean = false> {
   /**
    * The name of this slash command
    */
@@ -47,6 +56,8 @@ export class SlashCommandBuilder {
   public readonly examples: Array<string> = [];
 
   public readonly callback: SlashCommandCallback = undefined!;
+
+  public readonly pattern:  = undefined!;
 
   /**
    * The options of this slash command
@@ -74,6 +85,16 @@ export class SlashCommandBuilder {
     };
   }
 
+  public build(): BuiltCommand {
+    return {
+      apiData: this.toJSON() as unknown as ApplicationCommandData,
+      permissionLevel: this.permissionLevel,
+      runtimeData: {
+        fn: this.callback,
+      }
+    };
+  }
+
   /**
    * Sets whether the command is enabled by default when the application is added to a guild.
    *
@@ -89,6 +110,15 @@ export class SlashCommandBuilder {
     Reflect.set(this, "defaultPermission", value);
 
     return this;
+  }
+
+  public setPattern(regExp: RegExp, groups: Record<string, number>): SlashCommandBuilder<true> {
+    Reflect.set(this, "pattern", {
+      regExp,
+      groups,
+    });
+
+    return this as SlashCommandBuilder<true>;
   }
 
   public setGroup(group: CommandGroup) {
@@ -146,7 +176,7 @@ export class SlashCommandBuilder {
     // Push it
     options.push(result);
 
-    return this;
+    return this as SlashCommandSubcommandsOnlyBuilder;
   }
 
   /**
@@ -171,10 +201,14 @@ export class SlashCommandBuilder {
     // Push it
     options.push(result);
 
-    return this;
+    return this as SlashCommandSubcommandsOnlyBuilder;
   }
 
-  public setCallback(callback: SlashCommandCallback) {
+  public setCallback(
+    callback: (
+      interaction: T extends true ? CommandInteraction | RegExpInteraction : CommandInteraction,
+    ) => Promise<unknown> | unknown,
+  ) {
     Reflect.set(this, "callback", callback);
 
     return this;

@@ -10,9 +10,9 @@ import {
   isPronoun,
   isResidential,
 } from "../../roles";
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
-import { oneLine } from "../../../shared/stringUtil";
-import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
+import { oneLine } from "#shared/stringUtil";
+import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 import { Guild } from "discord.js";
 
 export function createRoleEmbed(guild: Guild) {

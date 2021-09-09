@@ -1,7 +1,9 @@
-import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
-import { getInSessionSemester } from "../../../umass/calendar";
-import { capitalize } from "../../../shared/stringUtil";
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
+import { getInSessionSemester } from "#umass/calendar";
+
+import { capitalize } from "#shared/stringUtil";
+
+import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 
 export default new SlashCommandBuilder()
   .setName("calendar")

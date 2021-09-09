@@ -1,6 +1,7 @@
-import { Course } from "../../../umass/types";
-import { getCoursePostRequisites, searchCourses, SearchResult } from "../../../umass/courses";
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
+import { Course } from "#umass/types";
+import { COURSE_REGEXP_STRING, getCoursePostRequisites, searchCourses, SearchResult } from "#umass/courses";
+
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { createChoiceListener } from "../createChoiceListener";
 
 async function makeReply(course: Course) {
@@ -30,6 +31,7 @@ export default new SlashCommandBuilder()
   .addStringOption(option =>
     option.setName("course").setDescription("The root class to find dependents of.").setRequired(true),
   )
+  .setPattern(new RegExp(`^what can I take after (${COURSE_REGEXP_STRING})\\??$`, "im"))
   .setCallback(async interaction => {
     let search: SearchResult;
     try {

@@ -1,5 +1,6 @@
 import { CategoryChannel, Collection, GuildChannel } from "discord.js";
-import { CommandPermissionLevel, SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
+
+import { CommandPermissionLevel, SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 
 function splitFilter<T>(array: Array<T>, test: (t: T) => boolean) {
   const passed = [];
