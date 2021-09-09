@@ -2,6 +2,7 @@ import {
   ApplicationCommand,
   ApplicationCommandData,
   ApplicationCommandPermissions,
+  BaseGuildTextChannel,
   Client,
   Guild,
   GuildMember,
@@ -10,7 +11,6 @@ import {
   Message,
   MessageEmbed,
   MessageOptions,
-  TextChannel,
 } from "discord.js";
 
 import { error, log, warn } from "#shared/logger";
@@ -22,7 +22,7 @@ import { createRoleEmbed } from "./commands/roles/roles";
 import { CONTACT_MESSAGE } from "./constants";
 import { isAssignable } from "./roles";
 
-import { CommandPermissionLevel } from "./classes/SlashCommandBuilder";
+import { BuiltCommand, CommandPermissionLevel } from "./classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "./classes/MessageEmbedBuilder";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
@@ -67,7 +67,7 @@ async function interactionCreate(interaction: Interaction) {
 function findChannel(guild: Guild, name: string) {
   const nameRegExp = new RegExp(`^\\W{0,2}${name}\\W{0,2}$`);
   return guild.channels.cache.find(
-    x => x.type.startsWith("GUILD") && !!x.name.match(nameRegExp),
+    x => (x.type === "GUILD_NEWS" || x.type === "GUILD_TEXT") && !!x.name.match(nameRegExp),
   ) as BaseGuildTextChannel;
 }
 
@@ -180,12 +180,8 @@ export function initialize(): Promise<Client<true>> {
             }
           }
 
-          const commandBuilderMap = await importCommands();
-
-          const commandBuilderArray = Array.from(commandBuilderMap.values());
-          const applicationCommandCollection = await guild.commands.set(
-            commandBuilderArray.map(builder => builder.toJSON() as unknown as ApplicationCommandData),
-          );
+          const commandData = importCommands();
+          const applicationCommandCollection = await guild.commands.set(commandData.map(cmd => cmd.apiData));
           log("MAIN", `Built ${applicationCommandCollection.size} commands.`);
 
           log("MAIN", `Setting up permissions...`);
@@ -215,45 +211,32 @@ export function initialize(): Promise<Client<true>> {
           const adminPermission = createRolePermission(CommandPermissionLevel.Administrator);
           const moderatorPermission = createRolePermission(CommandPermissionLevel.Moderator);
 
-          for (const [, builder] of commandBuilderMap) {
-            const appCmd = applicationCommandMap.get(builder.name)!;
+          for (const command of commandData) {
+            const appCmd = applicationCommandMap.get(command.apiData.name)!;
 
-            if (builder.permissionLevel !== CommandPermissionLevel.Member) {
+            guildCommands.set(appCmd.id, {
+              fn: command.fn;
+            });
+
+            const permissionLevel = builder.permissionLevel;
+            if (permissionLevel !== CommandPermissionLevel.Member) {
               const permissionArray = [ownerPermission];
 
-              switch (builder.permissionLevel) {
-                case CommandPermissionLevel.Moderator:
-                  permissionArray.push(moderatorPermission);
-                // eslint-disable-next-line no-fallthrough
-                case CommandPermissionLevel.Administrator:
-                  permissionArray.push(adminPermission);
+              if (permissionLevel === CommandPermissionLevel.Moderator) {
+                permissionArray.push(moderatorPermission);
+              } else if (permissionLevel === CommandPermissionLevel.Administrator) {
+                permissionArray.push(adminPermission);
               }
 
               await appCmd.permissions.add({
                 permissions: permissionArray,
               });
             }
-
-            guildCommands.set(appCmd.id, {
-              embed: new MessageEmbedBuilder({
-                title: `The ${builder.name} command`,
-                description: builder.details,
-                fields:
-                  builder.examples.length > 0
-                    ? [
-                        {
-                          name: "Examples",
-                          value: builder.examples.map(e => "`" + e + "`").join(", "),
-                        },
-                      ]
-                    : undefined,
-              }),
-              fn: builder.callback,
-            });
           }
           log("MAIN", `Permissions set up.`);
 
           client.on("interactionCreate", interactionCreate);
+          client.on("message", message);
           client.on("guildMemberAdd", guildMemberAdd);
 
           log("MAIN", "Application commands initialized. Ready for interaction.");
