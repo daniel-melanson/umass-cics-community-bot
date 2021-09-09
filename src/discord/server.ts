@@ -25,7 +25,24 @@ import { isAssignable } from "./roles";
 import { CommandPermissionLevel } from "./classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "./classes/MessageEmbedBuilder";
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+
+const DISCORD_TOKEN = process.env["DISCORD_TOKEN"]!;
+const DISCORD_GUILD_ID = process.env["DISCORD_GUILD_ID"]!;
+const DISCORD_OWNER_ID = process.env["DISCORD_GUILD_ID"]!;
+
+if (!DISCORD_TOKEN) {
+  error("MAIN", "Environment variable 'DISCORD_TOKEN' was not defined.");
+}
+
+if (!DISCORD_GUILD_ID) {
+  error("MAIN", "Environment variable 'DISCORD_GUILD_ID' was not defined.");
+}
+
+if (!DISCORD_OWNER_ID) {
+  error("MAIN", "Environment variable 'DISCORD_OWNER_ID' was not defined.");
+}
+
 
 const guildCommands = new Map<string, BuiltCommand>();
 async function interactionCreate(interaction: Interaction) {
@@ -142,18 +159,6 @@ export async function announce(
 }
 
 export function initialize(): Promise<Client<true>> {
-  if (!DISCORD_TOKEN) {
-    return Promise.reject("Environment variable 'DISCORD_TOKEN' was not defined.");
-  }
-
-  if (!DISCORD_GUILD_ID) {
-    return Promise.reject("Environment variable 'DISCORD_GUILD_ID' was not defined.");
-  }
-
-  if (!DISCORD_OWNER_ID) {
-    return Promise.reject("Environment variable 'DISCORD_OWNER_ID' was not defined.");
-  }
-
   return new Promise((res, rej) => {
     client
       .on("ready", async client => {
