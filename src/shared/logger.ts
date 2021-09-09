@@ -1,4 +1,4 @@
-type Scope = "MAIN" | "UMASS" | "COMMAND" | "DISCORD";
+type Scope = "MAIN" | "UMASS" | "DISCORD" | string;
 
 function now() {
   return new Date().toLocaleString() + " - ";

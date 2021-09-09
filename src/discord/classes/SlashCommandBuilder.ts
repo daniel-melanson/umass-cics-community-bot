@@ -13,7 +13,7 @@ import { RegExpInteraction } from "./RegExpInteraction";
 import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "./SlashCommandSubcommands";
 
 export type SlashCommandCallback = (interaction: CommandInteraction) => Promise<unknown>;
-
+type OptionMatchGroups = Record<string, number>;
 export enum CommandPermissionLevel {
   Owner = "Owner",
   Administrator = "Admin",
@@ -23,16 +23,17 @@ export enum CommandPermissionLevel {
 
 export type CommandGroup = "Administrative" | "Information" | "Roles" | "Utility";
 
-export interface StoredCommand {
-  pattern: RegExp;
-  matchGroups: 
+export interface Command {
+  name: string;
   fn: SlashCommandCallback;
+  pattern?: RegExp;
+  optionMatchGroups?: OptionMatchGroups;
 }
 
 export interface BuiltCommand {
   apiData: ApplicationCommandData;
   permissionLevel: CommandPermissionLevel;
-  runtimeData: StoredCommand;
+  runtimeData: Command;
 }
 
 @mix(SharedSlashCommandOptions, SharedNameAndDescription)
@@ -57,7 +58,7 @@ export class SlashCommandBuilder<T extends boolean = false> {
 
   public readonly callback: SlashCommandCallback = undefined!;
 
-  public readonly pattern:  = undefined!;
+  public readonly pattern: { regExp: RegExp; groups: OptionMatchGroups } = undefined!;
 
   /**
    * The options of this slash command
@@ -90,7 +91,10 @@ export class SlashCommandBuilder<T extends boolean = false> {
       apiData: this.toJSON() as unknown as ApplicationCommandData,
       permissionLevel: this.permissionLevel,
       runtimeData: {
+        name: this.name,
         fn: this.callback,
+        pattern: this.pattern.regExp,
+        optionMatchGroups: this.pattern.groups,
       }
     };
   }
@@ -112,7 +116,7 @@ export class SlashCommandBuilder<T extends boolean = false> {
     return this;
   }
 
-  public setPattern(regExp: RegExp, groups: Record<string, number>): SlashCommandBuilder<true> {
+  public setPattern(regExp: RegExp, groups: OptionMatchGroups): SlashCommandBuilder<true> {
     Reflect.set(this, "pattern", {
       regExp,
       groups,

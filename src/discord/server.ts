@@ -21,8 +21,9 @@ import { createRoleEmbed } from "./commands/roles/roles";
 
 import { isAssignable } from "./roles";
 
-import { BuiltCommand, CommandPermissionLevel } from "./classes/SlashCommandBuilder";
+import { Command, CommandPermissionLevel } from "./classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "./classes/MessageEmbedBuilder";
+import { CommandError } from "./classes/CommandError";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -42,8 +43,7 @@ if (!DISCORD_OWNER_ID) {
   error("MAIN", "Environment variable 'DISCORD_OWNER_ID' was not defined.");
 }
 
-
-const guildCommands = new Map<string, BuiltCommand>();
+const guildCommands = new Map<string, Command>();
 
 const CONTACT_MESSAGE = ` Please contact <@${DISCORD_OWNER_ID}>.`;
 async function interactionCreate(interaction: Interaction) {
@@ -56,13 +56,14 @@ async function interactionCreate(interaction: Interaction) {
     try {
       await command.fn(interaction);
     } catch (e) {
-      const reply = (msg: string) => interaction.replied ? interaction.followUp(msg) : interaction.reply(msg);
+      const reply = (msg: string) => (interaction.replied ? interaction.followUp(msg) : interaction.reply(msg));
 
+      const header = "COMMAND-" + command.name;
       if (e instanceof CommandError) {
-        warn("COMMAND", e.message, e.stack);
+        warn(header, e.message, e.stack);
         reply(e.userMessage);
       } else {
-        warn("COMMAND", "!!Uncaught command in error!!", e);
+        warn(header, "!!Uncaught command error!!", e);
         reply("An unexpected error occurred." + CONTACT_MESSAGE);
       }
     }
@@ -219,11 +220,9 @@ export function initialize(): Promise<Client<true>> {
           for (const command of commandData) {
             const appCmd = applicationCommandMap.get(command.apiData.name)!;
 
-            guildCommands.set(appCmd.id, {
-              fn: command.fn;
-            });
+            guildCommands.set(appCmd.id, command.runtimeData);
 
-            const permissionLevel = builder.permissionLevel;
+            const permissionLevel = command.permissionLevel;
             if (permissionLevel !== CommandPermissionLevel.Member) {
               const permissionArray = [ownerPermission];
 
