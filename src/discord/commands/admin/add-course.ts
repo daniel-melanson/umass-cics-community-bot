@@ -1,6 +1,6 @@
 import { CategoryChannel } from "discord.js";
 
-import { getCourseIdFromQuery } from "#umass/courses";
+import { formatCourseIdFromQuery } from "#umass/courses";
 
 import { SlashCommandBuilder, CommandPermissionLevel } from "#discord/classes/SlashCommandBuilder";
 
