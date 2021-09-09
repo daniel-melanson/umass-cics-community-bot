@@ -44,6 +44,8 @@ if (!DISCORD_OWNER_ID) {
 
 
 const guildCommands = new Map<string, BuiltCommand>();
+
+const CONTACT_MESSAGE = ` Please contact <@${DISCORD_OWNER_ID}>.`;
 async function interactionCreate(interaction: Interaction) {
   if (!interaction.isCommand()) return;
 
@@ -54,10 +56,14 @@ async function interactionCreate(interaction: Interaction) {
     try {
       await command.fn(interaction);
     } catch (e) {
+      const reply = (msg: string) => interaction.replied ? interaction.followUp(msg) : interaction.reply(msg);
+
       if (e instanceof CommandError) {
-        interaction.reply(e.message);
+        warn("COMMAND", e.message, e.stack);
+        reply(e.userMessage);
       } else {
-        warn("COMMAND", "Uncaught error.", e);
+        warn("COMMAND", "!!Uncaught command in error!!", e);
+        reply("An unexpected error occurred." + CONTACT_MESSAGE);
       }
     }
   }
