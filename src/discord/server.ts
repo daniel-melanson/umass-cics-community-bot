@@ -19,7 +19,6 @@ import { oneLine } from "#shared/stringUtil";
 import { importCommands } from "./commands/index";
 import { createRoleEmbed } from "./commands/roles/roles";
 
-import { CONTACT_MESSAGE } from "./constants";
 import { isAssignable } from "./roles";
 
 import { BuiltCommand, CommandPermissionLevel } from "./classes/SlashCommandBuilder";

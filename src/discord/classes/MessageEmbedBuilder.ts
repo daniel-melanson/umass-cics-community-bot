@@ -1,12 +1,11 @@
-import { GuildMember, MessageEmbed, MessageEmbedOptions, MessageOptions, User } from "discord.js";
-import { UMASS_MAROON } from "../constants";
+import { GuildMember, MessageEmbed, MessageEmbedOptions, User } from "discord.js";
 
 export class MessageEmbedBuilder extends MessageEmbed {
   constructor(data?: MessageEmbedOptions) {
     super(data);
 
     if (!super.color) {
-      super.setColor(UMASS_MAROON);
+      super.setColor(8594214);
     }
   }
 
