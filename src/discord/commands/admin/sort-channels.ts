@@ -1,6 +1,7 @@
 import { CategoryChannel, Collection, GuildChannel } from "discord.js";
 
 import { CommandPermissionLevel, SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
+import { CommandError } from "#discord/classes/CommandError";
 
 function splitFilter<T>(array: Array<T>, test: (t: T) => boolean) {
   const passed = [];
@@ -49,7 +50,14 @@ export default new SlashCommandBuilder()
     ) as Collection<string, CategoryChannel>;
 
     for (const [, category] of categories) {
-      await sortCategory(category);
+      try {
+        await sortCategory(category);
+      } catch (e) {
+        throw new CommandError(
+          `I encountered an error while trying to sort the ${category.name} category.`,
+          "Unable to sort category:" + e,
+        );
+      }
     }
 
     return interaction.editReply(

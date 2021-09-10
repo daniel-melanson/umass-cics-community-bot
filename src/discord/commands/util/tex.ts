@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
+import { CommandError } from "#discord/classes/CommandError";
 
 export default new SlashCommandBuilder()
   .setName("tex")
@@ -27,6 +28,11 @@ export default new SlashCommandBuilder()
     } catch (e) {
       if (e instanceof Error) {
         error = e.message;
+      } else {
+        throw new CommandError(
+          "I'm sorry, I encountered an error while trying to process that.",
+          "Unable to convert tex-to-png: " + e,
+        );
       }
     }
 

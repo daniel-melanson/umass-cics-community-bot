@@ -15,7 +15,7 @@ async function trySemesterFetch<T>(func: () => Promise<T>): Promise<T> {
     semester = await func();
   } catch (e) {
     throw new CommandError(
-      "I had some trouble while trying to connect to the database.",
+      "I'm sorry, I had some trouble connecting to the database.",
       "Unable to fetch semester: " + e,
     );
   }

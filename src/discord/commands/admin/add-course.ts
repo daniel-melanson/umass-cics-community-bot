@@ -3,6 +3,7 @@ import { CategoryChannel } from "discord.js";
 import { formatCourseIdFromQuery } from "#umass/courses";
 
 import { SlashCommandBuilder, CommandPermissionLevel } from "#discord/classes/SlashCommandBuilder";
+import { CommandError } from "../../classes/CommandError";
 
 export default new SlashCommandBuilder()
   .setName("add-course")
@@ -20,9 +21,10 @@ export default new SlashCommandBuilder()
   )
   .setCallback(async interaction => {
     const options = interaction.options;
-    const id = getCourseIdFromQuery(options.getString("id", true));
+    const id = formatCourseIdFromQuery(options.getString("id", true));
     const title = options.getString("title", true);
-    if (!id) return interaction.reply("That does not seem to be a valid course id.");
+
+    if (!id) throw new CommandError("That does not seem to be a valid course id.");
 
     const parts = id.split(" ");
     let subject = parts[0];
@@ -35,11 +37,11 @@ export default new SlashCommandBuilder()
     const guildRoleManager = guild.roles;
     const guildRoleCollection = await guild.roles.fetch();
     const separator = guildRoleCollection.find(r => r.name === `---- ${subject} ----`);
-    if (!separator) return interaction.reply(`I was unable to find the separator role for topic ${subject}.`);
+    if (!separator) throw new CommandError(`I was unable to find the separator role for topic ${subject}.`);
 
     const roleName = `${subject} ${number}`;
     if (guildRoleCollection.find(r => r.name === roleName))
-      return interaction.reply(`I was unable to create the role. There is already a role named ${id}.`);
+      throw new CommandError(`I was unable to create the role. There is already a role named ${id}.`);
 
     await interaction.reply("Creating role...");
     let role;
@@ -50,8 +52,9 @@ export default new SlashCommandBuilder()
         position: separator.position,
       });
     } catch (e) {
-      return interaction.reply(
+      throw new CommandError(
         "I was unable to create the role. This might be because the bot role is too low on the role list.",
+        "Unable to create role: " + e,
       );
     }
 
@@ -59,7 +62,8 @@ export default new SlashCommandBuilder()
     const category = channels.cache.find(
       c => c.type === "GUILD_CATEGORY" && !!c.name.match(new RegExp(`\\W+${subject} classes`, "i")),
     ) as CategoryChannel | undefined;
-    if (!category) return interaction.reply("I was unable to find the category. Role created without channel.");
+    if (!category)
+      throw new CommandError("I'm sorry, I was unable to find the sorting category. Role created without channel.");
 
     await interaction.editReply("Creating channel...");
     let channel;
@@ -70,7 +74,10 @@ export default new SlashCommandBuilder()
         topic: title,
       });
     } catch (e) {
-      return interaction.reply("I was unable to create the channel. Make sure that I have the correct permissions.");
+      throw new CommandError(
+        "I'm sorry, I was unable to create the channel. Make sure that I have the correct permissions.",
+        "Unable to create channel: " + e,
+      );
     }
 
     const snooper = guildRoleCollection.find(r => r.name === "Snooper");
@@ -99,7 +106,10 @@ export default new SlashCommandBuilder()
         ],
       });
     } catch (e) {
-      return interaction.reply("I was unable to set permissions on the new channel.");
+      throw new CommandError(
+        "I was unable to set permissions on the new channel.",
+        "Unable to set permissions on channel:" + e,
+      );
     }
 
     return interaction.followUp(

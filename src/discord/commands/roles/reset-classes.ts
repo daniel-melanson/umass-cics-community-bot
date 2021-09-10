@@ -2,7 +2,7 @@ import { warn } from "#shared/logger";
 
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { isClass } from "#discord/roles";
-import { CommandError } from "../CommandError";
+import { CommandError } from "../../classes/CommandError";
 
 export default new SlashCommandBuilder()
   .setName("reset-classes")
@@ -27,8 +27,10 @@ export default new SlashCommandBuilder()
     try {
       await userRoleManager.set(roleCollection.difference(courseRoleCollection).map(role => role.id));
     } catch (e) {
-      warn("COMMAND", "role command unable to update permissions for " + interaction.user.id, e);
-      throw new CommandError("I'm sorry, I encountered an error while trying to update your roles.");
+      throw new CommandError(
+        "I'm sorry, I encountered an error while trying to update your roles.",
+        "Unable to update roles: " + e,
+      );
     }
 
     return interaction.reply(

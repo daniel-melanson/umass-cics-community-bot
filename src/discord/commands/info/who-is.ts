@@ -46,7 +46,10 @@ export default new SlashCommandBuilder()
     try {
       queryResult = await getStaffListFromQuery(interaction.options.getString("person", true));
     } catch (e) {
-      console.log("[DATABASE]", e);
+      throw new CommandError(
+        "I had some trouble connecting to the database. Try again later.",
+        "Unable to get staff list from query: " + e,
+      );
     }
 
     if (!queryResult || (queryResult instanceof Array && queryResult.length === 0)) {

@@ -1,10 +1,13 @@
-import { MessageEmbedBuilder } from "../../builders/MessageEmbedBuilder";
-import { Course } from "../../../umass/types";
-import { oneLine, splitCamelCase } from "../../../shared/stringUtil";
-import { searchCourses, SearchResult } from "../../../umass/courses";
-import { SlashCommandBuilder } from "../../builders/SlashCommandBuilder";
+import { oneLine, splitCamelCase } from "#shared/stringUtil";
+
+import { Course } from "#umass/types";
+import { COURSE_REGEXP_STRING, searchCourses, SearchResult } from "#umass/courses";
+
+import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
+import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { toMessageOptions } from "../toMessageOptions";
 import { createChoiceListener } from "../createChoiceListener";
+import { CommandError } from "#discord/classes/CommandError";
 
 const ignoredKeys = new Set(["id", "title", "website", "description", "subject", "number"]);
 
@@ -35,6 +38,9 @@ export default new SlashCommandBuilder()
   .setDetails("")
   .addExamples(["/what-is course: CS 187"])
   .addStringOption(option => option.setName("course").setDescription("The course to search for.").setRequired(true))
+  .setPattern(new RegExp(`^(what is|what'?s)\\s*(${COURSE_REGEXP_STRING})\\??$`, "i"), {
+    course: 2,
+  })
   .setCallback(async interaction => {
     const options = interaction.options;
 
@@ -42,8 +48,10 @@ export default new SlashCommandBuilder()
     try {
       search = await searchCourses(options.getString("course", true));
     } catch (e) {
-      console.log("[DATABASE]", e);
-      return interaction.reply("I encountered an error while attempting this query. Try again later.");
+      throw new CommandError(
+        "I'm sorry, I had some trouble connecting to the database. Try again later.",
+        "Unable to search courses: " + e,
+      );
     }
 
     if (search.error) {

@@ -5,6 +5,7 @@ import { getCoursesFromSubject } from "#umass/courses";
 
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
+import { CommandError } from "#discord/classes/CommandError";
 
 function divideLines(lines: Array<string>) {
   const groups = [];
@@ -65,8 +66,10 @@ export default new SlashCommandBuilder()
     try {
       courses = await getCoursesFromSubject(subject as CourseSubject, level);
     } catch (e) {
-      warn("COMMAND", "Failed to get courses from subject.", e);
-      return interaction.reply("I encountered an error while connecting to the database. Try again later.");
+      throw new CommandError(
+        "I'm sorry, I had some trouble connecting to the database. Try again later.",
+        "Unable to get courses from subject: " + e,
+      );
     }
 
     if (level) {

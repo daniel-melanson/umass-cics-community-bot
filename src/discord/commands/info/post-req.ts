@@ -3,6 +3,7 @@ import { COURSE_REGEXP_STRING, getCoursePostRequisites, searchCourses, SearchRes
 
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { createChoiceListener } from "../createChoiceListener";
+import { CommandError } from "#discord/classes/CommandError";
 
 async function makeReply(course: Course) {
   let postReqs;
@@ -31,13 +32,16 @@ export default new SlashCommandBuilder()
   .addStringOption(option =>
     option.setName("course").setDescription("The root class to find dependents of.").setRequired(true),
   )
-  .setPattern(new RegExp(`^what can I take after (${COURSE_REGEXP_STRING})\\??$`, "im"))
+  .setPattern(new RegExp(`^what can I take after (${COURSE_REGEXP_STRING})\\??$`, "im"), { course: 2 })
   .setCallback(async interaction => {
     let search: SearchResult;
     try {
       search = await searchCourses(interaction.options.getString("course", true));
     } catch (e) {
-      return interaction.reply("I encountered an error while attempting this query. Try again later.");
+      throw new CommandError(
+        "I'm sorry, I had some trouble connecting to the database. Try again later.",
+        "Unable to search courses: " + e,
+      );
     }
 
     if (search.error) {

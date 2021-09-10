@@ -5,7 +5,7 @@ import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { isAssignable } from "../../roles";
 import { oneLine } from "#shared/stringUtil";
 import { warn } from "#shared/logger";
-import { CommandError } from "../CommandError";
+import { CommandError } from "../../classes/CommandError";
 
 function buildRoleSubcommand(name: string, description: string) {
   const builder = new SlashCommandSubcommandBuilder().setName(name).setDescription(description);
@@ -80,8 +80,10 @@ export default new SlashCommandBuilder()
     try {
       await userRoleManager.set(Array.from(roleSet.keys()));
     } catch (e) {
-      warn("COMMAND", "role command unable to update permissions for " + interaction.user.id, e);
-      throw new CommandError("I'm sorry, I encountered an error while trying to update your roles.");
+      throw new CommandError(
+        "I'm sorry, I encountered an error while trying to update your roles.",
+        "Unable to update roles: " + e,
+      );
     }
 
     let reply = "";
