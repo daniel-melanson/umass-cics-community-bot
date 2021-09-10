@@ -95,7 +95,7 @@ export class SlashCommandBuilder<T extends boolean = false> {
         fn: this.callback,
         pattern: this.pattern.regExp,
         optionMatchGroups: this.pattern.groups,
-      }
+      },
     };
   }
 
