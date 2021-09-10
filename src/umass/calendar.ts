@@ -37,5 +37,5 @@ export async function getCurrentSemesters(): Promise<Array<Semester>> {
     });
   });
 
-  return haveEvents.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+  return haveEvents.sort((a, b) => a.startDate.valueOf() - b.startDate.valueOf());
 }
