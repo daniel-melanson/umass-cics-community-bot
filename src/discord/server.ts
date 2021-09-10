@@ -1,6 +1,5 @@
 import {
   ApplicationCommand,
-  ApplicationCommandData,
   ApplicationCommandPermissions,
   BaseGuildTextChannel,
   Client,
