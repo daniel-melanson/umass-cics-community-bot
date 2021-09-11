@@ -199,7 +199,7 @@ export function initialize(): Promise<Client<true>> {
     client
       .on("ready", async client => {
         log("MAIN", `Logged in as ${client.user.tag}.`);
-        log("MAIN", "Initalizing application commands...");
+        log("MAIN", "Initializing application commands...");
 
         try {
           log("MAIN", "Building commands...");
