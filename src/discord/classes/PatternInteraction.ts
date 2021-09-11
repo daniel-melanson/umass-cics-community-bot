@@ -61,6 +61,6 @@ export class PatternInteraction {
   }
 
   public async reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void> {
-    await this.message.reply(options);
+    this.replyMessage = await this.message.reply(options);
   }
 }
