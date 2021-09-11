@@ -43,6 +43,11 @@ export function createChoiceListener(
     const handler = choiceHandlers.get(int.customId)!;
     const reply = Promise.resolve(handler());
 
-    reply.then(r => interaction.editReply(toMessageOptions(r)));
+    reply.then(r => {
+      const option = toMessageOptions(r);
+      option.components = [];
+      if (option.content === undefined) option.content = null;
+      interaction.editReply(option);
+    });
   });
 }
