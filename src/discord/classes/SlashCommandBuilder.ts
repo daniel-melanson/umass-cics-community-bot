@@ -1,3 +1,4 @@
+import { ReplyResolvable } from "#discord/toMessageOptions";
 import type { APIApplicationCommandOption, RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v9";
 import { ApplicationCommandData, CommandInteraction } from "discord.js";
 import { mix } from "ts-mixer";
@@ -9,11 +10,11 @@ import {
 } from "./Assertions";
 import { SharedSlashCommandOptions } from "./mixins/CommandOptions";
 import { SharedNameAndDescription } from "./mixins/NameAndDescription";
-import { RegExpInteraction } from "./RegExpInteraction";
+import { OptionMatchGroups, PatternInteraction } from "./PatternInteraction";
 import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "./SlashCommandSubcommands";
 
-export type SlashCommandCallback = (interaction: CommandInteraction) => Promise<unknown>;
-type OptionMatchGroups = Record<string, number>;
+export type SlashCommandCallback = (interaction: CommandInteraction | PatternInteraction) => Promise<ReplyResolvable>;
+
 export enum CommandPermissionLevel {
   Owner = "Owner",
   Administrator = "Admin",
@@ -26,8 +27,10 @@ export type CommandGroup = "Administrative" | "Information" | "Roles" | "Utility
 export interface Command {
   name: string;
   fn: SlashCommandCallback;
-  pattern?: RegExp;
-  optionMatchGroups?: OptionMatchGroups;
+  pattern?: {
+    regExp: RegExp;
+    groups: OptionMatchGroups;
+  };
 }
 
 export interface BuiltCommand {
@@ -93,8 +96,7 @@ export class SlashCommandBuilder<T extends boolean = false> {
       runtimeData: {
         name: this.name,
         fn: this.callback,
-        pattern: this.pattern.regExp,
-        optionMatchGroups: this.pattern.groups,
+        pattern: this.pattern,
       },
     };
   }
@@ -210,7 +212,7 @@ export class SlashCommandBuilder<T extends boolean = false> {
 
   public setCallback(
     callback: (
-      interaction: T extends true ? CommandInteraction | RegExpInteraction : CommandInteraction,
+      interaction: T extends true ? CommandInteraction | PatternInteraction : CommandInteraction,
     ) => Promise<unknown> | unknown,
   ) {
     Reflect.set(this, "callback", callback);

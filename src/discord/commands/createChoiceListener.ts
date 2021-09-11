@@ -1,5 +1,6 @@
 import { CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
 import { toMessageOptions, ReplyResolvable } from "#discord/toMessageOptions";
+import { PatternInteraction } from "#discord/classes/PatternInteraction";
 
 type ChoiceHandler = () => Promise<ReplyResolvable> | ReplyResolvable;
 interface Choice {
@@ -8,7 +9,7 @@ interface Choice {
 }
 
 export function createChoiceListener(
-  interaction: CommandInteraction,
+  interaction: CommandInteraction | PatternInteraction,
   reply: string | MessageEmbed,
   choices: Array<Choice>,
 ) {

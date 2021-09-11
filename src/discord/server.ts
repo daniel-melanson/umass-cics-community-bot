@@ -3,6 +3,7 @@ import {
   ApplicationCommandPermissions,
   BaseGuildTextChannel,
   Client,
+  CommandInteraction,
   Guild,
   GuildMember,
   Intents,
@@ -23,6 +24,8 @@ import { isAssignable } from "./roles";
 import { Command, CommandPermissionLevel } from "./classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "./classes/MessageEmbedBuilder";
 import { CommandError } from "./classes/CommandError";
+import { PatternInteraction } from "./classes/PatternInteraction";
+import { ReplyResolvable, toMessageOptions } from "./toMessageOptions";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -44,6 +47,31 @@ if (!DISCORD_OWNER_ID) {
 
 const guildCommands = new Map<string, Command>();
 
+async function attemptInteraction(interaction: CommandInteraction | PatternInteraction, command: Command) {
+  const reply = (msg: ReplyResolvable) => {
+    const msgOptions = toMessageOptions(msg);
+    interaction.replied ? interaction.followUp(msgOptions) : interaction.reply(msgOptions);
+  };
+
+  let replyContent;
+  try {
+    replyContent = await command.fn(interaction);
+  } catch (e) {
+    const header = "COMMAND-" + command.name;
+    if (e instanceof CommandError) {
+      reply(e.userMessage);
+      if (e.internalMessage) warn(header, e.internalMessage, e.stack);
+    } else {
+      warn(header, "!!Uncaught command error!!", e);
+      reply("An unexpected error occurred." + CONTACT_MESSAGE);
+    }
+  }
+
+  if (replyContent) {
+    reply(replyContent);
+  }
+}
+
 const CONTACT_MESSAGE = ` Please contact <@${DISCORD_OWNER_ID}>.`;
 async function interactionCreate(interaction: Interaction) {
   if (!interaction.isCommand()) return;
@@ -52,19 +80,20 @@ async function interactionCreate(interaction: Interaction) {
   if (!command) {
     interaction.reply("Unexpected error occurred. No command found." + CONTACT_MESSAGE);
   } else {
-    try {
-      await command.fn(interaction);
-    } catch (e) {
-      const reply = (msg: string) => (interaction.replied ? interaction.followUp(msg) : interaction.reply(msg));
+    attemptInteraction(interaction, command);
+  }
+}
 
-      const header = "COMMAND-" + command.name;
-      if (e instanceof CommandError) {
-        warn(header, e.message, e.stack);
-        reply(e.userMessage);
-      } else {
-        warn(header, "!!Uncaught command error!!", e);
-        reply("An unexpected error occurred." + CONTACT_MESSAGE);
-      }
+async function message(message: Message) {
+  if (!message.guild) return;
+
+  for (const command of guildCommands.values()) {
+    if (!command.pattern) continue;
+
+    const match = message.content.match(command.pattern.regExp);
+    if (match) {
+      attemptInteraction(new PatternInteraction(message, match, command.pattern.groups), command);
+      break;
     }
   }
 }
