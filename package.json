@@ -32,11 +32,12 @@
     "lint": "npx eslint src",
     "lint:fix": "npx eslint --fix src",
     "build": "npx tsc",
-    "build:debug": "npx tsc --sourceMap",
+    "build:debug": "npm run clean && npx tsc --sourceMap",
     "build:watch": "npx tsc -w",
     "clean": "rm -rf ./dist",
-    "start:debug": "npm run build:debug && npm run start",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/index.js",
+    "start:debug": "npm run clean && npm run build:debug && npm run start",
+    "start:prod": "npm run clean && npm run build && npm run start"
   },
   "dependencies": {
     "@discordjs/rest": "^0.1.0-canary.0",
