@@ -1,12 +1,16 @@
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { isClass } from "#discord/roles";
+import { oneLine } from "#shared/stringUtil";
 import { CommandError } from "../../classes/CommandError";
 
 export default new SlashCommandBuilder()
   .setName("reset-classes")
   .setDescription("Remove all your course related roles.")
   .setGroup("Roles")
-  .setDetails("")
+  .setDetails(
+    oneLine(`This command will go through your currently assigned roles and remove the ones associated with a course.
+      This is useful to use at the beginning or end of a semester`),
+  )
   .addExamples(["/reset-classes"])
   .setCallback(async interaction => {
     const guild = interaction.guild!;

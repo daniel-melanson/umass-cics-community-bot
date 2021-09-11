@@ -37,7 +37,10 @@ export default new SlashCommandBuilder()
   .setName("who-is")
   .setDescription("Displays information about a UMass CICS teaching staff member.")
   .setGroup("Information")
-  .setDetails("")
+  .setDetails(
+    oneLine(`Given a name query, this command will try and find a UMass CICS staff member with a similar
+    name. You can find the website that this information is scraped from [here](https://www.cics.umass.edu/people/all-faculty-staff/).`),
+  ) // TODO have bot scrape all staff instead of just teaching staff
   .addExamples(["/who-is person: Mark Corner"])
   .addStringOption(option =>
     option.setName("person").setDescription("The staff member to search for.").setRequired(true),

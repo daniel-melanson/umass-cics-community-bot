@@ -1,9 +1,14 @@
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
+import { oneLine } from "#shared/stringUtil";
 
 let optionVoteBuilder = new SlashCommandBuilder()
-  .setName("option-vote")
+  .setName("vote")
   .setDescription("Create a multiple choice poll in the current channel.")
+  .setDetails(
+    oneLine(`This command will create a emoji reaction based voting embed. You may supply up to 6 different
+    responses to the embed. The bot will automatically reply to the embed with each option's emoji.`),
+  )
   .addStringOption(option =>
     option.setName("question").setDescription("The question you would like to pose.").setRequired(true),
   );

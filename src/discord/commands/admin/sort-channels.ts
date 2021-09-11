@@ -2,6 +2,7 @@ import { CategoryChannel, Collection, GuildChannel } from "discord.js";
 
 import { CommandPermissionLevel, SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { CommandError } from "#discord/classes/CommandError";
+import { oneLine } from "#shared/stringUtil";
 
 function splitFilter<T>(array: Array<T>, test: (t: T) => boolean) {
   const passed = [];
@@ -38,7 +39,11 @@ export default new SlashCommandBuilder()
   .setDescription("Sorts all the course categories.")
   .setGroup("Administrative")
   .setPermissionLevel(CommandPermissionLevel.Administrator)
-  .setDetails("")
+  .setDetails(
+    oneLine(`Goes through each course channel category and sorts the channels alphabetically.
+    Discord does not provide a way to bulk edit channels, positions must be changed individually.
+    This causes the command to take around 2 minutes to finish sorting.`),
+  )
   .setCallback(async interaction => {
     await interaction.reply("Sorting categories...");
     const start = Date.now();

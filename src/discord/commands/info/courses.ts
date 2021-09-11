@@ -4,6 +4,7 @@ import { getCoursesFromSubject } from "#umass/courses";
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 import { CommandError } from "#discord/classes/CommandError";
+import { oneLine } from "#shared/stringUtil";
 
 function divideLines(lines: Array<string>) {
   const groups = [];
@@ -26,7 +27,11 @@ export default new SlashCommandBuilder()
   .setName("courses")
   .setDescription("Generates a list of courses given a subject.")
   .setGroup("Information")
-  .setDetails("")
+  .setDetails(
+    oneLine(`This command will fetch all course in a database given a course subject.
+    Optionally, you can filter the courses by level by providing a \`level\` argument.
+    In that situation, the courses will be listed out by title instead of id.`),
+  )
   .addExamples(["/courses subject: Statistics level: 100 Level"])
   .addStringOption(option =>
     option

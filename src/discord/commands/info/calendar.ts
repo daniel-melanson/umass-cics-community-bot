@@ -1,7 +1,7 @@
 import { getCurrentSemesters, getInSessionSemester } from "#umass/calendar";
 import { Semester } from "#umass/types";
 
-import { capitalize } from "#shared/stringUtil";
+import { capitalize, oneLine } from "#shared/stringUtil";
 
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
@@ -42,13 +42,20 @@ export default new SlashCommandBuilder()
   .setName("calendar")
   .setDescription("Lists out academic events for the current in-session semester.")
   .setGroup("Information")
-  .setDetails("")
+  .setDetails(
+    oneLine(`On a weekly basis, a child process will scrape the following [webpage](https://www.umass.edu/registrar/calendars/academic-calendar)
+    and store academic calender information in a database. This command will query that database and attempt to get the academic calendar of the
+    current in-session semester. If there are no in-session semesters, the command will fallback and fetch semesters that have not completed.
+    A semester is considered in-session if the current date is between the first and last day of classes. A semester is considered complete
+    if there are no events left in the semester. As an example, a semester that is currently in finals week is not in-session and incomplete.`),
+  )
   .setCallback(async interaction => {
     const semester = await trySemesterFetch(getInSessionSemester);
     if (!semester) {
       const semesters = await trySemesterFetch(getCurrentSemesters);
 
       if (semesters.length === 1) return doSemesterReply(interaction, semesters[0]);
+      if (semesters.length === 0) throw new Error("Should implement."); // TODO
 
       createChoiceListener(
         interaction,

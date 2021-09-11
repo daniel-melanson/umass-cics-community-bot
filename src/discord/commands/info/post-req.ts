@@ -4,6 +4,7 @@ import { COURSE_REGEXP_STRING, getCoursePostRequisites, searchCourses, SearchRes
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { createChoiceListener } from "../createChoiceListener";
 import { CommandError } from "#discord/classes/CommandError";
+import { oneLine } from "#shared/stringUtil";
 
 async function makeReply(course: Course) {
   let postReqs;
@@ -27,7 +28,11 @@ export default new SlashCommandBuilder()
   .setName("post-req")
   .setDescription("Searches for courses that a given course leads into.")
   .setGroup("Information")
-  .setDetails("")
+  .setDetails(
+    oneLine(`This command will find all courses that include a given course in the prerequisites.
+    This is helpful if you are unsure what to take and want to quickly find courses that you satisfy the
+    prerequisites for.`),
+  )
   .addExamples(["/post-req course: CS 187"])
   .addStringOption(option =>
     option.setName("course").setDescription("The root class to find dependents of.").setRequired(true),

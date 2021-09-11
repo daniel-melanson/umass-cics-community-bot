@@ -4,13 +4,23 @@ import { formatCourseIdFromQuery } from "#umass/courses";
 
 import { SlashCommandBuilder, CommandPermissionLevel } from "#discord/classes/SlashCommandBuilder";
 import { CommandError } from "../../classes/CommandError";
+import { oneLine } from "#shared/stringUtil";
 
 export default new SlashCommandBuilder()
   .setName("add-course")
   .setDescription("Create a role and channel for a course.")
   .setGroup("Administrative")
   .setPermissionLevel(CommandPermissionLevel.Administrator)
-  .setDetails("")
+  .setDetails(
+    oneLine(
+      `This command will create a new channel and role pairing for a given course.
+      The channel's name, category, description, position, and permissions will be automatically set.
+      The role's name, position, and permissions will also be set.
+      The permissions of the role will be set to \`0\`, meaning that the role grants no permissions.
+      The permissions of the channel will be as follows: The \`everyone\` role will be denied the \`VIEW_CHANNEL\` permission.
+      The new course role and \`Snooper\` role will granted \`VIEW_CHANNEL\``,
+    ),
+  )
   .addExamples(["/add-course id: CS 187 title: Programming With Data Structures"])
   .addStringOption(option => option.setName("id").setDescription("The course id (Ex. CS 187).").setRequired(true))
   .addStringOption(option =>
@@ -49,7 +59,7 @@ export default new SlashCommandBuilder()
       role = await guildRoleManager.create({
         name: `${subject} ${number}`,
         permissions: [],
-        position: separator.position,
+        position: separator.position, // TODO find better position
       });
     } catch (e) {
       throw new CommandError(
@@ -59,8 +69,9 @@ export default new SlashCommandBuilder()
     }
 
     const channels = guild.channels;
+    const categoryName = subject === "CS" && Boolean(number.match(/^[5-9]/)) ? "Graduate" : subject;
     const category = channels.cache.find(
-      c => c.type === "GUILD_CATEGORY" && !!c.name.match(new RegExp(`\\W+${subject} classes`, "i")),
+      c => c.type === "GUILD_CATEGORY" && !!c.name.match(new RegExp(`\\${categoryName} classes`, "i")),
     ) as CategoryChannel | undefined;
     if (!category)
       throw new CommandError("I'm sorry, I was unable to find the sorting category. Role created without channel.");
@@ -72,6 +83,7 @@ export default new SlashCommandBuilder()
         type: "GUILD_TEXT",
         parent: category,
         topic: title,
+        // TODO set better position
       });
     } catch (e) {
       throw new CommandError(

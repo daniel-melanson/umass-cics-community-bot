@@ -9,7 +9,7 @@ import { toMessageOptions } from "../../toMessageOptions";
 import { createChoiceListener } from "../createChoiceListener";
 import { CommandError } from "#discord/classes/CommandError";
 
-const ignoredKeys = new Set(["id", "title", "website", "description", "subject", "number"]);
+const ignoredKeys = new Set(["id", "title", "website", "description", "subject", "number"]); // TODO Whitelist instead of ignore.
 
 function makeReply(course: Course) {
   const fields = [];
@@ -35,7 +35,11 @@ export default new SlashCommandBuilder()
   .setName("what-is")
   .setDescription("Responds with information about a UMass CICS related course.")
   .setGroup("Information")
-  .setDetails("")
+  .setDetails(
+    oneLine(`Given a query, this command will attempt to find a course with a matching id.
+    It will then reply with information about that course, such as the true id, title, website,
+    description, credits, enrollment requirements, staff, etc...`),
+  )
   .addExamples(["/what-is course: CS 187"])
   .addStringOption(option => option.setName("course").setDescription("The course to search for.").setRequired(true))
   .setPattern(new RegExp(`^(what is|what'?s)\\s*(${COURSE_REGEXP_STRING})\\??$`, "i"), {
