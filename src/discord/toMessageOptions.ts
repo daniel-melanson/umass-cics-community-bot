@@ -1,6 +1,7 @@
 import { MessageEmbed, MessageOptions } from "discord.js";
 
-export function toMessageOptions(message: string | MessageEmbed): MessageOptions {
+export type ReplyResolvable = string | MessageEmbed;
+export function toMessageOptions(message: ReplyResolvable): MessageOptions {
   if (message instanceof MessageEmbed) {
     return {
       embeds: [message],

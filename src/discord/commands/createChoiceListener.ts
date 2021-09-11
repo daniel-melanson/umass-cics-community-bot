@@ -1,8 +1,7 @@
 import { CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import { toMessageOptions } from "./toMessageOptions";
+import { toMessageOptions, ReplyResolvable } from "#discord/toMessageOptions";
 
-type MessageResolvable = string | MessageEmbed;
-type ChoiceHandler = () => Promise<MessageResolvable> | MessageResolvable;
+type ChoiceHandler = () => Promise<ReplyResolvable> | ReplyResolvable;
 interface Choice {
   name: string;
   onChoose: ChoiceHandler;
