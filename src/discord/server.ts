@@ -27,7 +27,7 @@ import { CommandError } from "./classes/CommandError";
 import { PatternInteraction } from "./classes/PatternInteraction";
 import { ReplyResolvable, toMessageOptions } from "./toMessageOptions";
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"]!;
 const DISCORD_GUILD_ID = process.env["DISCORD_GUILD_ID"]!;
@@ -84,7 +84,7 @@ async function interactionCreate(interaction: Interaction) {
   }
 }
 
-async function message(message: Message) {
+async function messageCreate(message: Message) {
   if (!message.guild) return;
 
   for (const command of guildCommands.values()) {
@@ -268,7 +268,7 @@ export function initialize(): Promise<Client<true>> {
           log("MAIN", `Permissions set up.`);
 
           client.on("interactionCreate", interactionCreate);
-          client.on("message", message);
+          client.on("messageCreate", messageCreate);
           client.on("guildMemberAdd", guildMemberAdd);
 
           log("MAIN", "Application commands initialized. Ready for interaction.");
