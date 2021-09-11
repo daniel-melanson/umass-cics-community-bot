@@ -87,6 +87,16 @@ async function interactionCreate(interaction: Interaction) {
 async function messageCreate(message: Message) {
   if (!message.guild) return;
 
+  if (message.content.match(/!\w+/)) {
+    message.reply(
+      oneLine(`Discord has updated the way that users can interact with bots.
+      This was a huge change, and the library that I depend on needed to update.
+      The version that I depended on was deprecated, meaning that I could have broken without warning.
+      **I have been updated so that of my commands are now available via slash commands. Type \`/help\` to get started.**
+      I am sorry for the inconvenience.`),
+    );
+    return;
+  }
   for (const command of guildCommands.values()) {
     if (!command.pattern) continue;
 
