@@ -81,7 +81,7 @@ export default new SlashCommandBuilder()
     }
 
     const snooper = guildRoleCollection.find(r => r.name === "Snooper");
-    if (!snooper) return interaction.reply("I was unable to find the Snooper role.");
+    if (!snooper) throw new CommandError("I was unable to find the Snooper role.");
 
     await interaction.editReply("Updating permissions...");
     try {
@@ -112,7 +112,5 @@ export default new SlashCommandBuilder()
       );
     }
 
-    return interaction.followUp(
-      `Created <#${channel.id}> and <@&${role.id}> for ${id}: ${title}. Positioning is not handled.`,
-    );
+    return `Created <#${channel.id}> and <@&${role.id}> for ${id}: ${title}. Positioning is not handled.`;
   });

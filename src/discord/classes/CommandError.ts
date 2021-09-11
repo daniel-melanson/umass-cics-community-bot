@@ -1,5 +1,5 @@
 export class CommandError extends Error {
-  constructor(public readonly userMessage: string, internalMessage?: string) {
-    super(internalMessage);
+  constructor(public readonly userMessage: string, public readonly internalMessage?: string) {
+    super();
   }
 }
