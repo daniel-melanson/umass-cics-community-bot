@@ -4,7 +4,6 @@ import { SlashCommandSubcommandBuilder } from "#discord/classes/SlashCommandSubc
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { isAssignable } from "../../roles";
 import { oneLine } from "#shared/stringUtil";
-import { warn } from "#shared/logger";
 import { CommandError } from "../../classes/CommandError";
 
 function buildRoleSubcommand(name: string, description: string) {

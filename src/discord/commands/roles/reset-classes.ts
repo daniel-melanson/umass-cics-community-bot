@@ -1,5 +1,3 @@
-import { warn } from "#shared/logger";
-
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { isClass } from "#discord/roles";
 import { CommandError } from "../../classes/CommandError";

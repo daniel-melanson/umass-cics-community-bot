@@ -1,5 +1,11 @@
-import { MessageOptions } from "child_process";
-import { InteractionReplyOptions, Message, MessageEditOptions, MessagePayload, TextBasedChannels, User } from "discord.js";
+import {
+  InteractionReplyOptions,
+  Message,
+  MessageEditOptions,
+  MessagePayload,
+  TextBasedChannels,
+  User,
+} from "discord.js";
 
 export type OptionMatchGroups = Record<string, number>;
 

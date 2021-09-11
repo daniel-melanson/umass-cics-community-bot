@@ -104,7 +104,7 @@ async function cicsEventAnnouncement() {
 
 log("MAIN", "Logging in...");
 initialize()
-  .then(client => {
+  .then(() => {
     const localSchedule = (exp: string, func: () => void) =>
       cron.schedule(exp, func, {
         timezone: "America/New_York",

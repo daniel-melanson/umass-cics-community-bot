@@ -1,5 +1,3 @@
-import { warn } from "#shared/logger";
-
 import { CourseSubject } from "#umass/types";
 import { getCoursesFromSubject } from "#umass/courses";
 
