@@ -6,6 +6,7 @@ import { getStaffListFromQuery, ScoredStaff } from "#umass/staff";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { createChoiceListener } from "../createChoiceListener";
+import { CommandError } from "#discord/classes/CommandError";
 
 function createStaffEmbed(staff: Staff) {
   const otherNames = staff.names.slice(1);
