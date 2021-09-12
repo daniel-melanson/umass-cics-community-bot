@@ -1,20 +1,26 @@
 import { connectToCollection } from "./database";
 import { Semester } from "./types";
 
+let semesters: Array<Semester> = [];
+export async function fetchSemesters(): Promise<Array<Semester>> {
+  semesters = await connectToCollection("semesters", semesterCollection => semesterCollection.find().toArray());
+
+  return semesters;
+}
+
+export function getSemesters() {
+  return semesters as ReadonlyArray<Semester>;
+}
+
 /**
  * Returns the current in session semester based off of today's date.
  * There can only be one semester in session at a time.
  * The result of this method is based upon when classes start and end.
  * Exams times are not considered part of the semester.
  */
-export async function getInSessionSemester(): Promise<Semester | null> {
+export function getInSessionSemester(): Semester | undefined {
   const today = new Date();
-  return connectToCollection("semesters", semesterCollection =>
-    semesterCollection.findOne({
-      startDate: { $lte: today },
-      endDate: { $gte: today },
-    }),
-  );
+  return semesters.find(semester => semester.startDate <= today && semester.endDate >= today);
 }
 
 /**
@@ -23,18 +29,15 @@ export async function getInSessionSemester(): Promise<Semester | null> {
  * As an example, by the time grades are due for the fall semester, the winter semester has already started.
  * In such a case, this method will return both the fall semester and the winter semester.
  */
-export async function getCurrentSemesters(): Promise<Array<Semester>> {
+export function getCurrentSemesters(): Array<Semester> {
   const haveEvents: Array<Semester> = [];
 
-  await connectToCollection("semesters", async semesterCollection => {
-    const semesterCursor = await semesterCollection.find().toArray();
-    const today = new Date();
-    semesterCursor.forEach(semester => {
-      const events = semester.events;
-      if (events[0].date <= today && events[events.length - 1].date >= today) {
-        haveEvents.push(semester);
-      }
-    });
+  const today = new Date();
+  semesters.forEach(semester => {
+    const events = semester.events;
+    if (events[0].date <= today && events[events.length - 1].date >= today) {
+      haveEvents.push(semester);
+    }
   });
 
   return haveEvents.sort((a, b) => a.startDate.valueOf() - b.startDate.valueOf());

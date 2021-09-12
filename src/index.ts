@@ -4,7 +4,7 @@ import cron from "node-cron";
 config();
 
 import { initialize, announce } from "#discord/server";
-import { getInSessionSemester, getCurrentSemesters } from "#umass/calendar";
+import { getInSessionSemester, getCurrentSemesters, fetchSemesters } from "#umass/calendar";
 import { getCICSEvents } from "#umass/events";
 import { error, log } from "#shared/logger";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
@@ -102,8 +102,9 @@ async function cicsEventAnnouncement() {
   }
 }
 
-log("MAIN", "Logging in...");
-initialize()
+log("MAIN", "Fetching prerequisite data...");
+fetchSemesters()
+  .then(() => initialize())
   .then(() => {
     const localSchedule = (exp: string, func: () => void) =>
       cron.schedule(exp, func, {

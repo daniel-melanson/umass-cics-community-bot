@@ -1,10 +1,11 @@
-import { exec } from "child_process";
+import { exec, ExecOptions } from "child_process";
 
 import { Collection, Db, MongoClient } from "mongodb";
 
 import { log, warn } from "#shared/logger";
 
 import { Staff, Semester, Course } from "./types";
+import { fetchSemesters } from "./calendar";
 
 const CONNECTION_STRING = process.env["MONGO_CONNECTION_STRING"] || "";
 
@@ -14,7 +15,7 @@ const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
 const UPDATE_TIME = DAY * 7;
 
-let currentDatabase = "umass_0";
+const currentDatabase = "umass_0";
 async function connectToDatabase<T>(callback: (db: Db) => Promise<T>): Promise<T> {
   const client = await new MongoClient(CONNECTION_STRING.replace("DATABASE", currentDatabase)).connect();
 
@@ -41,11 +42,23 @@ export function connectToCollection<T extends UMassCollection, U>(
   return connectToDatabase(db => callback(db.collection(collection)));
 }
 
+function execAsync(command: string, options: ExecOptions) {
+  return new Promise((res, rej) => {
+    exec(command, options, (error, stdout) => {
+      if (error) {
+        rej(error);
+      } else {
+        res(stdout);
+      }
+    });
+  });
+}
+
 function updateDatabase(_recursive = false): void {
   const nextDatabase = currentDatabase === "umass_0" ? "umass_1" : "umass_0";
   const client = new MongoClient(CONNECTION_STRING);
 
-  log("UMASS", "Initializing update...");
+  log("UMASS", "Updating database...");
   client
     .connect()
     .then(client =>
@@ -54,24 +67,15 @@ function updateDatabase(_recursive = false): void {
         .dropDatabase()
         .then(() => {
           log("UMASS", "Scraping...");
-          exec(
-            `/usr/bin/python3.8 ${process.env["DATABASE_UPDATER_PATH"]} ${nextDatabase}`,
-            {
-              timeout: 2 * HOUR,
-            },
-            (error, stdout, stderr) => {
-              if (error) {
-                warn("UMASS", "Scraping process failed.", error, stdout, stderr);
-              } else {
-                log("UMASS", "Scraping process succeeded. Update finished.");
-                currentDatabase = nextDatabase;
-              }
-            },
-          );
-        })
-        .catch(e => warn("UMASS", "Failed to drop database.", e)),
+
+          return execAsync(`/usr/bin/python3.8 ${process.env["DATABASE_UPDATER_PATH"]} ${nextDatabase}`, {
+            timeout: 2 * HOUR,
+          });
+        }),
     )
-    .catch(e => warn("UMASS", "Failed to connect while updating.", e));
+    .then(() => fetchSemesters())
+    .then(() => log("UMASS", "Update successful."))
+    .catch(e => warn("UMASS", "Update failed:", e));
 
   if (_recursive) setTimeout(updateDatabase, UPDATE_TIME, true);
 }
