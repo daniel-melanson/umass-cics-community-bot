@@ -206,6 +206,7 @@ export async function announce(
 
 export function initialize(): Promise<Client<true>> {
   return new Promise((res, rej) => {
+    log("MAIN", "Logging in...");
     client
       .on("ready", async client => {
         log("MAIN", `Logged in as ${client.user.tag}.`);
