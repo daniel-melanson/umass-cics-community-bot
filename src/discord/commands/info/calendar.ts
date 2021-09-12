@@ -1,4 +1,4 @@
-import { getCurrentSemesters, getInSessionSemester } from "#umass/calendar";
+import { getCurrentSemesters, getInSessionSemester, getSemesters } from "#umass/calendar";
 import { Semester } from "#umass/types";
 
 import { capitalize, oneLine } from "#shared/stringUtil";
@@ -6,22 +6,7 @@ import { capitalize, oneLine } from "#shared/stringUtil";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { CommandError } from "#discord/classes/CommandError";
-import { CommandInteraction } from "discord.js";
 import { createChoiceListener } from "../createChoiceListener";
-
-async function trySemesterFetch<T>(func: () => Promise<T>): Promise<T> {
-  let semester;
-  try {
-    semester = await func();
-  } catch (e) {
-    throw new CommandError(
-      "I'm sorry, I had some trouble connecting to the database.",
-      "Unable to fetch semester: " + e,
-    );
-  }
-
-  return semester;
-}
 
 function makeSemesterEmbed(semester: Semester) {
   return new MessageEmbedBuilder({
@@ -29,12 +14,6 @@ function makeSemesterEmbed(semester: Semester) {
     description: semester.events.reduce((prev, current) => {
       return prev + `**${current.date.toLocaleDateString()}**: ${current.description}\n`;
     }, ""),
-  });
-}
-
-function doSemesterReply(interaction: CommandInteraction, semester: Semester) {
-  return interaction.reply({
-    embeds: [makeSemesterEmbed(semester)],
   });
 }
 
@@ -50,30 +29,45 @@ export default new SlashCommandBuilder()
     if there are no events left in the semester. As an example, a semester that is currently in finals week is not in-session and incomplete.`),
   )
   .setCallback(async interaction => {
-    const semester = await trySemesterFetch(getInSessionSemester);
+    const semester = getInSessionSemester();
     if (!semester) {
-      const semesters = await trySemesterFetch(getCurrentSemesters);
+      let semesters = getCurrentSemesters();
 
-      if (semesters.length === 1) return doSemesterReply(interaction, semesters[0]);
-      if (semesters.length === 0) throw new Error("Should implement."); // TODO
+      if (semesters.length === 1) return makeSemesterEmbed(semesters[0]);
+      else if (semesters.length === 0) {
+        const now = Date.now();
+        semesters = getSemesters().filter(sem => sem.startDate.valueOf() > now);
+        if (semesters.length === 0)
+          throw new CommandError(
+            oneLine(`I'm sorry. It seems that I do not have the next semester in my database. You can find calender information here: 
+              https://www.umass.edu/registrar/calendars/academic-calendar`),
+          );
 
-      createChoiceListener(
-        interaction,
-        "Which semester would you like to see?",
-        semesters.map(semester => {
-          const embed = makeSemesterEmbed(semester);
-          return {
-            name: embed.title!,
-            onChoose: () => embed,
-          };
-        }),
-      );
+        let closest = semesters[0];
+        let closestDiff = closest.startDate.valueOf() - now;
+        for (let i = 1; i < semesters.length; i++) {
+          const diff = semesters[i].startDate.valueOf() - now;
+          if (diff < closestDiff) {
+            closest = semesters[i];
+            closestDiff = diff;
+          }
+        }
+
+        return makeSemesterEmbed(closest);
+      } else {
+        createChoiceListener(
+          interaction,
+          "Which semester would you like to see?",
+          semesters.map(semester => {
+            const embed = makeSemesterEmbed(semester);
+            return {
+              name: embed.title!,
+              onChoose: () => embed,
+            };
+          }),
+        );
+      }
     } else {
-      return doSemesterReply(interaction, semester);
+      return makeSemesterEmbed(semester);
     }
-
-    throw new CommandError(
-      "It seems that I have no semesters in my database. You can get your information here: https://www.umass.edu/registrar/calendars/academic-calendar",
-      "No semesters in DB to fetch.",
-    );
   });
