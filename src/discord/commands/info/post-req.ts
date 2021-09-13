@@ -50,9 +50,9 @@ export default new SlashCommandBuilder()
     }
 
     if (search.error) {
-      return interaction.reply(search.error);
+      return search.error;
     } else if (search.result.length === 1) {
-      interaction.reply(await makeReply(search.result[0]));
+      return await makeReply(search.result[0]);
     } else {
       createChoiceListener(
         interaction,

@@ -23,7 +23,7 @@ export default new SlashCommandBuilder()
     const courseRoleCollection = roleCollection.filter(role => isClass(role.name));
 
     if (courseRoleCollection.size <= 0) {
-      return interaction.reply("You do not have any course related roles to remove.");
+      return "You do not have any course related roles to remove.";
     }
 
     try {
@@ -35,9 +35,7 @@ export default new SlashCommandBuilder()
       );
     }
 
-    return interaction.reply(
-      `You no longer have the following ${courseRoleCollection.size > 1 ? "roles" : "role"}: ${courseRoleCollection
-        .map(role => role.name)
-        .join(", ")}`,
-    );
+    return `You no longer have the following ${courseRoleCollection.size > 1 ? "roles" : "role"}: ${courseRoleCollection
+      .map(role => role.name)
+      .join(", ")}`;
   });

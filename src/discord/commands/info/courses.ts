@@ -113,13 +113,9 @@ export default new SlashCommandBuilder()
         });
       }
 
-      return interaction.reply({
-        embeds: [
-          new MessageEmbedBuilder({
-            title: `UMass ${subject} Courses`,
-            fields: fields,
-          }),
-        ],
+      return new MessageEmbedBuilder({
+        title: `UMass ${subject} Courses`,
+        fields: fields,
       });
     }
   });
