@@ -14,8 +14,8 @@ export default new SlashCommandBuilder()
   .setDetails(
     oneLine(
       `This command will create a new channel and role pairing for a given course.
-      The channel's name, category, description, position, and permissions will be automatically set.
-      The role's name, position, and permissions will also be set.
+      The channel's name, category, description, and permissions will be automatically set.
+      The role's name, and permissions will also be set.
       The permissions of the role will be set to \`0\`, meaning that the role grants no permissions.
       The permissions of the channel will be as follows: The \`everyone\` role will be denied the \`VIEW_CHANNEL\` permission.
       The new course role and \`Snooper\` role will granted \`VIEW_CHANNEL\``,
@@ -59,7 +59,7 @@ export default new SlashCommandBuilder()
       role = await guildRoleManager.create({
         name: `${subject} ${number}`,
         permissions: [],
-        position: separator.position, // TODO find better position
+        position: separator.position,
       });
     } catch (e) {
       throw new CommandError(
@@ -71,19 +71,19 @@ export default new SlashCommandBuilder()
     const channels = guild.channels;
     const categoryName = subject === "CS" && Boolean(number.match(/^[5-9]/)) ? "Graduate" : subject;
     const category = channels.cache.find(
-      c => c.type === "GUILD_CATEGORY" && !!c.name.match(new RegExp(`\\${categoryName} classes`, "i")),
+      c => c.type === "GUILD_CATEGORY" && !!c.name.match(new RegExp(`${categoryName} classes`, "i")),
     ) as CategoryChannel | undefined;
     if (!category)
       throw new CommandError("I'm sorry, I was unable to find the sorting category. Role created without channel.");
 
     await interaction.editReply("Creating channel...");
+
     let channel;
     try {
       channel = await guild.channels.create(number, {
         type: "GUILD_TEXT",
         parent: category,
         topic: title,
-        // TODO set better position
       });
     } catch (e) {
       throw new CommandError(
@@ -124,5 +124,5 @@ export default new SlashCommandBuilder()
       );
     }
 
-    return `Created <#${channel.id}> and <@&${role.id}> for ${id}: ${title}. Positioning is not handled.`;
+    return `Created <#${channel.id}> and <@&${role.id}> for ${id}: ${title}. Positioning and color is not handled.`;
   });
