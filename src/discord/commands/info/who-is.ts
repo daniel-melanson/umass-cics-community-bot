@@ -14,15 +14,25 @@ function createStaffEmbed(staff: Staff) {
     otherNames.length >= 1
       ? ` This staff member also goes by the name${otherNames.length > 1 ? "s" : ""} ${otherNames.join(", ")}.`
       : "";
+
+  let desc = `${staff.title}.${aliases} You can contact them using their email: [${staff.email}](mailto:${staff.email})`;
+  if (staff.phone) {
+    desc += `or phone number: ${staff.phone}.`;
+  }
+
+  if (staff.office) {
+    desc += `You can find them in their office located at ${staff.office}.`;
+  }
+
   return new MessageEmbedBuilder({
     author: {
       name: staff.names[0],
       iconURL: staff.photo,
       url: staff.website,
     },
-    description: `${staff.title}.${aliases} You can contact them using their email: ${staff.email}`,
+    description: desc,
     fields:
-      staff.courses.length > 0
+      staff.courses && staff.courses.length > 0
         ? [
             {
               name: "Courses",
@@ -40,7 +50,7 @@ export default new SlashCommandBuilder()
   .setDetails(
     oneLine(`Given a name query, this command will try and find a UMass CICS staff member with a similar
     name. You can find the website that this information is scraped from [here](https://www.cics.umass.edu/people/all-faculty-staff/).`),
-  ) // TODO have bot scrape all staff instead of just teaching staff
+  )
   .addExamples(["/who-is person: Mark Corner"])
   .addStringOption(option =>
     option.setName("person").setDescription("The staff member to search for.").setRequired(true),

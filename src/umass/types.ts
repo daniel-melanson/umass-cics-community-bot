@@ -32,8 +32,10 @@ export interface Course {
 export interface Staff {
   names: Array<string>;
   title: string;
-  photo: string;
   email: string;
   website: string;
-  courses: Array<string>;
+  photo?: string;
+  phone?: string;
+  office?: string;
+  courses?: Array<string>;
 }
