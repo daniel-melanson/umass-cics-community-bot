@@ -65,7 +65,7 @@ export default new SlashCommandBuilder()
       }
     }
 
-    return interaction.editReply(
+    await interaction.editReply(
       `Sorted all channels in all course categories in ${Math.round((Date.now() - start) / 1000)} seconds.`,
     );
   });

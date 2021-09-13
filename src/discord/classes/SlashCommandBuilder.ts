@@ -13,7 +13,9 @@ import { SharedNameAndDescription } from "./mixins/NameAndDescription";
 import { OptionMatchGroups, PatternInteraction } from "./PatternInteraction";
 import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "./SlashCommandSubcommands";
 
-export type SlashCommandCallback = (interaction: CommandInteraction | PatternInteraction) => Promise<ReplyResolvable>;
+type Result = ReplyResolvable | void;
+type SlashCommandCallbackResult = Promise<Result> | Result;
+export type SlashCommandCallback = (interaction: CommandInteraction | PatternInteraction) => SlashCommandCallbackResult;
 
 export enum CommandPermissionLevel {
   Owner = "Owner",
@@ -213,7 +215,7 @@ export class SlashCommandBuilder<T extends boolean = false> {
   public setCallback(
     callback: (
       interaction: T extends true ? CommandInteraction | PatternInteraction : CommandInteraction,
-    ) => Promise<unknown> | unknown,
+    ) => SlashCommandCallbackResult,
   ) {
     Reflect.set(this, "callback", callback);
 

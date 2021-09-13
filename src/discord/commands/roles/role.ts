@@ -124,5 +124,5 @@ export default new SlashCommandBuilder()
       reply += "\n";
     }
 
-    await interaction.reply(reply);
+    return reply;
   });

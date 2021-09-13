@@ -45,8 +45,8 @@ export default new SlashCommandBuilder()
     }
 
     if (image) {
-      return interaction.editReply({
-        content: "Expression rendered:",
+      interaction.editReply({
+        content: null,
         files: [
           {
             attachment: image,
@@ -55,7 +55,7 @@ export default new SlashCommandBuilder()
         ],
       });
     } else {
-      return interaction.editReply({
+      interaction.editReply({
         content: `Unable to convert TeX to png. \`\`\`${error}\`\`\``,
       });
     }

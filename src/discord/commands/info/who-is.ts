@@ -68,14 +68,9 @@ export default new SlashCommandBuilder()
     }
 
     if (!queryResult || (queryResult instanceof Array && queryResult.length === 0)) {
-      return interaction.reply({
-        content: "I was unable to find staff member with that name.",
-        ephemeral: true,
-      });
+      return "I was unable to find staff member with that name.";
     } else if (queryResult.length === 1 || queryResult[0]._score >= 1) {
-      return interaction.reply({
-        embeds: [createStaffEmbed(queryResult[0])],
-      });
+      return createStaffEmbed(queryResult[0]);
     } else if (queryResult.length > 1) {
       createChoiceListener(
         interaction,
