@@ -50,4 +50,12 @@ export function createChoiceListener(
       interaction.editReply(option);
     });
   });
+
+  collector.on("end", () => {
+    interaction.editReply({
+      components: components.map(row =>
+        new MessageActionRow().addComponents(row.components.map(comp => comp.setDisabled(true))),
+      ),
+    });
+  });
 }
