@@ -126,6 +126,7 @@ connectToDatabase()
     process.on("SIGINT", async () => {
       client.destroy();
       await closeDatabaseConnection();
+      process.exit();
     });
   })
   .catch(rej => error("MAIN", "Failed to login", rej));
