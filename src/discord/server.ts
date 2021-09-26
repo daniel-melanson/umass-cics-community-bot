@@ -45,12 +45,25 @@ if (!DISCORD_OWNER_ID) {
   error("MAIN", "Environment variable 'DISCORD_OWNER_ID' was not defined.");
 }
 
+const CONTACT_MESSAGE = ` Please contact <@${DISCORD_OWNER_ID}>.`;
 const guildCommands = new Map<string, Command>();
 
 async function attemptInteraction(interaction: CommandInteraction | PatternInteraction, command: Command) {
-  const reply = (msg: ReplyResolvable) => {
-    const msgOptions = toMessageOptions(msg);
-    interaction.replied ? interaction.followUp(msgOptions) : interaction.reply(msgOptions);
+  const reply = (msg: MessageOptions, ephemeral?: boolean) => {
+    if (interaction instanceof CommandInteraction) {
+      const payload = Object.assign(
+        {
+          ephemeral: ephemeral,
+        },
+        msg,
+      );
+
+      (interaction.replied ? interaction.followUp(payload) : interaction.reply(payload)).catch(e =>
+        warn("DISCORD", "Unable to send user reply:", e),
+      );
+    } else {
+      interaction.reply(msg);
+    }
   };
 
   let replyContent;
@@ -59,20 +72,17 @@ async function attemptInteraction(interaction: CommandInteraction | PatternInter
   } catch (e) {
     const header = "COMMAND-" + command.name;
     if (e instanceof CommandError) {
-      reply(e.userMessage);
+      reply(toMessageOptions(e.userMessage), true);
       if (e.internalMessage) warn(header, e.internalMessage, e.stack);
     } else {
       warn(header, "!!Uncaught command error!!", e);
-      reply("An unexpected error occurred." + CONTACT_MESSAGE);
+      reply(toMessageOptions("An unexpected error occurred." + CONTACT_MESSAGE), true);
     }
   }
 
-  if (replyContent) {
-    reply(replyContent);
-  }
+  if (replyContent) reply(toMessageOptions(replyContent));
 }
 
-const CONTACT_MESSAGE = ` Please contact <@${DISCORD_OWNER_ID}>.`;
 async function interactionCreate(interaction: Interaction) {
   if (!interaction.isCommand()) return;
 
