@@ -8,17 +8,17 @@ on:
 
 jobs:
   lint:
-  name: ESLint
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@master
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
 
-    - name: Install NPM dependencies
-      uses: bahmutov/npm-install@master
+      - name: Install NPM dependencies
+        uses: bahmutov/npm-install@master
 
-    - name: Run ESLint
-      run: npm run lint
+      - name: Run ESLint
+        run: npm run lint
 
-    - name: Build
-      run: npm run build
+      - name: Build
+        run: npm run build
