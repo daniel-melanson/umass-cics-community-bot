@@ -2,7 +2,6 @@
 
 Simple discord bot for the UMass CICS Community server written in TypeScript.
 
-**This branch represents version 3.0. Notably, all commands will be switched to Discord interactions.**
 ## Notable Features
 - TBD
 
