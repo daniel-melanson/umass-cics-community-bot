@@ -29,6 +29,7 @@ function createSemesterChoiceListener(interaction: CommandInteraction, semesters
         onChoose: () => embed,
       };
     }),
+    true,
   );
 }
 

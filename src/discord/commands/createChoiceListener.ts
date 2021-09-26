@@ -12,8 +12,9 @@ export function createChoiceListener(
   interaction: CommandInteraction | PatternInteraction,
   reply: string | MessageEmbed,
   choices: Array<Choice>,
+  defaultOrder?: boolean,
 ) {
-  choices.sort((a, b) => a.name.localeCompare(b.name));
+  if (!defaultOrder) choices.sort((a, b) => a.name.localeCompare(b.name));
 
   const choiceHandlers = new Map<string, ChoiceHandler>();
   const components: Array<MessageActionRow> = [];
