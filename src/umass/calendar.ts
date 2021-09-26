@@ -5,6 +5,8 @@ let semesters: Array<Semester> = [];
 export async function fetchSemesters(): Promise<Array<Semester>> {
   semesters = await connectToCollection("semesters", semesterCollection => semesterCollection.find().toArray());
 
+  semesters.sort((a, b) => a.startDate.valueOf() - b.startDate.valueOf());
+
   return semesters;
 }
 
