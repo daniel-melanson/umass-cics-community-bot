@@ -1,18 +1,14 @@
-# UMass CICS Discord Bot
+# UMass CICS Community Bot
 
 Simple discord bot for the UMass CICS Community server written in TypeScript.
 
-Once [#4879](https://github.com/discordjs/discord.js/pull/4879) and [#5106](https://github.com/discordjs/discord.js/pull/5106) go through, the project will need to be updated to use discord slash command.
-
 ## Notable Features
-- Commands to display information about CICS related (CS, INFO, MATH, STAT) classes.
-- Announce academic calender events such as when the add/drop period ends.
-- TeX expression rendering.
+- TBD
 
 ## Contributing
 
 ### Where do I start?
-1. [Fork the repository](https://github.com/daniel-melanson/UMass-CICS-Discord-Bot/fork)
+1. [Fork the repository](hhttps://github.com/daniel-melanson/umass-cics-community-bot/fork)
 2. Clone your fork: `git clone https://github.com/your-username/UMass-CICS-Discord-Bot.git`
 3. Create a branch with your edits: `git checkout -b feature-name`
 4. Commit your changes: `git commit -am 'My features description'`
@@ -20,7 +16,7 @@ Once [#4879](https://github.com/discordjs/discord.js/pull/4879) and [#5106](http
 6. Submit a pull request
 
 ### Local Testing
-1. Create a new discord server with.
+1. Create a new discord server (guild).
 2. [Create and invite a bot to the server](https://github.com/jagrosh/MusicBot/wiki/Adding-Your-Bot-To-Your-Server).
 3. Create a `.env` file in the following format: 
 ```
