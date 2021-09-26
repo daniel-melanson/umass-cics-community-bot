@@ -6,8 +6,9 @@ config();
 import { initialize, announce } from "#discord/server";
 import { getInSessionSemester, getCurrentSemesters, fetchSemesters } from "#umass/calendar";
 import { getCICSEvents } from "#umass/events";
-import { error, log } from "#shared/logger";
+import { error, log, warn } from "#shared/logger";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
+import { closeDatabaseConnection, connectToDatabase } from "#umass/database";
 
 const sameDay = (d0: Date, d1: Date) =>
   d0.getUTCDate() === d1.getUTCDate() &&
@@ -43,7 +44,7 @@ async function academicCalendarAnnouncement() {
       }
     }
   } catch (e) {
-    console.warn(`Unable to post Academic Calendar Notice: ${e}`);
+    warn("MAIN", "Unable to post Academic Calendar Notice.", e);
   }
 }
 
@@ -64,7 +65,7 @@ async function semesterPercentAnnouncement() {
       );
     }
   } catch (e) {
-    console.warn(`Unable to post semester percentage: ${e}`);
+    warn("MAIN", "Unable to post semester percentage.", e);
   }
 }
 
@@ -98,14 +99,15 @@ async function cicsEventAnnouncement() {
       );
     }
   } catch (e) {
-    console.warn("[CICS-EVENTS] Unable to get events: " + e);
+    warn("MAIN", "Unable to get events.", e);
   }
 }
 
 log("MAIN", "Fetching prerequisite data...");
-fetchSemesters()
-  .then(() => initialize())
-  .then(() => {
+connectToDatabase()
+  .then(fetchSemesters)
+  .then(initialize)
+  .then(client => {
     const localSchedule = (exp: string, func: () => void) =>
       cron.schedule(exp, func, {
         timezone: "America/New_York",
@@ -114,5 +116,16 @@ fetchSemesters()
     localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
     localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
     localSchedule("0 0 7 * * *", cicsEventAnnouncement);
+
+    if (process.send) {
+      process.send("ready");
+    } else {
+      warn("MAIN", "No process.send");
+    }
+
+    process.on("SIGINT", async () => {
+      client.destroy();
+      await closeDatabaseConnection();
+    });
   })
   .catch(rej => error("MAIN", "Failed to login", rej));
