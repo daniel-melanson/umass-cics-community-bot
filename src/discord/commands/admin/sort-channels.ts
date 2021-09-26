@@ -45,7 +45,7 @@ export default new SlashCommandBuilder()
     This causes the command to take around 2 minutes to finish sorting.`),
   )
   .setCallback(async interaction => {
-    await interaction.reply("Sorting categories...");
+    await interaction.reply("Sorting categories, this may take a few minutes... ");
     const start = Date.now();
     const guild = interaction.guild!;
     const guildChannels = await guild.channels.fetch();
