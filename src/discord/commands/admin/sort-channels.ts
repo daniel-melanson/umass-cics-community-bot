@@ -3,6 +3,7 @@ import { CategoryChannel, Collection, GuildChannel } from "discord.js";
 import { CommandPermissionLevel, SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { CommandError } from "#discord/classes/CommandError";
 import { oneLine } from "#shared/stringUtil";
+import { COURSE_NUMBER_REGEXP } from "#umass/courses";
 
 function splitFilter<T>(array: Array<T>, test: (t: T) => boolean) {
   const passed = [];
@@ -15,12 +16,11 @@ function splitFilter<T>(array: Array<T>, test: (t: T) => boolean) {
   return [passed, failed];
 }
 
-const courseNumberRegExp = /\d{3}[a-z]*/i;
 const channelSorter = (a: GuildChannel, b: GuildChannel) => a.name.localeCompare(b.name);
 async function sortCategory(category: CategoryChannel) {
   const [generalChannels, courseChannels] = splitFilter(
     Array.from(category.children.values()),
-    child => !courseNumberRegExp.test(child.name),
+    child => !COURSE_NUMBER_REGEXP.test(child.name),
   );
 
   generalChannels.sort(channelSorter);

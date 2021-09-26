@@ -6,19 +6,26 @@ import { connectToCollection } from "./database";
 import { Course, CourseSubject } from "./types";
 
 export const SHORTENED_SUBJECT_REGEXP_STRING =
-  "(CS|MATH|STATS|STAT|CICS|INFO|COMPSCI|STATISTIC|INFORMATICS|MATHEMATICS|COMP SCI)";
+  "(C|CS|COMP SCI|COMPSCI|CICS|S|STATS|STAT|STATISTIC|INFO|INFORMATICS|M|MATHEMATICS|MATH)";
 
-export const COURSE_REGEXP_STRING = `${SHORTENED_SUBJECT_REGEXP_STRING}?\\s*h?\\d{3}\\w*`;
+export const COURSE_NUMBER_REGEXP_STRING = "\\d{3}[a-z]*";
 
-export function getExactCourseSubject(subject: string): CourseSubject | undefined {
-  subject = subject.toUpperCase();
-  if (!subject.match(new RegExp(SHORTENED_SUBJECT_REGEXP_STRING))) return undefined;
+export const COURSE_NUMBER_REGEXP = new RegExp(COURSE_NUMBER_REGEXP_STRING);
 
+export const COURSE_REGEXP_STRING = `${SHORTENED_SUBJECT_REGEXP_STRING}?\\s*h?${COURSE_NUMBER_REGEXP_STRING}`;
+
+export function formatCourseIdFromQuery(query: string, shorthandSubject?: boolean): string | undefined {
+  const match = query.trim().match(new RegExp(`^${SHORTENED_SUBJECT_REGEXP_STRING}\\s*(h?\\d{3}\\w*)$`, "im"));
+
+  if (match === null) return undefined;
+
+  let subject = match[1];
   switch (subject) {
     case "C":
     case "CS":
     case "COMP SCI":
-      subject = "COMPSCI";
+    case "COMPSCI":
+      subject = shorthandSubject ? "CS" : "COMPSCI";
       break;
     case "MATHEMATICS":
     case "M":
@@ -27,20 +34,13 @@ export function getExactCourseSubject(subject: string): CourseSubject | undefine
     case "STATS":
     case "STAT":
     case "S":
-      subject = "STATISTIC";
+      subject = shorthandSubject ? "STAT" : "STATISTIC";
       break;
     case "INFORMATICS":
       subject = "INFO";
   }
 
-  return subject as CourseSubject;
-}
-
-export function formatCourseIdFromQuery(query: string): string | undefined {
-  const match = query.trim().match(new RegExp(`^${SHORTENED_SUBJECT_REGEXP_STRING}\\s*(h?\\d{3}\\w*)$`, "im"));
-
-  if (match === null) return undefined;
-  return `${getExactCourseSubject(match[1])} ${match[2].toUpperCase()}`;
+  return `${subject} ${match[2].toUpperCase()}`;
 }
 
 export interface SearchResult {
