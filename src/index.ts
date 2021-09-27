@@ -121,7 +121,7 @@ connectToDatabase()
     const activities: Array<ActivitiesOptions> = [
       {
         type: "LISTENING",
-        name: "to /help",
+        name: "/help",
       },
       {
         type: "WATCHING",
@@ -129,7 +129,7 @@ connectToDatabase()
       },
       {
         type: "PLAYING",
-        name: "Jon the CyberSec club!",
+        name: "Join the CyberSec club!",
       },
     ];
 
