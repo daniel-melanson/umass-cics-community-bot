@@ -95,7 +95,7 @@ async function interactionCreate(interaction: Interaction) {
 }
 
 async function messageCreate(message: Message) {
-  if (!message.guild) return;
+  if (!message.guild || message.author.bot) return;
 
   if (message.content.match(/^!\w+/)) {
     message.reply(
