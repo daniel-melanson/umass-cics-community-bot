@@ -273,7 +273,14 @@ export function initialize(): Promise<Client<true>> {
 
             const permissionLevel = command.permissionLevel;
             if (permissionLevel !== CommandPermissionLevel.Member) {
-              const permissionArray = [ownerPermission];
+              const permissionArray: Array<ApplicationCommandPermissions> = [
+                ownerPermission,
+                {
+                  id: guild.roles.everyone.id,
+                  type: "ROLE",
+                  permission: false,
+                },
+              ];
 
               if (permissionLevel === CommandPermissionLevel.Moderator) {
                 permissionArray.push(moderatorPermission);
