@@ -124,6 +124,22 @@ async function messageCreate(message: Message) {
     }
 
     setTimeout(message.delete, 3000);
+  } else if (message.content.match(/\(?u(pvote)?\/d(ownvote)?\)?$/i)) {
+    const emojis = message.guild.emojis.cache;
+
+    const find = (name: string) => emojis.find(e => e.name === name);
+    let upvote, downvote;
+    if (!(upvote = find("upvote")) || !(downvote = find("downvote"))) {
+      warn("DISCORD", "Unable to find upvote and downvote emojis.");
+      return;
+    }
+
+    try {
+      await message.react(upvote);
+      await message.react(downvote);
+    } catch (e) {
+      message.reply("unable to react with emotes.");
+    }
   } else if (message.content.match(/^!\w+/)) {
     message.reply(
       oneLine(`Discord has updated the way that users can interact with bots.
