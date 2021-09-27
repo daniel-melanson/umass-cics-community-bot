@@ -3,7 +3,14 @@
 Simple discord bot for the UMass CICS Community server written in TypeScript.
 
 ## Notable Features
-- TBD
+- Command to search for UMass CICS staff members.
+- Various commands to query computer science related courses and filter by subject, level, prerequisites, etc.
+- Daily reminders of events happening in the college, scraped directly from the website.
+- Reminders for academic calender events, such as when finals start, or when there is a recess. 
+
+## To-Do
+- COVID Dashboard updates
+- Image creation and manipulation?
 
 ## Contributing
 
