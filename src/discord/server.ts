@@ -25,7 +25,7 @@ import { Command, CommandPermissionLevel } from "./classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "./classes/MessageEmbedBuilder";
 import { CommandError } from "./classes/CommandError";
 import { PatternInteraction } from "./classes/PatternInteraction";
-import { ReplyResolvable, toMessageOptions } from "./toMessageOptions";
+import { toMessageOptions } from "./toMessageOptions";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
