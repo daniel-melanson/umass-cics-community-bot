@@ -97,7 +97,34 @@ async function interactionCreate(interaction: Interaction) {
 async function messageCreate(message: Message) {
   if (!message.guild || message.author.bot) return;
 
-  if (message.content.match(/^!\w+/)) {
+  if (message.content === "^" && message.deletable) {
+    const previousMessage = (
+      await message.channel.messages.fetch({
+        limit: 1,
+        before: message.id,
+      })
+    ).first();
+
+    if (previousMessage) {
+      if (previousMessage.author.id === message.author.id) {
+        message.reply("just tried to upvote their own message. Shame on them.");
+      } else {
+        const upvote = message.guild.emojis.cache.find(e => e.name === "upvote");
+
+        if (upvote) {
+          try {
+            previousMessage.react(upvote);
+          } catch (e) {
+            warn("DISCORD", "Failed to upvote message.", e);
+          }
+        } else {
+          console.error("[SERVER] Unable to find upvote emoji.");
+        }
+      }
+    }
+
+    setTimeout(message.delete, 3000);
+  } else if (message.content.match(/^!\w+/)) {
     message.reply(
       oneLine(`Discord has updated the way that users can interact with bots.
       This opens the door for a lot more features and makes interacting with the bot a lot smoother.
@@ -107,15 +134,15 @@ async function messageCreate(message: Message) {
       **Type \`/help\` to get started.**
       I am sorry for the inconvenience.`),
     );
-    return;
-  }
-  for (const command of guildCommands.values()) {
-    if (!command.pattern) continue;
+  } else {
+    for (const command of guildCommands.values()) {
+      if (!command.pattern) continue;
 
-    const match = message.content.match(command.pattern.regExp);
-    if (match) {
-      attemptInteraction(new PatternInteraction(message, match, command.pattern.groups), command);
-      break;
+      const match = message.content.match(command.pattern.regExp);
+      if (match) {
+        attemptInteraction(new PatternInteraction(message, match, command.pattern.groups), command);
+        break;
+      }
     }
   }
 }
