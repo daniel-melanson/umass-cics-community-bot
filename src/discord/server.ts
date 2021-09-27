@@ -247,12 +247,6 @@ export function initialize(): Promise<Client<true>> {
             applicationCommandMap.set(appCmd.name, appCmd);
           }
 
-          const ownerPermission: ApplicationCommandPermissions = {
-            id: DISCORD_OWNER_ID,
-            type: "USER",
-            permission: true,
-          };
-
           const roles = await guild.roles.fetch();
           const createRolePermission = (name: string) => {
             const role = roles.find(r => r.name === name);
@@ -276,7 +270,11 @@ export function initialize(): Promise<Client<true>> {
             const permissionLevel = command.permissionLevel;
             if (permissionLevel !== CommandPermissionLevel.Member) {
               const permissionArray: Array<ApplicationCommandPermissions> = [
-                ownerPermission,
+                {
+                  id: DISCORD_OWNER_ID,
+                  type: "USER",
+                  permission: true,
+                },
                 {
                   id: guild.roles.everyone.id,
                   type: "ROLE",
