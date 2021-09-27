@@ -116,7 +116,7 @@ connectToDatabase()
 
     localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
     localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
-    localSchedule("0 */5 * * * *", cicsEventAnnouncement);
+    localSchedule("0 0 7 * * *", cicsEventAnnouncement);
 
     const activities: Array<ActivitiesOptions> = [
       {
@@ -139,7 +139,7 @@ connectToDatabase()
     }
 
     updateActivity();
-    localSchedule("0 0 7 * * *", updateActivity);
+    localSchedule("0 */5 * * * *", updateActivity);
     if (process.send) {
       process.send("ready");
     } else {

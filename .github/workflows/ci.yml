@@ -22,3 +22,16 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            cd umass-cics-community-bot
+            git pull origin master
+            git status
+            npm install
+            pm2 restart cics-bot
