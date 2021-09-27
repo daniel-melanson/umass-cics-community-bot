@@ -31,7 +31,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"]!;
 const DISCORD_GUILD_ID = process.env["DISCORD_GUILD_ID"]!;
-const DISCORD_OWNER_ID = process.env["DISCORD_GUILD_ID"]!;
+const DISCORD_OWNER_ID = process.env["DISCORD_OWNER_ID"]!;
 
 if (!DISCORD_TOKEN) {
   error("MAIN", "Environment variable 'DISCORD_TOKEN' was not defined.");
