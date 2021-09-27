@@ -123,7 +123,7 @@ async function messageCreate(message: Message) {
       }
     }
 
-    setTimeout(message.delete, 3000);
+    setTimeout(() => message.delete(), 2000);
   } else if (message.content.match(/\(?u(pvote)?\/d(ownvote)?\)?$/i)) {
     const emojis = message.guild.emojis.cache;
 
