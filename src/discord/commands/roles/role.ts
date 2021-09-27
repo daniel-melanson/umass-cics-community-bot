@@ -41,51 +41,59 @@ export default new SlashCommandBuilder()
     const guild = interaction.guild!;
     const guildMember = await guild.members.fetch(interaction.user.id);
     const userRoleManager = guildMember.roles;
-    const roleSet = new Set(userRoleManager.cache.keys());
+    const userRoleIdSet = new Set(userRoleManager.cache.keys());
 
-    let update: (r: { id: string }) => void;
+    const updated: Array<string> = [];
+    let update: (r: Role) => void;
     let action: "remove" | "add";
     const subcommand = options.getSubcommand(true);
     if (subcommand === "add" || subcommand === "try") {
       action = "add";
-      update = r => roleSet.add(r.id);
+      update = r => {
+        userRoleIdSet.add(r.id);
+        updated.push(r.name);
+      };
     } else {
       action = "remove";
-      update = r => roleSet.delete(r.id);
+      update = r => {
+        userRoleIdSet.delete(r.id);
+        updated.push(r.name);
+      };
     }
 
-    const roleList = [options.getRole("role", true)];
+    const optionRoleList = [options.getRole("role", true)];
     for (let i = 0; i < 24; i++) {
       const role = options.getRole(`role-${i}`);
 
       if (role) {
-        roleList.push(role);
+        optionRoleList.push(role);
       }
     }
 
-    const dataList = roleList.map(role =>
-      role instanceof Role
-        ? { id: role.id, name: role.name, permissions: role.permissions.valueOf() }
-        : { id: role.id, name: role.name, permissions: BigInt(role.permissions) },
-    );
+    const roleClassList = await Promise.all(optionRoleList.map(role => guild.roles.fetch(role.id)));
+    if (roleClassList.some(role => role === null))
+      throw new CommandError("I'm sorry, I had some trouble fetching those roles you provided. Try again later.");
 
     const failedByPermission = [];
     const failedByAssignable = [];
-    const updated = [];
 
-    for (const role of dataList) {
+    for (const role of roleClassList as Array<Role>) {
       if (!isAssignable(role.name)) {
         failedByAssignable.push(role.name);
-      } else if (role.permissions !== 0n) {
-        failedByPermission.push(role.name);
+      } else if (role.permissions.valueOf() !== 0n) {
+        try {
+          await role.setPermissions(0n);
+          update(role);
+        } catch {
+          failedByPermission.push(role.name);
+        }
       } else {
-        updated.push(role.name);
         update(role);
       }
     }
 
     try {
-      await userRoleManager.set(Array.from(roleSet.keys()));
+      await userRoleManager.set(Array.from(userRoleIdSet.keys()));
     } catch (e) {
       throw new CommandError(
         "I'm sorry, I encountered an error while trying to update your roles.",
@@ -119,7 +127,8 @@ export default new SlashCommandBuilder()
       reply += oneLine(
         `I was unable to ${action}: ${failedByPermission.join(", ")}. ${
           isPlural ? "These roles have" : "This role has"
-        } a non-zero permission flag. Contact an a moderator if you think this is a mistake.`,
+        } a non-zero permission flag. I tried to remove them but I was unsuccessful.
+        Contact an a moderator if you think this is a mistake.`,
       );
       reply += "\n";
     }
