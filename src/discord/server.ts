@@ -113,7 +113,8 @@ async function messageCreate(message: Message) {
 
         if (upvote) {
           try {
-            previousMessage.react(upvote);
+            await previousMessage.react(upvote);
+            setTimeout(() => message.delete(), 2000);
           } catch (e) {
             warn("DISCORD", "Failed to upvote message.", e);
           }
@@ -122,8 +123,6 @@ async function messageCreate(message: Message) {
         }
       }
     }
-
-    setTimeout(() => message.delete(), 2000);
   } else if (message.content.match(/\(?u(pvote)?\/d(ownvote)?\)?$/i)) {
     const emojis = message.guild.emojis.cache;
 
