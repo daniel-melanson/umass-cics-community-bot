@@ -5,7 +5,6 @@ import { COURSE_REGEXP_STRING, searchCourses, SearchResult } from "#umass/course
 
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
-import { toMessageOptions } from "../../toMessageOptions";
 import { createChoiceListener } from "../createChoiceListener";
 import { CommandError } from "#discord/classes/CommandError";
 

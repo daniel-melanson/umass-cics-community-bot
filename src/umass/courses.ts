@@ -53,6 +53,7 @@ export async function searchCourses(query: string): Promise<SearchResult> {
 
   const courseId = formatCourseIdFromQuery(query);
   if (courseId) {
+    const [, number] = courseId.split(" ");
     const idMatch = await connectToCollection("courses", async courseCollection => {
       let match = await courseCollection.findOne({
         id: courseId,
@@ -64,10 +65,18 @@ export async function searchCourses(query: string): Promise<SearchResult> {
         });
       }
 
-      return match;
+      if (!match) {
+        return await courseCollection
+          .find({
+            number: number,
+          })
+          .toArray();
+      }
+
+      return [match];
     });
 
-    if (idMatch) return { result: [idMatch] };
+    if (idMatch && idMatch.length > 0) return { result: idMatch };
   }
 
   const aggregateResult = await connectToCollection("courses", async courseCollection =>
