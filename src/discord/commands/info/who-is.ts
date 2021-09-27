@@ -15,31 +15,23 @@ function createStaffEmbed(staff: Staff) {
       ? ` This staff member also goes by the name${otherNames.length > 1 ? "s" : ""} ${otherNames.join(", ")}.`
       : "";
 
-  let desc = `${staff.title}.${aliases} You can contact them using their email: [${staff.email}](mailto:${staff.email})`;
-  if (staff.phone) {
-    desc += `or phone number: ${staff.phone}.`;
-  }
-
-  if (staff.office) {
-    desc += `You can find them in their office located at ${staff.office}.`;
-  }
-
   return new MessageEmbedBuilder({
     author: {
       name: staff.names[0],
       iconURL: staff.photo,
       url: staff.website,
     },
-    description: desc,
-    fields:
-      staff.courses && staff.courses.length > 0
-        ? [
-            {
-              name: "Courses",
-              value: staff.courses.join(", "),
-            },
-          ]
-        : undefined,
+    description: `${staff.title}.${aliases} You can contact them using their email: [${staff.email}](mailto:${staff.email})`,
+    fields: [
+      ["Phone", staff.phone],
+      ["Email", staff.email],
+      ["Office", staff.office],
+      ["Courses", staff.courses?.join(", ")],
+    ]
+      .filter(e => Boolean(e[1]))
+      .map(entry => {
+        return { name: entry[0]!, value: entry[1]! };
+      }),
   });
 }
 
@@ -55,7 +47,7 @@ export default new SlashCommandBuilder()
   .addStringOption(option =>
     option.setName("person").setDescription("The staff member to search for.").setRequired(true),
   )
-  .setPattern(/^(who\s*is|who'?s)\s*([a-z ,.'-]+)\??$/i, { person: 2 })
+  //.setPattern(/^(who\s*is|who'?s)\s*([a-z ,.'-]+)\??$/i, { person: 2 })
   .setCallback(async interaction => {
     let queryResult: Array<ScoredStaff> | undefined;
     try {
