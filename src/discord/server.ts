@@ -100,9 +100,11 @@ async function messageCreate(message: Message) {
   if (message.content.match(/^!\w+/)) {
     message.reply(
       oneLine(`Discord has updated the way that users can interact with bots.
-      This was a huge change, and the library that I depend on needed to update.
-      The version that I depended on was deprecated, meaning that I could have broken without warning.
-      **I have been updated so that of my commands are now available via slash commands. Type \`/help\` to get started.**
+      This opens the door for a lot more features and makes interacting with the bot a lot smoother.
+      To avoid breaking unexpectedly, and to use these new features, I have updated to slash commands.
+      This replaces the previous message command system (\`!help\`). However, some commands can still be invoked
+      using patterns like \`What is CS 121?\` or \`$$\\frac{x}{2}$$\`.
+      **Type \`/help\` to get started.**
       I am sorry for the inconvenience.`),
     );
     return;
