@@ -107,7 +107,7 @@ async function messageCreate(message: Message) {
 
     if (previousMessage) {
       if (previousMessage.author.id === message.author.id) {
-        message.reply("just tried to upvote their own message. Shame on them.");
+        message.reply(`${message.member?.displayName} just tried to upvote their own message. Shame on them.`);
       } else {
         const upvote = message.guild.emojis.cache.find(e => e.name === "upvote");
 
@@ -137,7 +137,7 @@ async function messageCreate(message: Message) {
       await message.react(upvote);
       await message.react(downvote);
     } catch (e) {
-      message.reply("unable to react with emotes.");
+      message.reply("I'm sorry, I was unable to react with emotes.");
     }
   } else if (message.content.match(/^!\w+/)) {
     message.reply(

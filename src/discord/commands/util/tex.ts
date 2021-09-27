@@ -16,7 +16,7 @@ export default new SlashCommandBuilder()
   .addStringOption(option => option.setName("tex").setDescription("The TeX expression to render.").setRequired(true))
   .setPattern(/(?<=\$\$)(.+)(?=\$\$)/, { tex: 1 })
   .setCallback(async interaction => {
-    await interaction.reply(`processing...`);
+    await interaction.reply(`Processing...`);
 
     let image,
       error = "Unknown";
