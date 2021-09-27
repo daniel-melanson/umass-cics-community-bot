@@ -9,6 +9,7 @@ import { getCICSEvents } from "#umass/events";
 import { error, log, warn } from "#shared/logger";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 import { closeDatabaseConnection, connectToDatabase } from "#umass/database";
+import { ActivitiesOptions } from "discord.js";
 
 const sameDay = (d0: Date, d1: Date) =>
   d0.getUTCDate() === d1.getUTCDate() &&
@@ -115,8 +116,30 @@ connectToDatabase()
 
     localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
     localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
-    localSchedule("0 0 7 * * *", cicsEventAnnouncement);
+    localSchedule("0 */5 * * * *", cicsEventAnnouncement);
 
+    const activities: Array<ActivitiesOptions> = [
+      {
+        type: "LISTENING",
+        name: "to /help",
+      },
+      {
+        type: "WATCHING",
+        name: "lectures on Echo360",
+      },
+      {
+        type: "PLAYING",
+        name: "Jon the CyberSec club!",
+      },
+    ];
+
+    let i = 0;
+    function updateActivity() {
+      client.user.setActivity(activities[i++ % activities.length]);
+    }
+
+    updateActivity();
+    localSchedule("0 0 7 * * *", updateActivity);
     if (process.send) {
       process.send("ready");
     } else {
