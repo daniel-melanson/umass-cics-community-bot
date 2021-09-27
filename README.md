@@ -3,13 +3,20 @@
 Simple discord bot for the UMass CICS Community server written in TypeScript.
 
 ## Notable Features
-- TBD
+- Command to search for UMass CICS staff members.
+- Various commands to query computer science related courses and filter by subject, level, prerequisites, etc.
+- Daily reminders of events happening in the college, scraped directly from the website.
+- Reminders for academic calender events, such as when finals start, or when there is a recess. 
+
+## To-Do
+- COVID Dashboard updates
+- Image creation and manipulation?
 
 ## Contributing
 
 ### Where do I start?
 1. [Fork the repository](hhttps://github.com/daniel-melanson/umass-cics-community-bot/fork)
-2. Clone your fork: `git clone https://github.com/your-username/UMass-CICS-Discord-Bot.git`
+2. Clone your fork: `git clone https://github.com/your-username/umass-cics-community-bot.git`
 3. Create a branch with your edits: `git checkout -b feature-name`
 4. Commit your changes: `git commit -am 'My features description'`
 5. Push the changes: `git push origin feature-name`
