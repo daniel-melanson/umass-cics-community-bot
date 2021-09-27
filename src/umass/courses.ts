@@ -19,7 +19,7 @@ export function formatCourseIdFromQuery(query: string, shorthandSubject?: boolea
 
   if (match === null) return undefined;
 
-  let subject = match[1];
+  let subject = match[1].toUpperCase();
   switch (subject) {
     case "C":
     case "CS":
@@ -40,7 +40,7 @@ export function formatCourseIdFromQuery(query: string, shorthandSubject?: boolea
       subject = "INFO";
   }
 
-  return `${subject.toUpperCase()} ${match[2].toUpperCase()}`;
+  return `${subject} ${match[2].toUpperCase()}`;
 }
 
 export interface SearchResult {
