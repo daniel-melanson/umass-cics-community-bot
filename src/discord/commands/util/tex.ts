@@ -14,7 +14,7 @@ export default new SlashCommandBuilder()
       read from files, etc...`),
   )
   .addStringOption(option => option.setName("tex").setDescription("The TeX expression to render.").setRequired(true))
-  .setPattern(/(?<=\$\$).+(?=\$\$)/, { tex: 0 })
+  .setPattern(/(?<=\$\$)(.+)(?=\$\$)/, { tex: 1 })
   .setCallback(async interaction => {
     await interaction.reply(`processing...`);
 
