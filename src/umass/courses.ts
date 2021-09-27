@@ -40,7 +40,7 @@ export function formatCourseIdFromQuery(query: string, shorthandSubject?: boolea
       subject = "INFO";
   }
 
-  return `${subject} ${match[2].toUpperCase()}`;
+  return `${subject.toUpperCase()} ${match[2].toUpperCase()}`;
 }
 
 export interface SearchResult {
@@ -84,7 +84,7 @@ export async function searchCourses(query: string): Promise<SearchResult> {
   if (aggregateResult && aggregateResult.length > 0) {
     if (aggregateResult.length > 10) {
       return {
-        error: "too many courses found; try narrowing down your search.",
+        error: "Too many courses found; try narrowing down your search.",
         result: [],
       };
     }
@@ -95,7 +95,7 @@ export async function searchCourses(query: string): Promise<SearchResult> {
   }
 
   return {
-    error: "no courses match that query.",
+    error: "No courses match that query.",
     result: [],
   };
 }
