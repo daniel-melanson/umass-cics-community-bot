@@ -76,10 +76,16 @@ export default new SlashCommandBuilder()
 
     const failedByPermission = [];
     const failedByAssignable = [];
+    const failedByExistence = [];
+    const failedByNonexistence = [];
 
     for (const role of roleClassList as Array<Role>) {
       if (!isAssignable(role.name)) {
         failedByAssignable.push(role.name);
+      } else if (userRoleIdSet.has(role.id) && action !== "remove") {
+        failedByExistence.push(role.name);
+      } else if (!userRoleIdSet.has(role.id) && action === "remove") {
+        failedByNonexistence.push(role.name);
       } else if (role.permissions.valueOf() !== 0n) {
         try {
           await role.setPermissions(0n);
@@ -129,6 +135,24 @@ export default new SlashCommandBuilder()
           isPlural ? "These roles have" : "This role has"
         } a non-zero permission flag. I tried to remove them but I was unsuccessful.
         Contact an a moderator if you think this is a mistake.`,
+      );
+      reply += "\n";
+    }
+
+    if (failedByExistence.length > 0) {
+      const isPlural = failedByExistence.length > 1;
+      reply += oneLine(
+        `I was unable to ${action}: ${failedByExistence.join(", ")}.
+        **You already have ${isPlural ? "these roles." : "this role.**"}`,
+      );
+      reply += "\n";
+    }
+
+    if (failedByNonexistence.length > 0) {
+      const isPlural = failedByNonexistence.length > 1;
+      reply += oneLine(
+        `I was unable to ${action}: ${failedByNonexistence.join(", ")}.
+        **You never had ${isPlural ? "those roles" : "that role"} to begin with.**`,
       );
       reply += "\n";
     }
