@@ -27,7 +27,9 @@ import { CommandError } from "./classes/CommandError";
 import { PatternInteraction } from "./classes/PatternInteraction";
 import { toMessageOptions } from "./toMessageOptions";
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS],
+});
 
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"]!;
 const DISCORD_GUILD_ID = process.env["DISCORD_GUILD_ID"]!;

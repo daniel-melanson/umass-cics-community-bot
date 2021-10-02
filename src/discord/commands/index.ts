@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 
-import { BuiltCommand, SlashCommandBuilder } from "../classes/SlashCommandBuilder";
+import { BuiltCommand, CommandPermissionLevel, SlashCommandBuilder } from "../classes/SlashCommandBuilder";
 import { oneLine } from "#shared/stringUtil";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 
@@ -29,6 +29,10 @@ export function importCommands(): ReadonlyArray<BuiltCommand> {
       const builder = commandModule.default as SlashCommandBuilder;
       if (builtCommands.has(builder.name)) {
         throw new Error(`Command ${fullPath} as a duplicate name: ${builder.name}`);
+      }
+
+      if (builder.pattern && builder.permissionLevel !== CommandPermissionLevel.Member) {
+        throw new Error(`Command ${fullPath} has a pattern invoker but does not have default permissions.`);
       }
 
       builtCommands.set(builder.name, builder.build());
