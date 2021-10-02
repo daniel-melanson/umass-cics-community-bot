@@ -5,7 +5,6 @@ import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 import { CommandError } from "#discord/classes/CommandError";
 import { oneLine } from "#shared/stringUtil";
-import { InteractionWebhook } from "discord.js";
 
 function divideLines(lines: Array<string>) {
   const groups = [];
