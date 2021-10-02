@@ -5,6 +5,7 @@ import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { MessageEmbedBuilder } from "#discord/classes/MessageEmbedBuilder";
 import { CommandError } from "#discord/classes/CommandError";
 import { oneLine } from "#shared/stringUtil";
+import { InteractionWebhook } from "discord.js";
 
 function divideLines(lines: Array<string>) {
   const groups = [];
@@ -12,7 +13,7 @@ function divideLines(lines: Array<string>) {
   let curr = "";
   for (const line of lines) {
     const join = curr + line + "\n";
-    if (join.length < 2000) {
+    if (join.length < 1800) {
       curr = join;
     } else {
       groups.push(join);
@@ -20,6 +21,7 @@ function divideLines(lines: Array<string>) {
     }
   }
 
+  if (curr.length !== 0) groups.push(curr);
   return groups;
 }
 
@@ -77,14 +79,14 @@ export default new SlashCommandBuilder()
 
     if (level) {
       const messages = divideLines(
-        [`UMass ${subject} ${level}00 Level Courses\n\n`].concat(
+        [`**UMass ${subject} ${level}00 Level Courses**\n\n`].concat(
           courses.sort((a, b) => a.id.localeCompare(b.id)).map(course => `**${course.id}**: ${course.title}`),
         ),
       );
 
-      const channel = interaction.channel!;
-      for (const message in messages) {
-        await channel.send(message);
+      for (let i = 0; i < messages.length; i++) {
+        const fn = i === 0 ? interaction.reply : interaction.followUp;
+        await fn.call(interaction, messages[i]);
       }
     } else {
       const fields = [];

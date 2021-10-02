@@ -1,5 +1,3 @@
-import { FilterOperations } from "mongodb";
-
 import { sanitize } from "#shared/stringUtil";
 
 import { connectToCollection } from "./database";
@@ -110,17 +108,14 @@ export async function searchCourses(query: string): Promise<SearchResult> {
 }
 
 export function getCoursesFromSubject(subject: CourseSubject, level?: string): Promise<Array<Course>> {
-  const query: FilterOperations<Course> = {
-    subject: {
-      $eq: subject,
-    },
+  const query = {
+    subject: subject,
+    number: level
+      ? {
+          $regex: new RegExp(`^h?${level}`, "i"),
+        }
+      : undefined,
   };
-
-  if (level) {
-    query.number = {
-      $regex: new RegExp(`^h?${level}`, "i"),
-    };
-  }
 
   return connectToCollection("courses", courseCollection => courseCollection.find(query).toArray());
 }
