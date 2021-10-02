@@ -89,7 +89,7 @@ export async function searchCourses(query: string): Promise<SearchResult> {
   );
 
   if (aggregateResult && aggregateResult.length > 0) {
-    if (aggregateResult.length > 10) {
+    if (aggregateResult.length > 20) {
       return {
         error: "Too many courses found; try narrowing down your search.",
         result: [],
