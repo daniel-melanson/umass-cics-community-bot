@@ -141,7 +141,7 @@ async function messageCreate(message: Message) {
     } catch (e) {
       message.reply("I'm sorry, I was unable to react with emotes.");
     }
-  } else if (message.content.match(/^!(help|role(s)?/)) {
+  } else if (message.content.match(/^!(help|role(s))?/)) {
     message.reply(
       oneLine(`Discord has updated the way that users can interact with bots.
       This opens the door for a lot more features and makes interacting with the bot a lot smoother.
