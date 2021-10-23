@@ -99,7 +99,8 @@ async function interactionCreate(interaction: Interaction) {
 async function messageCreate(message: Message) {
   if (!message.guild || message.author.bot) return;
 
-  if (message.content === "^" && message.deletable) {
+  const content = message.content;
+  if (content === "^" && message.deletable) {
     const previousMessage = (
       await message.channel.messages.fetch({
         limit: 1,
@@ -141,8 +142,16 @@ async function messageCreate(message: Message) {
     } catch (e) {
       message.reply("I'm sorry, I was unable to react with emotes.");
     }
-  } else if (message.content.match(/^!(help|role(s)?|cal(endar)?|courses)/)) {
+  } else if (content.match(/^!(help|role(s)?|cal(endar)?|courses)/i)) {
+    let alt = "";
+    if (content.match(/^!role/i)) {
+      alt = "**Use /role add role: CS 121 instead.**\n\n";
+    } else if (content.match(/^!roles/i)) {
+      alt = "**Use /roles instead.**\n\n";
+    }
+
     message.reply(
+      alt +
       oneLine(`Discord has updated the way that users can interact with bots.
       This opens the door for a lot more features and makes interacting with the bot a lot smoother.
       To avoid breaking unexpectedly, and to use these new features, I have updated to slash commands.
