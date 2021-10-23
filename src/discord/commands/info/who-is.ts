@@ -47,7 +47,7 @@ export default new SlashCommandBuilder()
   .addStringOption(option =>
     option.setName("person").setDescription("The staff member to search for.").setRequired(true),
   )
-  //.setPattern(/^(who\s*is|who'?s)\s*([a-z ,.'-]+)\??$/i, { person: 2 })
+  .setPattern(/^(who\s*is|who'?s)\s*([a-z ,.'-]+)\??$/i, { person: 2 })
   .setCallback(async interaction => {
     let queryResult: Array<ScoredStaff> | undefined;
     try {
