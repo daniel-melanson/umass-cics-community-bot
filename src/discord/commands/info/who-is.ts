@@ -21,7 +21,7 @@ function createStaffEmbed(staff: Staff) {
       iconURL: staff.photo,
       url: staff.website,
     },
-    description: `${staff.title}.${aliases} You can contact them using their email: [${staff.email}](mailto:${staff.email})`,
+    description: `${staff.title}.${aliases}`,
     fields: [
       ["Phone", staff.phone],
       ["Email", staff.email],
