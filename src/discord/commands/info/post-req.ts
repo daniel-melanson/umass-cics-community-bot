@@ -37,6 +37,7 @@ export default new SlashCommandBuilder()
   .addStringOption(option =>
     option.setName("course").setDescription("The root class to find dependents of.").setRequired(true),
   )
+  .setPattern(new RegExp(`^what can (i|you) take after (${COURSE_REGEXP_STRING})\\??$`, "i"), { course: 1 })
   .setCallback(async interaction => {
     let search: SearchResult;
     try {
