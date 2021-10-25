@@ -75,7 +75,7 @@ You will need to sign in with your Discord account. If you want to quickly manag
 }
 
 export default new SlashCommandBuilder()
-  .setName("roles")
+  .setName("role-list")
   .setDescription("Lists out roles assignable with /role command.")
   .setCallback(interaction => {
     return interaction.reply({

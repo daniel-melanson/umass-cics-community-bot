@@ -28,7 +28,7 @@ export default new SlashCommandBuilder()
     it.`) +
       "\n" +
       oneLine(`
-    You can find out what roles you can assign yourself using the \`/roles\` command. Check out the 
+    You can find out what roles you can assign yourself using the \`/role-list\` command. Check out the 
     <#${process.env["HOW_TO_ROLES_ID"]}> channel to learn more about roles.`),
   )
   .addExamples(["/role get role: @CS 187"])

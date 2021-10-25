@@ -17,7 +17,7 @@ import { error, log, warn } from "#shared/logger";
 import { oneLine } from "#shared/stringUtil";
 
 import { importCommands } from "./commands/index";
-import { createRoleEmbed } from "./commands/roles/roles";
+import { createRoleEmbed } from "./commands/roles/role-list";
 
 import { isAssignable } from "./roles";
 
@@ -142,24 +142,12 @@ async function messageCreate(message: Message) {
     } catch (e) {
       message.reply("I'm sorry, I was unable to react with emotes.");
     }
-  } else if (content.match(/^!(help|role(s)?|cal(endar)?|courses)/i)) {
-    let alt = "";
-    if (content.match(/^!role/i)) {
-      alt = "**Use /role add role: CS 121 instead.**\n\n";
-    } else if (content.match(/^!roles/i)) {
-      alt = "**Use /roles instead.**\n\n";
-    }
-
-    message.reply(
-      alt +
-      oneLine(`Discord has updated the way that users can interact with bots.
-      This opens the door for a lot more features and makes interacting with the bot a lot smoother.
-      To avoid breaking unexpectedly, and to use these new features, I have updated to slash commands.
-      This replaces the previous message command system (\`!help\`). However, some commands can still be invoked
-      using patterns like \`What is CS 121?\` or \`$$\\frac{x}{2}$$\`.
-      **Type \`/help\` to get started.**
-      I am sorry for the inconvenience.`),
-    );
+  } else if (content.match(/^!help/i)) {
+    message.reply("I use slash commands now, use `/help`.");
+  } else if (content.match(/^!roles/i)) {
+    message.reply("I use slash commands now, use `/role-list`.");
+  } else if (content.match(/^!role/i)) {
+    message.reply("I use slash commands now, use `/role add role: @CS 121");
   } else {
     for (const command of guildCommands.values()) {
       if (!command.pattern) continue;
