@@ -23,18 +23,13 @@ export default new SlashCommandBuilder()
   .setDescription("Add or remove roles to your role list.")
   .setGroup("Roles")
   .setDetails(
-    oneLine(`This command will either assign, remove, or temporarily assign a role to your role list.
-    The \`/role try\` command will assign you the specified role for 24 hours, then automatically remove
-    it.`) +
-      "\n" +
-      oneLine(`
+    oneLine(`This command will either assign or remove a role to your role list.
     You can find out what roles you can assign yourself using the \`/role-list\` command. Check out the 
     <#${process.env["HOW_TO_ROLES_ID"]}> channel to learn more about roles.`),
   )
-  .addExamples(["/role get role: @CS 187"])
+  .addExamples(["/role add role: @CS 187"])
   .addSubcommand(buildRoleSubcommand("add", "Add an assignable role."))
   .addSubcommand(buildRoleSubcommand("remove", "Remove an assignable role."))
-  //.addSubcommand(buildRoleSubcommand("try", "Try an assignable role for 24 hours."))
   .setCallback(async interaction => {
     const options = interaction.options;
 

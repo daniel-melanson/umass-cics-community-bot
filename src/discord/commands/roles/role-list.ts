@@ -1,14 +1,17 @@
 import {
   isAssignable,
+  isCICSClass,
   isConcentration,
   isCSClass,
   isGraduationStatus,
   isHobby,
+  isINFOClass,
   isInterdisciplinary,
-  isMathClass,
+  isMATHClass,
   isMisc,
   isPronoun,
   isResidential,
+  isSTATClass,
 } from "../../roles";
 import { SlashCommandBuilder } from "#discord/classes/SlashCommandBuilder";
 import { oneLine } from "#shared/stringUtil";
@@ -31,7 +34,7 @@ export function createRoleEmbed(guild: Guild) {
     .setDescription(
       oneLine(`We have a [website](https://discord.ltseng.me) where you can obtain and remove roles to access different features on this server. 
 You will need to sign in with your Discord account. If you want to quickly manage you roles you may use \`/role\` slash command:
-\`/role (add|remove|try) role:<role-name>\` command. Example: \`/role get role: @CS 121\`
+\`/role (add|remove) role: @<role-name>\` command. Example: \`/role add role: @CS 121\`
 `),
     )
     .setFields([
@@ -52,12 +55,24 @@ You will need to sign in with your Discord account. If you want to quickly manag
         value: list(isResidential),
       },
       {
+        name: "CICS Courses",
+        value: list(isCICSClass),
+      },
+      {
         name: "Computer Science Courses",
         value: list(isCSClass),
       },
       {
-        name: "Math Courses",
-        value: list(isMathClass),
+        name: "Informatics Courses",
+        value: list(isINFOClass),
+      },
+      {
+        name: "Mathematics Courses",
+        value: list(isMATHClass),
+      },
+      {
+        name: "Statistics Courses",
+        value: list(isSTATClass),
       },
       {
         name: "Interdisciplinary",
