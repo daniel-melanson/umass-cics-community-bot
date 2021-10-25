@@ -33,9 +33,8 @@ export function createRoleEmbed(guild: Guild) {
     .setTitle("Obtain and Remove Roles")
     .setDescription(
       oneLine(`We have a [website](https://discord.ltseng.me) where you can obtain and remove roles to access different features on this server. 
-You will need to sign in with your Discord account. If you want to quickly manage you roles you may use \`/role\` slash command:
-\`/role (add|remove) role: @<role-name>\` command. Example: \`/role add role: @CS 121\`
-`),
+      You will need to sign in with your Discord account. If you want to quickly manage you roles you may use \`/role\` slash command:
+      \`/role (add|remove) role-0: @<role-name> ... role-24: @<role-name>\` command.`) + "\n Example: \`/role add role-0: @They/Them role-1: @CS 121\`"
     )
     .setFields([
       {

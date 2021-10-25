@@ -9,9 +9,9 @@ import { CommandError } from "../../classes/CommandError";
 function buildRoleSubcommand(name: string, description: string) {
   const builder = new SlashCommandSubcommandBuilder().setName(name).setDescription(description);
 
-  builder.addRoleOption(option => option.setName("role").setDescription(`The role to ${name}.`).setRequired(true));
+  builder.addRoleOption(option => option.setName("role-0").setDescription(`The role to ${name}.`).setRequired(true));
 
-  for (let i = 0; i < 24; i++) {
+  for (let i = 1; i < 25; i++) {
     builder.addRoleOption(option => option.setName(`role-${i}`).setDescription(`An additional role to ${name}.`));
   }
 
