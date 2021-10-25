@@ -147,7 +147,7 @@ async function messageCreate(message: Message) {
   } else if (content.match(/^!roles/i)) {
     message.reply("I use slash commands now, use `/role-list`.");
   } else if (content.match(/^!role/i)) {
-    message.reply("I use slash commands now, use `/role add role: @CS 121");
+    message.reply("I use slash commands now, use `/role add role: @CS 121`.");
   } else {
     for (const command of guildCommands.values()) {
       if (!command.pattern) continue;
