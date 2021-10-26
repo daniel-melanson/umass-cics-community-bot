@@ -56,9 +56,9 @@ export default new SlashCommandBuilder()
       };
     }
 
-    const optionRoleList = [options.getRole("role", true)];
+    const optionRoleList = [];
     for (let i = 0; i < 24; i++) {
-      const role = options.getRole(`role-${i}`);
+      const role = options.getRole(`role-${i}`, i === 0);
 
       if (role) {
         optionRoleList.push(role);
