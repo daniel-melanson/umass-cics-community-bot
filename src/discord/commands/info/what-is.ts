@@ -48,8 +48,14 @@ export default new SlashCommandBuilder()
     const options = interaction.options;
 
     let search: SearchResult;
+    const query = options.getString("course", true);
+
+    if (query.match(/390r/i)) {
+      return "Please be patient Steven. The code monkeys are working as fast as they can.";
+    }
+
     try {
-      search = await searchCourses(options.getString("course", true));
+      search = await searchCourses(query);
     } catch (e) {
       throw new CommandError(
         "I'm sorry, I had some trouble connecting to the database. Try again later.",
