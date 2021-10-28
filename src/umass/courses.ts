@@ -54,37 +54,57 @@ export async function searchCourses(query: string): Promise<SearchResult> {
   if (courseId) {
     const [, number] = courseId.split(" ");
     const idMatch = await connectToCollection("courses", async courseCollection => {
-      let match = await courseCollection.findOne({
-        id: courseId,
-      });
+      const match = await courseCollection
+        .find({
+          id: courseId,
+        })
+        .toArray();
 
-      if (!match) {
-        match = await courseCollection.findOne({
-          id: { $regex: courseId },
+      if (!match || match.length === 0) {
+        const found = new Array<Course>();
+        const foundNames = new Set<string>();
+        const add = async (filter: Filter<Course>) => {
+          for (const course of await courseCollection.find(filter).toArray()) {
+            if (!foundNames.has(course.id)) {
+              foundNames.add(course.id);
+              found.push(course);
+            }
+          }
+        };
+
+        await add({
+          number: number,
         });
+
+        return found;
       }
 
-      if (!match) {
-        return await courseCollection
-          .find({
-            number: number,
-          })
-          .toArray();
-      }
-
-      return [match];
+      return match;
     });
 
-    if (idMatch && idMatch.length > 0) return { result: idMatch };
+    if (idMatch && idMatch.length > 0) {
+      return { result: idMatch };
+    } else {
+      query = number;
+    }
   }
 
   const aggregateResult = await connectToCollection("courses", async courseCollection =>
     courseCollection
       .aggregate([
-        { $match: { $text: { $search: query } } },
-        { $addFields: { _score: { $meta: "textScore" } } },
-        { $sort: { _score: -1 } },
-        { $match: { _score: { $gt: 0.7 } } },
+        {
+          $search: {
+            index: "default",
+            text: {
+              query: query,
+              path: "number",
+              fuzzy: {
+                maxEdits: 1,
+                prefixLength: 1,
+              },
+            },
+          },
+        },
       ])
       .toArray(),
   );
