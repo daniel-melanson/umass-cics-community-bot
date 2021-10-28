@@ -15,16 +15,16 @@ export async function getStaffListFromQuery(query: string): Promise<Array<Scored
     staffCollection =>
       staffCollection
         .aggregate([
-          { $match: { $text: { $search: query } } },
           {
-            $addFields: {
-              _score: {
-                $divide: [{ $meta: "textScore" }, { $size: "$names" }],
+            $search: {
+              index: "default",
+              text: {
+                query: query,
+                path: "names",
+                fuzzy: {},
               },
             },
           },
-          { $sort: { _score: -1 } },
-          { $match: { _score: { $gt: 0.3 } } },
         ])
         .toArray() as Promise<Array<ScoredStaff>>,
   );
