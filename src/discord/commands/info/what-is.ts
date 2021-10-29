@@ -49,11 +49,6 @@ export default new SlashCommandBuilder()
 
     let search: SearchResult;
     const query = options.getString("course", true);
-
-    if (query.match(/390r/i)) {
-      return "Please be patient Steven. The code monkeys are working as fast as they can.";
-    }
-
     try {
       search = await searchCourses(query);
     } catch (e) {
