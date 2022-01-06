@@ -26,6 +26,7 @@ import { MessageEmbedBuilder } from "./classes/MessageEmbedBuilder";
 import { CommandError } from "./classes/CommandError";
 import { PatternInteraction } from "./classes/PatternInteraction";
 import { toMessageOptions } from "./toMessageOptions";
+import TOTAL_CHANNEL_IDS from "./channelIds";
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS],
@@ -161,11 +162,17 @@ async function messageCreate(message: Message) {
   }
 }
 
-function findChannel(guild: Guild, name: string) {
-  const nameRegExp = new RegExp(`^\\W{0,2}${name}\\W{0,2}$`);
-  return guild.channels.cache.find(
-    x => (x.type === "GUILD_NEWS" || x.type === "GUILD_TEXT") && !!x.name.match(nameRegExp),
-  ) as BaseGuildTextChannel;
+type StoredChannelName = "general" | "university" | "bot-log" | "bot-commands" | "cics-events" | string;
+
+const CHANNEL_IDS = new Map();
+for (const [name, id] of Object.entries(process.env["BOT_IS_DEV"] ? TOTAL_CHANNEL_IDS.dev : TOTAL_CHANNEL_IDS.prod)) {
+  CHANNEL_IDS.set(name, id);
+}
+
+function findChannel(guild: Guild, name: StoredChannelName): BaseGuildTextChannel | undefined {
+  if (CHANNEL_IDS.has(name)) {
+    return guild.channels.cache.get(CHANNEL_IDS.get(name)!) as BaseGuildTextChannel;
+  }
 }
 
 async function guildMemberAdd(member: GuildMember) {
@@ -243,7 +250,7 @@ async function guildMemberAdd(member: GuildMember) {
 }
 
 export async function announce(
-  name: "general" | "university" | "bot-log" | "bot-commands" | "cics-events",
+  name: StoredChannelName,
   message: string | MessageEmbed | MessageOptions,
 ): Promise<Message> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
