@@ -26,6 +26,7 @@ import { MessageEmbedBuilder } from "./classes/MessageEmbedBuilder";
 import { CommandError } from "./classes/CommandError";
 import { PatternInteraction } from "./classes/PatternInteraction";
 import { toMessageOptions } from "./toMessageOptions";
+import NodeCache from "node-cache";
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS],
@@ -50,7 +51,33 @@ if (!DISCORD_OWNER_ID) {
 const CONTACT_MESSAGE = ` Please contact <@${DISCORD_OWNER_ID}>.`;
 const guildCommands = new Map<string, Command>();
 
+const roleCommandUsage = new NodeCache({
+  stdTTL: 120,
+});
+
 async function attemptInteraction(interaction: CommandInteraction | PatternInteraction, command: Command) {
+  if (command.name === "role") {
+    const id = interaction.user.id;
+    const usage = roleCommandUsage.get<number>(id);
+
+    if (usage !== undefined) {
+      if (usage > 2) {
+        roleCommandUsage.del(id);
+
+        interaction.channel?.send(
+          oneLine(
+            `<@${id}> You can assign/remove more than one role at a time.
+            \`/role add role-0: @CS 187 role-1: @MATH 131 role-2: @CICS 298A ...\``,
+          ),
+        );
+      } else {
+        roleCommandUsage.set<number>(id, usage + 1);
+      }
+    } else {
+      roleCommandUsage.set<number>(id, 1);
+    }
+  }
+
   const reply = (msg: MessageOptions, ephemeral?: boolean) => {
     if (interaction instanceof CommandInteraction) {
       const payload = Object.assign(
