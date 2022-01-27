@@ -62,7 +62,7 @@ async function attemptInteraction(interaction: CommandInteraction | PatternInter
     const usage = roleCommandUsage.get<number>(id);
 
     if (usage !== undefined) {
-      if (usage > 2) {
+      if (usage >= 2) {
         roleCommandUsage.del(id);
 
         interaction.channel?.send(
