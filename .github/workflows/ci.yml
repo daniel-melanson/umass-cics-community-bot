@@ -33,5 +33,5 @@ jobs:
             cd umass-cics-community-bot
             git pull origin master
             git status
-            npm install
+            npm install --production
             pm2 restart cics-bot
