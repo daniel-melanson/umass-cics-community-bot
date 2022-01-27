@@ -11,6 +11,7 @@
     "baseUrl": "./src",
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "#discord/*": ["discord/*"],
