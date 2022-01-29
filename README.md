@@ -11,8 +11,10 @@ Simple discord bot for the UMass CICS Community server written in TypeScript.
 
 ## To-Do
 
+- Use builders package directly
+- Update other packages
 - COVID Dashboard updates
-- Image creation and manipulation?
+- Image creation and manipulation
 
 ## Contributing
 
@@ -42,7 +44,3 @@ MONGO_CONNECTION_STRING=you-will-be-given-this
 4. Run `npm start`
 
 Keep in mind that database related commands will fail if `MONGO_CONNECTION_STRING` is not defined in your `.env` file. If you would like to contribute you can contact me and I will give you a temporary connection string to the database.
-
-## Credits
-
-This bot uses [discord.js](https://github.com/discordjs/discord.js) to communicate with the discord API.
