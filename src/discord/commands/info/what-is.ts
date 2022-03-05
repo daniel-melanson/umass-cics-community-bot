@@ -15,10 +15,12 @@ function makeReply(course: Course) {
 
   for (const [key, value] of Object.entries(course)) {
     if (!ignoredKeys.has(key) && value && !key.startsWith("_")) {
+      const formatted = (value instanceof Array ? value.join(", ") : String(value)).trim();
+      if (formatted.length === 0) continue;
+
       fields.push({
         name: splitCamelCase(key),
-        value:
-          value instanceof Array ? value.join(", ") : typeof value === "string" && value.length === 0 ? "None" : value,
+        value: formatted,
       });
     }
   }
