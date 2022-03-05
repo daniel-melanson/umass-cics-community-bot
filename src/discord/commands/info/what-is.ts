@@ -17,7 +17,8 @@ function makeReply(course: Course) {
     if (!ignoredKeys.has(key) && value && !key.startsWith("_")) {
       fields.push({
         name: splitCamelCase(key),
-        value: value instanceof Array ? value.join(", ") : value,
+        value:
+          value instanceof Array ? value.join(", ") : typeof value === "string" && value.length === 0 ? "None" : value,
       });
     }
   }
