@@ -53,7 +53,7 @@ const CONTACT_MESSAGE = ` Please contact <@${DISCORD_OWNER_ID}>.`;
 const guildCommands = new Map<string, Command>();
 
 const roleCommandUsage = new NodeCache({
-  stdTTL: 120,
+  stdTTL: 60 * 3,
 });
 
 async function attemptInteraction(interaction: CommandInteraction | PatternInteraction, command: Command) {
@@ -137,7 +137,7 @@ async function messageCreate(message: Message) {
     ).first();
 
     if (previousMessage) {
-      if (previousMessage.author.id === message.author.id) {
+      if (previousMessage.author.id === message.author.id && !message.reference) {
         message.reply(`${message.member?.displayName} just tried to upvote their own message. Shame on them.`);
       } else {
         const upvote = message.guild.emojis.cache.find(e => e.name === "upvote");
