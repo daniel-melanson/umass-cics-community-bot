@@ -138,7 +138,7 @@ export default new SlashCommandBuilder()
       const isPlural = failedByExistence.length > 1;
       reply += oneLine(
         `I was unable to ${action}: ${failedByExistence.join(", ")}.
-        **You already have ${isPlural ? "these roles." : "this role.**"}`,
+        **You already have ${isPlural ? "these roles" : "this role"}.**`,
       );
       reply += "\n";
     }
