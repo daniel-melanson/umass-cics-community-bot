@@ -1,6 +1,7 @@
 import { CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
 import { toMessageOptions, ReplyResolvable } from "#discord/toMessageOptions";
 import { PatternInteraction } from "#discord/classes/PatternInteraction";
+import { warn } from "#shared/logger";
 
 type ChoiceHandler = () => Promise<ReplyResolvable> | ReplyResolvable;
 interface Choice {
@@ -41,7 +42,15 @@ export function createChoiceListener(
   });
 
   collector.on("collect", int => {
-    const handler = choiceHandlers.get(int.customId)!;
+    const handler = choiceHandlers.get(int.customId);
+    if (!handler) {
+      warn(
+        "choice-listener",
+        `Unknown customId ${int.customId}. Originally got ${JSON.stringify(choices.map(c => c.name))}`,
+      );
+
+      return;
+    }
     const reply = Promise.resolve(handler());
 
     reply.then(r => {

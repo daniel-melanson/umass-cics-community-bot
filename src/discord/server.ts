@@ -312,7 +312,10 @@ export function initialize(): Promise<Client<true>> {
             }
           }
 
-          const commandData = importCommands();
+          const commandData = importCommands().filter(
+            cmdData => cmdData.permissionLevel === CommandPermissionLevel.Member,
+          );
+
           const applicationCommandCollection = await guild.commands.set(commandData.map(cmd => cmd.apiData));
           log("MAIN", `Built ${applicationCommandCollection.size} commands.`);
 
@@ -322,51 +325,10 @@ export function initialize(): Promise<Client<true>> {
             applicationCommandMap.set(appCmd.name, appCmd);
           }
 
-          const roles = await guild.roles.fetch();
-          const createRolePermission = (name: string) => {
-            const role = roles.find(r => r.name === name);
-            if (!role) throw new Error("Unable to find role " + name);
-
-            return {
-              id: role.id,
-              type: "ROLE",
-              permission: true,
-            } as ApplicationCommandPermissions;
-          };
-
-          const adminPermission = createRolePermission(CommandPermissionLevel.Administrator);
-          const moderatorPermission = createRolePermission(CommandPermissionLevel.Moderator);
-
           for (const command of commandData) {
             const appCmd = applicationCommandMap.get(command.apiData.name)!;
 
             guildCommands.set(appCmd.id, command.runtimeData);
-
-            const permissionLevel = command.permissionLevel;
-            if (permissionLevel !== CommandPermissionLevel.Member) {
-              const permissionArray: Array<ApplicationCommandPermissions> = [
-                {
-                  id: DISCORD_OWNER_ID,
-                  type: "USER",
-                  permission: true,
-                },
-                {
-                  id: guild.roles.everyone.id,
-                  type: "ROLE",
-                  permission: false,
-                },
-              ];
-
-              if (permissionLevel === CommandPermissionLevel.Moderator) {
-                permissionArray.push(moderatorPermission);
-              } else if (permissionLevel === CommandPermissionLevel.Administrator) {
-                permissionArray.push(adminPermission);
-              }
-
-              await appCmd.permissions.add({
-                permissions: permissionArray,
-              });
-            }
           }
           log("MAIN", `Permissions set up.`);
 
