@@ -114,8 +114,8 @@ connectToDatabase()
         timezone: "America/New_York",
       });
 
-    localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
-    localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
+    // localSchedule("0 0 7 * * 1", semesterPercentAnnouncement);
+    // localSchedule("0 0 7 * * *", academicCalendarAnnouncement);
     localSchedule("0 0 7 * * *", cicsEventAnnouncement);
 
     const activities: Array<ActivitiesOptions> = [
