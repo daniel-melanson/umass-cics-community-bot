@@ -1,5 +1,10 @@
 {
   "name": "umass-cics-community-bot",
+  "author": "Daniel Melanson",
+  "homepage": "https://github.com/daniel-melanson/umass-cics-community-bot#readme",
+  "version": "4.0.0",
+  "license": "AGPL-3.0",
+  "description": "Discord chatbot for a college community server.",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
