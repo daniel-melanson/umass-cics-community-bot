@@ -5,15 +5,22 @@
   "version": "4.0.0",
   "license": "AGPL-3.0",
   "description": "Discord chatbot for a college community server.",
-  "module": "index.ts",
+  "module": "./src/index.ts",
   "type": "module",
+  "scripts": {
+    "start": "bun run ./src/index.ts"
+  },
   "devDependencies": {
+    "@types/common-tags": "^1.8.4",
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "discord.js": "^14.14.1"
+    "common-tags": "^1.8.2",
+    "discord.js": "^14.14.1",
+    "pino": "^8.19.0",
+    "pino-pretty": "^11.0.0"
   }
 }
