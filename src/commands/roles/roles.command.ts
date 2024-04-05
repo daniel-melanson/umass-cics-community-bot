@@ -36,6 +36,7 @@ You will need to sign in with your Discord account. If you want to quickly manag
 \`/role (add|remove|try) role:<role-name>\` command. Example: \`/role get role: @CS 121\`
 `),
     )
+    .setColor("#881c1c")
     .setFields([
       {
         name: "Pronouns",
