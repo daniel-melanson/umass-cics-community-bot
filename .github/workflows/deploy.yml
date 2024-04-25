@@ -21,4 +21,4 @@ jobs:
             git pull origin master
             git status
             bun install --production
-            pm2 restart bot
+            bunx pm2 restart pm2.config.cjs
