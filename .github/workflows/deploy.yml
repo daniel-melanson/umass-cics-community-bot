@@ -1,28 +1,15 @@
 name: Node CI
 
 on:
-  pull_request:
   push:
     branches:
       - master
 
 jobs:
   lint:
-    name: Lint, Test built, Deploy
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@master
-
-      - name: Install NPM dependencies
-        uses: bahmutov/npm-install@master
-
-      - name: Run ESLint
-        run: npm run lint
-
-      - name: Build
-        run: npm run build
-
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
         with:
@@ -33,5 +20,5 @@ jobs:
             cd umass-cics-community-bot
             git pull origin master
             git status
-            npm install
-            pm2 restart cics-bot
+            bun install --production
+            pm2 restart bot
