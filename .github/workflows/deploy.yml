@@ -16,7 +16,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
+          request_pty: true
           script: |
             cd umass-cics-community-bot
             git pull origin master
-            bash -c "bun install --production && pm2 restart pm2.config.cjs"
+            bun install --production
+            bunx pm2 restart pm2.config.cjs
