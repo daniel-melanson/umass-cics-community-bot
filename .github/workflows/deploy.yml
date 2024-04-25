@@ -18,7 +18,6 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           request_pty: true
           script: |
-            bash .bashrc
             cd umass-cics-community-bot
             git pull origin master
-            ./scripts/restart.sh
+            bash -i ./scripts/restart.sh
