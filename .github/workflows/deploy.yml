@@ -20,4 +20,5 @@ jobs:
           script: |
             cd umass-cics-community-bot
             git pull origin master
-            cat ./scripts/restart.sh | bash
+            export PATH=$PATH:$HOME/.bun/bin
+            bash ./scripts/restart.sh
