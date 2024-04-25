@@ -20,5 +20,4 @@ jobs:
           script: |
             cd umass-cics-community-bot
             git pull origin master
-            bun install --production
-            bunx pm2 restart pm2.config.cjs
+            bash -c "source ~/.bashrc && ./scripts/restart.sh"
