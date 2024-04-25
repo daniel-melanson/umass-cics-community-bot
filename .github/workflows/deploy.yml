@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           request_pty: true
           script: |
+            bash .bashrc
             cd umass-cics-community-bot
             git pull origin master
-            export PATH=$PATH:$HOME/.bun/bin
-            bash ./scripts/restart.sh
+            ./scripts/restart.sh
