@@ -120,6 +120,8 @@ export default {
     } catch (e) {
       throw new DiscordCommandError(
         "I'm sorry, I encountered an error while trying to update your roles.",
+        "Unable to set roles",
+        e,
       );
     }
 

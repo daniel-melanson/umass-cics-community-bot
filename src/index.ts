@@ -25,18 +25,7 @@ function panic(message: string, error?: unknown) {
 }
 
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildMessageReactions,
-    GatewayIntentBits.GuildMessageTyping,
-    GatewayIntentBits.GuildEmojisAndStickers,
-    GatewayIntentBits.DirectMessages,
-    GatewayIntentBits.DirectMessageReactions,
-    GatewayIntentBits.DirectMessageTyping,
-    GatewayIntentBits.MessageContent,
-  ],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
 });
 
 const DISCORD_APP_TOKEN = process.env.DISCORD_APP_TOKEN!;
@@ -111,7 +100,11 @@ client.on(Events.InteractionCreate, async (interaction) => {
     try {
       await command.run(interaction);
     } catch (error) {
-      logger.error("Error executing command %s: %o", command.data.name, error);
+      const isDiscordCommandError = error instanceof DiscordCommandError;
+      if (!isDiscordCommandError || error.error) {
+        console.error(isDiscordCommandError ? error.error : error);
+      }
+
       const content =
         error instanceof DiscordCommandError
           ? error.userMessage

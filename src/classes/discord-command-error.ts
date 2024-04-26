@@ -1,8 +1,7 @@
-export default class DiscordCommandError extends Error {
+export default class DiscordCommandError {
   constructor(
     public readonly userMessage: string,
     public readonly internalMessage?: string,
-  ) {
-    super();
-  }
+    public readonly error?: unknown,
+  ) {}
 }

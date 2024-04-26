@@ -1,6 +1,5 @@
 import {
   ChatInputCommandInteraction,
-  CommandInteraction,
   InteractionResponse,
   SlashCommandBuilder,
 } from "discord.js";
