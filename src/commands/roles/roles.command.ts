@@ -89,6 +89,7 @@ export default {
 
     return interaction.reply({
       embeds: [createRoleEmbed(interaction.guild)],
+      ephemeral: true,
     });
   },
 } satisfies DiscordCommand;
