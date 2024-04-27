@@ -28,6 +28,7 @@ export async function CICSEventsAnnouncement() {
   try {
     events = await fetchCICSEvents();
   } catch (e) {
+    console.error(e);
     return client.log(`Failed to fetch CICS events.`);
   }
 
@@ -35,5 +36,10 @@ export async function CICSEventsAnnouncement() {
 
   const embeds = events.map(makeEventEmbed);
 
-  await client.announce("cics-events-🎫", { embeds });
+  try {
+    await client.announce("cics-events", { embeds });
+  } catch (e) {
+    console.error(e);
+    return client.log(`Failed to announce CICS events.`);
+  }
 }

@@ -50,8 +50,14 @@ class DiscordClient extends Client {
   async announce(channelName: string, message: SendOptions) {
     const guild = await this.fetchGuild();
     const channels = await guild.channels.fetch();
+    const nameMatches = (name: string, target: string) =>
+      name === target || new RegExp(`${target}-\\p{Emoji}`, "iu").test(name);
+
     const channel = channels.find(
-      (c) => c && c.type === ChannelType.GuildText && c.name === channelName,
+      (c) =>
+        c &&
+        c.type === ChannelType.GuildText &&
+        nameMatches(c.name, channelName),
     ) as TextChannel | undefined;
     assert(channel, `Channel ${channelName} not found`);
 
