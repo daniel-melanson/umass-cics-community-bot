@@ -33,15 +33,10 @@ async function fetchEventBody(href: string): Promise<string> {
 
   assert(paragraphs, "Failed to find event body paragraph");
 
-  const MAX_LENGTH = 1024;
-  const summary = $(paragraphs.get(0))
-    .text()
-    .trim()
-    .replaceAll(/\s\s/g, " ")
-    .substring(0, MAX_LENGTH);
-
-  const hasEllipsis = paragraphs.length > 1 || summary.length > MAX_LENGTH;
-  return hasEllipsis ? `${summary}...` : summary;
+  return paragraphs
+    .map((_, p) => $(p).text().trim())
+    .toArray()
+    .join("\n\n");
 }
 export async function fetchCICSEvents(): Promise<CICSEvent[]> {
   const date = new Date().toISOString().split("T")[0];
