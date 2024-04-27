@@ -1,54 +1,25 @@
 import fs from "node:fs";
-import assert from "node:assert";
 import path from "node:path";
 
-import {
-  Client,
-  Collection,
-  Events,
-  GatewayIntentBits,
-  REST,
-  Routes,
-  userMention,
-} from "discord.js";
-import { oneLine } from "common-tags";
+import { Collection, Events } from "discord.js";
 
 import type DiscordCommand from "@/interfaces/discord-command";
+import cron from "node-cron";
 import { logger } from "@/utils/logger";
-import DiscordCommandError from "./classes/discord-command-error";
-
-function panic(message: string, error?: unknown) {
-  if (error) logger.fatal("%s: %o", message, error);
-  else logger.fatal(message);
-
-  process.exit(1);
-}
-
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
-});
-
-const DISCORD_APP_TOKEN = process.env.DISCORD_APP_TOKEN!;
-const DISCORD_APP_ID = process.env.DISCORD_APP_ID!;
-const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID!;
-const DISCORD_OWNER_ID = process.env.DISCORD_OWNER_ID!;
-assert(
-  DISCORD_APP_TOKEN && DISCORD_APP_ID && DISCORD_GUILD_ID && DISCORD_OWNER_ID,
-  "Missing required environment variables",
-);
-
-const commands = new Collection<string, DiscordCommand>();
+import { panic } from "./utils/panic";
+import { client } from "./classes/discord-client";
+import { CICSEventsAnnouncement } from "./tasks/cics-events-announcement";
 
 client.once(Events.ClientReady, async (c) => {
   logger.info(`Logged in as ${c.user.tag}`);
 
   logger.trace("Loading commands...");
-  const commandData: any[] = [];
   const commandDirectory = path.resolve(__dirname, "commands");
   const commandFiles = fs
     .readdirSync(commandDirectory, { recursive: true, encoding: "utf-8" })
     .filter((file) => file.endsWith(".command.ts"));
 
+  const commands = new Collection<string, DiscordCommand>();
   try {
     await Promise.all(
       commandFiles.map(async (file) => {
@@ -70,61 +41,13 @@ client.once(Events.ClientReady, async (c) => {
 
         const command = moduleImport.default as DiscordCommand;
         commands.set(command.data.name, command);
-        commandData.push(command.data.toJSON());
       }),
     );
   } catch (e) {
     panic("Unable to load commands", e);
   }
 
-  logger.trace("Registering commands...");
-  const rest = new REST().setToken(DISCORD_APP_TOKEN);
+  await client.registerCommands(commands);
 
-  try {
-    await rest.put(
-      Routes.applicationGuildCommands(DISCORD_APP_ID, DISCORD_GUILD_ID),
-      { body: commandData },
-    );
-
-    logger.info(`Successfully registered ${commands.size} commands`);
-  } catch (e) {
-    panic("Unable to register commands", e);
-  }
+  cron.schedule("0 0 7 * * *", CICSEventsAnnouncement);
 });
-
-client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-
-  const command = commands.get(interaction.commandName);
-  if (command) {
-    try {
-      await command.run(interaction);
-    } catch (error) {
-      const isDiscordCommandError = error instanceof DiscordCommandError;
-      if (!isDiscordCommandError || error.error) {
-        console.error(isDiscordCommandError ? error.error : error);
-      }
-
-      const content =
-        error instanceof DiscordCommandError
-          ? error.userMessage
-          : oneLine(`
-          I had trouble executing that command. Please try again.
-          If this problem persists, mention ${userMention(DISCORD_OWNER_ID)}`);
-
-      await interaction.reply({
-        content,
-        ephemeral: true,
-      });
-    }
-  } else {
-    logger.warn("Unknown command %s: %o", interaction.commandName, interaction);
-
-    await interaction.reply({
-      content: "I don't know that command.",
-      ephemeral: true,
-    });
-  }
-});
-
-client.login(DISCORD_APP_TOKEN);

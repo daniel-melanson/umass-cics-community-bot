@@ -1,4 +1,5 @@
 import type DiscordCommand from "@/interfaces/discord-command.ts";
+import colors from "@/utils/colors.ts";
 import {
   isAssignable,
   isConcentration,
@@ -36,7 +37,7 @@ You will need to sign in with your Discord account. If you want to quickly manag
 \`/role (add|remove|try) role:<role-name>\` command. Example: \`/role get role: @CS 121\`
 `),
     )
-    .setColor("#881c1c")
+    .setColor(colors.MAROON)
     .setFields([
       {
         name: "Pronouns",

@@ -11,16 +11,20 @@
     "start": "bun run ./src/index.ts"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@types/common-tags": "^1.8.4",
-    "@types/bun": "latest"
+    "@types/node-cron": "^3.0.11"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "common-tags": "^1.8.2",
     "discord.js": "^14.14.1",
+    "node-cron": "^3.0.3",
     "pino": "^8.19.0",
-    "pino-pretty": "^11.0.0"
+    "pino-pretty": "^11.0.0",
+    "ts-pattern": "^5.1.1"
   }
 }
