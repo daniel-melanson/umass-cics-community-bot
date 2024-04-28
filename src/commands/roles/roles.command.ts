@@ -15,6 +15,7 @@ import {
 import { oneLine } from "common-tags";
 import { Guild, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import DiscordCommandError from "@/classes/discord-command-error.ts";
+import { DiscordEmbedBuilder } from "@/classes/discord-embed-builder.ts";
 
 export function createRoleEmbed(guild: Guild) {
   const guildRoleManager = guild.roles;
@@ -29,15 +30,14 @@ export function createRoleEmbed(guild: Guild) {
       .join(", ");
   };
 
-  return new EmbedBuilder()
+  return new DiscordEmbedBuilder()
     .setTitle("Obtain and Remove Roles")
     .setDescription(
       oneLine(`We have a [website](https://discord.ltseng.me) where you can obtain and remove roles to access different features on this server. 
 You will need to sign in with your Discord account. If you want to quickly manage you roles you may use \`/role\` slash command:
-\`/role (add|remove|try) role:<role-name>\` command. Example: \`/role get role: @CS 121\`
+\`/role (add|remove|try) role:<role-name>\` command. Example: \`/role add role: @CS 121\`
 `),
     )
-    .setColor(colors.MAROON)
     .setFields([
       {
         name: "Pronouns",

@@ -2,12 +2,15 @@ import {
   ChannelType,
   Client,
   Collection,
+  EmbedBuilder,
   Events,
   GatewayIntentBits,
+  GuildMember,
   MessagePayload,
   REST,
   Routes,
   TextChannel,
+  channelMention,
   userMention,
   type Interaction,
   type MessageCreateOptions,
@@ -18,6 +21,9 @@ import DiscordCommandError from "./discord-command-error";
 import { oneLine } from "common-tags";
 import { panic } from "@/utils/panic";
 import type DiscordCommand from "@/interfaces/discord-command";
+import { DiscordEmbedBuilder } from "./discord-embed-builder";
+import { minutes } from "@/utils/time";
+import { createRoleEmbed } from "@/commands/roles/roles.command";
 
 const DISCORD_APP_TOKEN = process.env.DISCORD_APP_TOKEN!;
 const DISCORD_APP_ID = process.env.DISCORD_APP_ID!;
@@ -41,31 +47,41 @@ class DiscordClient extends Client {
     });
 
     this.once(Events.InteractionCreate, this.onInteractionCreate.bind(this));
+    this.once(Events.GuildMemberAdd, this.onGuildMemberAdd.bind(this));
   }
 
   private async fetchGuild() {
     return await this.guilds.fetch(DISCORD_GUILD_ID);
   }
 
-  async announce(channelName: string, message: SendOptions) {
+  async fetchChannel(channelName: string) {
     const guild = await this.fetchGuild();
     const channels = await guild.channels.fetch();
     const nameMatches = (name: string, target: string) =>
       name === target || new RegExp(`${target}-\\p{Emoji}`, "iu").test(name);
 
-    const channel = channels.find(
+    return channels.find(
       (c) =>
         c &&
         c.type === ChannelType.GuildText &&
         nameMatches(c.name, channelName),
-    ) as TextChannel | undefined;
+    );
+  }
+
+  async announce(channelName: string, message: SendOptions) {
+    const channel = (await this.fetchChannel(channelName)) as TextChannel;
     assert(channel, `Channel ${channelName} not found`);
 
     return channel.send(message);
   }
 
-  async log(message: string) {
-    return this.announce("bot-log", `${userMention(this.OWNER_ID)} ${message}`);
+  async error(message: SendOptions) {
+    await this.announce("bot-log", `${userMention(DISCORD_OWNER_ID)}`);
+    return this.announce("bot-log", message);
+  }
+
+  async log(message: SendOptions) {
+    return this.announce("bot-log", message);
   }
 
   async registerCommands(commands: Collection<string, DiscordCommand>) {
@@ -91,6 +107,63 @@ class DiscordClient extends Client {
     }
   }
 
+  async fetchGuildMember(userId: string, force = false) {
+    const guild = await this.fetchGuild();
+
+    return guild.members.fetch({ user: userId, force });
+  }
+
+  async onGuildMemberAdd(member: GuildMember) {
+    if (member.user.bot || member.guild.id !== this.GUILD_ID) return;
+
+    const DEFAULT_NAME = "~ real name please";
+
+    const userId = member.id;
+    await member.setNickname(DEFAULT_NAME);
+
+    const embed = new DiscordEmbedBuilder()
+      .setDescription(
+        oneLine(`<@${member.user.id}> has joined.
+              Their account was created on ${member.user.createdAt.toLocaleDateString()}`),
+      )
+      .setUser(member.user);
+
+    await this.log({ embeds: [embed] });
+
+    setTimeout(async () => {
+      const updatedMember = await this.fetchGuildMember(userId, true);
+
+      if (
+        updatedMember.nickname !== DEFAULT_NAME &&
+        updatedMember.roles.cache.size > 1
+      )
+        return;
+
+      const mentionChannel = async (name: string) => {
+        const channel = await this.fetchChannel(name);
+        assert(channel, `${name} channel not found`);
+
+        return channelMention(channel.id);
+      };
+
+      await this.announce("bot-commands", {
+        content: `Hey there, ${userMention(member.id)}! It seems like you don't have any roles. Make sure to update your nickname if you have not already.`,
+        embeds: [
+          new DiscordEmbedBuilder()
+            .setTitle("Welcome to the Server!")
+            .addFields([
+              {
+                name: "Getting Familiar With The Server",
+                value: oneLine(`
+                If you are new to the server, make sure to read these channels: 
+                    ${await mentionChannel("rules")}, ${await mentionChannel("how-to-roles")}, ${await mentionChannel("how-to-notifications")}`),
+              },
+            ]),
+          createRoleEmbed(updatedMember.guild),
+        ],
+      });
+    }, minutes(1));
+  }
   async onInteractionCreate(interaction: Interaction) {
     if (!interaction.isChatInputCommand()) return;
 

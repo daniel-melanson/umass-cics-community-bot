@@ -2,8 +2,9 @@ import { client } from "@/classes/discord-client";
 import assert from "assert";
 import { fetchCurrentTerms } from "@/umass/spire-api";
 import { logger } from "@/utils/logger";
+import { days } from "@/utils/time";
 
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
+const MS_PER_DAY = days(1);
 const dayDiff = (d0: Date, d1: Date) =>
   Math.ceil(Math.abs(d0.valueOf() - d1.valueOf()) / MS_PER_DAY);
 
@@ -15,7 +16,7 @@ export async function TermProgressAnnouncement() {
     assert(terms.length <= 2, "Too many terms");
   } catch (e) {
     console.error(e);
-    return client.log(`Failed to fetch terms.`);
+    return client.error(`Failed to fetch terms.`);
   }
 
   if (terms.length === 0) return;
