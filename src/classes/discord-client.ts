@@ -131,41 +131,37 @@ class DiscordClient extends Client {
     await this.log({ embeds: [embed] });
 
     setTimeout(async () => {
-      try {
-        const updatedMember = await this.fetchGuildMember(userId, true);
+      const updatedMember = await this.fetchGuildMember(userId, true);
 
-        if (
-          updatedMember.nickname !== DEFAULT_NAME &&
-          updatedMember.roles.cache.size > 1
-        )
-          return;
+      if (
+        updatedMember.nickname !== DEFAULT_NAME &&
+        updatedMember.roles.cache.size > 1
+      )
+        return;
 
-        const mentionChannel = async (name: string) => {
-          const channel = await this.fetchChannel(name);
-          assert(channel, `${name} channel not found`);
+      const mentionChannel = async (name: string) => {
+        const channel = await this.fetchChannel(name);
+        assert(channel, `${name} channel not found`);
 
-          return channelMention(channel.id);
-        };
+        return channelMention(channel.id);
+      };
 
-        await this.announce("bot-commands", {
-          content: `Hey there, ${userMention(member.id)}! It seems like you don't have any roles. Make sure to update your nickname if you have not already.`,
-          embeds: [
-            new DiscordEmbedBuilder()
-              .setTitle("Welcome to the Server!")
-              .addFields([
-                {
-                  name: "Getting Familiar With The Server",
-                  value: oneLine(`
+      await this.announce("bot-commands", {
+        content: `Hey there, ${userMention(member.id)}! It seems like you don't have any roles. Make sure to update your nickname if you have not already.`,
+        embeds: [
+          new DiscordEmbedBuilder()
+            .setTitle("Welcome to the Server!")
+            .addFields([
+              {
+                name: "Getting Familiar With The Server",
+                value: oneLine(`
                 If you are new to the server, make sure to read these channels: 
                     ${await mentionChannel("rules")}, ${await mentionChannel("how-to-roles")}, ${await mentionChannel("how-to-notifications")}`),
-                },
-              ]),
-            createRoleEmbed(updatedMember.guild),
-          ],
-        });
-      } catch (e) {
-        console.error(e);
-      }
+              },
+            ]),
+          createRoleEmbed(updatedMember.guild),
+        ],
+      });
     }, minutes(1));
   }
   async onInteractionCreate(interaction: Interaction) {
