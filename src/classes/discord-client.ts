@@ -85,7 +85,7 @@ class DiscordClient extends Client {
   }
 
   async registerCommands(commands: Collection<string, DiscordCommand>) {
-    this.commands.merge(
+    this.commands = this.commands.merge(
       commands,
       (x) => ({ keep: true, value: x }),
       (y) => ({ keep: true, value: y }),
