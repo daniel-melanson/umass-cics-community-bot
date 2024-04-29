@@ -58,7 +58,8 @@ class DiscordClient extends Client {
     const guild = await this.fetchGuild();
     const channels = await guild.channels.fetch();
     const nameMatches = (name: string, target: string) =>
-      name === target || new RegExp(`${target}-\\p{Emoji}`, "iu").test(name);
+      name === target ||
+      new RegExp(`^${target}(-\\p{Emoji})?$`, "iu").test(name);
 
     return channels.find(
       (c) =>
