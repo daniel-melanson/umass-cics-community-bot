@@ -50,6 +50,9 @@ client.once(Events.ClientReady, async (c) => {
 
   await client.registerCommands(commands);
 
-  cron.schedule("0 0 7 * * *", CICSEventsAnnouncement);
-  cron.schedule("0 0 7 * * 1", TermProgressAnnouncement);
+  const schedule = (expression: string, task: () => void) =>
+    cron.schedule(expression, task, { timezone: "America/New_York" });
+
+  schedule("0 0 7 * * *", CICSEventsAnnouncement);
+  schedule("0 0 7 * * 1", TermProgressAnnouncement);
 });
