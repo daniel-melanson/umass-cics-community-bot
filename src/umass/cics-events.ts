@@ -116,9 +116,10 @@ export async function fetchCICSEvents(): Promise<CICSEvent[]> {
         return acc;
       }, {} as Partial<CICSEvent>);
 
+      logger.trace("Raw event: %o", event);
       assert(
         event.title && event.type && event.href,
-        "Missing required fields",
+        `Event ${event.title} is missing required fields`,
       );
 
       return event as CICSEvent;
