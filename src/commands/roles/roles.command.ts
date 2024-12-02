@@ -1,5 +1,4 @@
 import type DiscordCommand from "@/interfaces/discord-command.ts";
-import colors from "@/utils/colors.ts";
 import {
   isAssignable,
   isConcentration,
@@ -13,7 +12,7 @@ import {
   isResidential,
 } from "./roles.ts";
 import { oneLine } from "common-tags";
-import { Guild, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { Guild, SlashCommandBuilder } from "discord.js";
 import DiscordCommandError from "@/classes/discord-command-error.ts";
 import { DiscordEmbedBuilder } from "@/classes/discord-embed-builder.ts";
 

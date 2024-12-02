@@ -1,11 +1,11 @@
 import {
   ChatInputCommandInteraction,
   InteractionResponse,
-  SlashCommandBuilder,
+  SharedSlashCommand,
 } from "discord.js";
 
 export default interface DiscordCommand {
-  data: SlashCommandBuilder;
+  data: SharedSlashCommand;
   run: (
     interaction: ChatInputCommandInteraction,
   ) => Promise<InteractionResponse<boolean>>;

@@ -7,6 +7,7 @@ import {
 } from "discord.js";
 import { isAssignable } from "@/commands/roles/roles";
 import { oneLine } from "common-tags";
+import { logger } from "@/utils/logger";
 
 function buildRoleSubcommand(name: string, description: string) {
   const builder = new SlashCommandSubcommandBuilder()
@@ -36,14 +37,10 @@ export default {
     .setName("role")
     .addSubcommand(buildRoleSubcommand("add", "Add an assignable role."))
     .addSubcommand(buildRoleSubcommand("remove", "Remove an assignable role."))
-    // .addSubcommand(
-    //   buildRoleSubcommand(
-    //     "try",
-    //     "Add assignable role and have it automatically removed after 24 hours.",
-    //   ),
-    // )
     .setDescription("Add or remove roles to your role list."),
   run: async (interaction) => {
+    logger.trace("rode command invoked");
+
     const options = interaction.options;
     const guild = interaction.guild;
 
@@ -52,6 +49,7 @@ export default {
         "This command can only be used in a server.",
       );
     }
+
 
     const guildMember = await guild.members.fetch(interaction.user.id);
     const userRoleManager = guildMember.roles;
@@ -72,6 +70,7 @@ export default {
       return Promise.all(optionRoles.map((role) => guild.roles.fetch(role.id)));
     })();
 
+    logger.trace("got all roles");
     if (resolvedRoles.some((role) => role === null))
       throw new DiscordCommandError(
         "I'm sorry, I had some trouble fetching those roles you provided. Try again later.",
@@ -115,6 +114,7 @@ export default {
       isAddition ? userRoleIdSet.add(role.id) : userRoleIdSet.delete(role.id),
     );
 
+    logger.trace("setting roles...");
     try {
       await userRoleManager.set(Array.from(userRoleIdSet.keys()));
     } catch (e) {
@@ -123,10 +123,6 @@ export default {
         "Unable to set roles",
         e,
       );
-    }
-
-    if (subcommand === "try") {
-      // Schedule a task to remove the roles after 24 hours.
     }
 
     type T = [Role[], (roleList: string, isPlural: boolean) => string];
