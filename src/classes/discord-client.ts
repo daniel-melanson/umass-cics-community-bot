@@ -46,8 +46,8 @@ class DiscordClient extends Client {
       intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
     });
 
-    this.once(Events.InteractionCreate, this.onInteractionCreate.bind(this));
-    this.once(Events.GuildMemberAdd, this.onGuildMemberAdd.bind(this));
+    this.on(Events.InteractionCreate, this.onInteractionCreate.bind(this));
+    this.on(Events.GuildMemberAdd, this.onGuildMemberAdd.bind(this));
   }
 
   private async fetchGuild() {
