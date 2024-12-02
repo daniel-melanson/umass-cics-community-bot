@@ -167,15 +167,19 @@ class DiscordClient extends Client {
   }
   async onInteractionCreate(interaction: Interaction) {
     if (!interaction.isChatInputCommand()) return;
+    logger.trace("interaction created");
 
     const command = this.commands.get(interaction.commandName);
     if (command) {
+      logger.trace(`matched command ${command.data.name}`)
+
       try {
         await command.run(interaction);
       } catch (error) {
+        logger.trace("command failed");
         const isDiscordCommandError = error instanceof DiscordCommandError;
         if (!isDiscordCommandError || error.error) {
-          console.error(isDiscordCommandError ? error.error : error);
+          logger.error(isDiscordCommandError ? error.error : error);
         }
 
         const content =

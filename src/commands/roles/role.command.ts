@@ -39,7 +39,7 @@ export default {
     .addSubcommand(buildRoleSubcommand("remove", "Remove an assignable role."))
     .setDescription("Add or remove roles to your role list."),
   run: async (interaction) => {
-    logger.trace("rode command invoked");
+    logger.trace("role command invoked");
 
     const options = interaction.options;
     const guild = interaction.guild;
