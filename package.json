@@ -16,15 +16,15 @@
     "@types/node-cron": "^3.0.11"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.4.3"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.12",
+    "cheerio": "^1.0.0",
     "common-tags": "^1.8.2",
-    "discord.js": "^14.14.1",
+    "discord.js": "^14.16.3",
     "node-cron": "^3.0.3",
-    "pino": "^8.19.0",
-    "pino-pretty": "^11.0.0",
-    "ts-pattern": "^5.1.1"
+    "pino": "^8.21.0",
+    "pino-pretty": "^11.3.0",
+    "ts-pattern": "^5.5.0"
   }
 }
